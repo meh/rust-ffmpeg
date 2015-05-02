@@ -1,5 +1,3 @@
-use libc::{c_int, c_uint, c_char, int64_t};
-
 #[macro_use]
 mod macros;
 
@@ -97,10 +95,6 @@ pub use self::mathematics::AVRounding::*;
 mod md5;
 pub use self::md5::*;
 
-mod media;
-pub use self::media::*;
-pub use self::media::AVMediaType::*;
-
 mod mem;
 pub use self::mem::*;
 
@@ -116,9 +110,6 @@ pub use self::opt::AVOptionType::*;
 
 mod parseutils;
 pub use self::parseutils::*;
-
-mod picture;
-pub use self::picture::*;
 
 mod pixdesc;
 pub use self::pixdesc::*;
@@ -173,15 +164,7 @@ pub use self::twofish::*;
 mod xtea;
 pub use self::xtea::*;
 
-pub const AV_NOPTS_VALUE: int64_t    = 0x8000000000000000u64 as int64_t;
-pub const AV_TIME_BASE:   int64_t    = 1000000;
-pub const AV_TIME_BASE_Q: AVRational = AVRational { num: 1, den: AV_TIME_BASE as c_int };
-
-#[link(name = "avutil")]
-extern {
-	pub fn avutil_version() -> c_uint;
-	pub fn avutil_configuration() -> *const c_char;
-	pub fn avutil_license() -> *const c_char;
-
-	pub fn av_get_time_base_q() -> AVRational;
-}
+mod util;
+pub use self::util::*;
+pub use self::util::AVMediaType::*;
+pub use self::util::AVPictureType::*;
