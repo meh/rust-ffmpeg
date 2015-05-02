@@ -3,7 +3,7 @@ use super::dict::AVDictionary;
 use super::rational::AVRational;
 use super::buffer::AVBufferRef;
 use super::pixfmt::{AVColorPrimaries, AVColorRange, AVColorSpace, AVColorTransferCharacteristic, AVChromaLocation};
-use super::picture::AVPictureType;
+use super::util::AVPictureType;
 
 #[derive(Eq, PartialEq, Debug)]
 #[repr(C)]
@@ -24,75 +24,75 @@ pub enum AVFrameSideDataType {
 #[derive(Debug)]
 #[repr(C)]
 pub struct AVFrameSideData {
-	kind: AVFrameSideDataType,
-	data: *mut uint8_t,
-	size: c_int,
-	metadata: *mut AVDictionary,
+	pub kind: AVFrameSideDataType,
+	pub data: *mut uint8_t,
+	pub size: c_int,
+	pub metadata: *mut AVDictionary,
 }
 
 #[derive(Debug)]
 #[repr(C)]
 pub struct AVFrame {
-	data: [*mut uint8_t; 8],
-	linesize: [c_int; 8],
-	extended_data: *mut *mut uint8_t,
+	pub data: [*mut uint8_t; 8],
+	pub linesize: [c_int; 8],
+	pub extended_data: *mut *mut uint8_t,
 
-	width: c_int,
-	height: c_int,
-	nb_samples: c_int,
+	pub width: c_int,
+	pub height: c_int,
+	pub nb_samples: c_int,
 
-	format: c_int,
-	key_frame: c_int,
-	pict_type: AVPictureType,
-	sample_aspect_ratio: AVRational,
+	pub format: c_int,
+	pub key_frame: c_int,
+	pub pict_type: AVPictureType,
+	pub sample_aspect_ratio: AVRational,
 
-	pts: int64_t,
-	pkt_pts: int64_t,
-	pkt_dts: int64_t,
+	pub pts: int64_t,
+	pub pkt_pts: int64_t,
+	pub pkt_dts: int64_t,
 
-	coded_picture_number: c_int,
-	display_picture_number: c_int,
+	pub coded_picture_number: c_int,
+	pub display_picture_number: c_int,
 
-	quality: c_int,
+	pub quality: c_int,
 
-	opaque: *mut c_void,
+	pub opaque: *mut c_void,
 
-	repeat_pict: c_int,
-	interlaced_frame: c_int,
-	top_field_first: c_int,
+	pub repeat_pict: c_int,
+	pub interlaced_frame: c_int,
+	pub top_field_first: c_int,
 
-	palette_has_changed: c_int,
+	pub palette_has_changed: c_int,
 
-	reordered_opaque: int64_t,
-	sample_rate: c_int,
-	channel_layout: uint64_t,
+	pub reordered_opaque: int64_t,
+	pub sample_rate: c_int,
+	pub channel_layout: uint64_t,
 
-	buf: [*mut AVBufferRef; 8],
-	extended_buf: *mut *mut AVBufferRef,
-	nb_extended_buf: c_int,
+	pub buf: [*mut AVBufferRef; 8],
+	pub extended_buf: *mut *mut AVBufferRef,
+	pub nb_extended_buf: c_int,
 
-	side_data: *mut *mut AVFrameSideData,
-	nb_side_data: c_int,
+	pub side_data: *mut *mut AVFrameSideData,
+	pub nb_side_data: c_int,
 
-	flags: c_int,
+	pub flags: c_int,
 
-	color_range: AVColorRange,
-	color_primaries: AVColorPrimaries,
-	color_trc: AVColorTransferCharacteristic,
-	colorspace: AVColorSpace,
-	chroma_location: AVChromaLocation,
+	pub color_range: AVColorRange,
+	pub color_primaries: AVColorPrimaries,
+	pub color_trc: AVColorTransferCharacteristic,
+	pub colorspace: AVColorSpace,
+	pub chroma_location: AVChromaLocation,
 
-	best_effort_timestamp: int64_t,
-	pkt_pos: int64_t,
-	pkt_duration: int64_t,
+	pub best_effort_timestamp: int64_t,
+	pub pkt_pos: int64_t,
+	pub pkt_duration: int64_t,
 
-	metadata: *mut AVDictionary,
-	decode_error_flags: c_int,
+	pub metadata: *mut AVDictionary,
+	pub decode_error_flags: c_int,
 
-	channels: c_int,
-	pkt_size: c_int,
+	pub channels: c_int,
+	pub pkt_size: c_int,
 
-	qp_table_buf: *mut AVBufferRef,
+	pub qp_table_buf: *mut AVBufferRef,
 }
 
 #[link(name = "avutil")]

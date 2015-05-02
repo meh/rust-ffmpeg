@@ -9,8 +9,8 @@ pub const AV_DICT_APPEND:          c_int = 32;
 
 #[repr(C)]
 pub struct AVDictionaryEntry {
-	key:   *mut c_char,
-	value: *mut c_char,
+	pub key:   *mut c_char,
+	pub value: *mut c_char,
 }
 
 pub type AVDictionary = c_void;

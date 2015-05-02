@@ -8,10 +8,10 @@ pub const AV_TIMECODE_FLAG_ALLOWNEGATIVE: uint32_t = 1 << 2;
 #[derive(Debug)]
 #[repr(C)]
 pub struct AVTimecode {
-	start: c_int,
-	flags: uint32_t,
-	rate:  AVRational,
-	fps:   c_uint,
+	pub start: c_int,
+	pub flags: uint32_t,
+	pub rate:  AVRational,
+	pub fps:   c_uint,
 }
 
 #[link(name = "avutil")]

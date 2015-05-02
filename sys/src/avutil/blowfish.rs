@@ -4,8 +4,8 @@ pub const AV_BF_ROUNDS: c_int = 16;
 
 #[repr(C)]
 pub struct AVBlowfish {
-	p: [uint32_t; AV_BF_ROUNDS as usize + 2],
-	s: [[uint32_t; 256]; 4],
+	pub p: [uint32_t; AV_BF_ROUNDS as usize + 2],
+	pub s: [[uint32_t; 256]; 4],
 }
 
 #[link(name = "avutil")]

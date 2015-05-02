@@ -3,7 +3,7 @@ use libc::{c_int, uint8_t, uint32_t};
 #[derive(Debug)]
 #[repr(C)]
 pub struct AVXTEA {
-	key: [uint32_t; 16],
+	pub key: [uint32_t; 16],
 }
 
 #[link(name = "avutil")]

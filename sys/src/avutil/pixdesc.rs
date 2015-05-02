@@ -4,7 +4,7 @@ use super::pixfmt::{AVPixelFormat, AVColorRange, AVColorPrimaries, AVColorTransf
 #[derive(Debug)]
 #[repr(C)]
 pub struct AVComponentDescriptor {
-	data: uint16_t,
+	pub data: uint16_t,
 }
 
 impl AVComponentDescriptor {
@@ -32,18 +32,18 @@ impl AVComponentDescriptor {
 #[derive(Debug)]
 #[repr(C)]
 pub struct AVPixFmtDescriptor {
-	name: *const c_char,
+	pub name: *const c_char,
 
-	nb_components: uint8_t,
+	pub nb_components: uint8_t,
 
-	log2_chroma_w: uint8_t,
-	log2_chroma_h: uint8_t,
+	pub log2_chroma_w: uint8_t,
+	pub log2_chroma_h: uint8_t,
 
-	flags: uint8_t,
+	pub flags: uint8_t,
 
-	comp: [AVComponentDescriptor; 4],
+	pub comp: [AVComponentDescriptor; 4],
 
-	alias: *const c_char,
+	pub alias: *const c_char,
 }
 
 pub const AV_PIX_FMT_FLAG_BE:        c_int = 1 << 0;
