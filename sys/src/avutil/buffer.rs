@@ -5,9 +5,9 @@ pub type AVBuffer = c_void;
 #[derive(Debug)]
 #[repr(C)]
 pub struct AVBufferRef {
-	buffer: *mut AVBuffer,
-	data:   *mut uint8_t,
-	size:   c_int,
+	pub buffer: *mut AVBuffer,
+	pub data:   *mut uint8_t,
+	pub size:   c_int,
 }
 
 pub type AVBufferPool = c_void;

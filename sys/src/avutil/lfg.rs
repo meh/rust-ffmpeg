@@ -2,8 +2,8 @@ use libc::{c_int, c_uint, c_double};
 
 #[repr(C)]
 pub struct AVLFG {
-	state: [c_uint; 64],
-	index: c_int,
+	pub state: [c_uint; 64],
+	pub index: c_int,
 }
 
 #[inline(always)]

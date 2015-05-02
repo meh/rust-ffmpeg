@@ -19,8 +19,8 @@ pub const AV_STEREO3D_FLAG_INVERT: c_int = 1 << 0;
 #[derive(Debug)]
 #[repr(C)]
 pub struct AVStereo3D {
-	kind:  AVStereo3DType,
-	flags: c_int,
+	pub kind:  AVStereo3DType,
+	pub flags: c_int,
 }
 
 #[link(name = "avutil")]

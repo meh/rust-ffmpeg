@@ -78,10 +78,10 @@ pub struct AVOptionRange {
 #[derive(Debug)]
 #[repr(C)]
 pub struct AVOptionRanges {
-	range: *mut *mut AVOptionRange,
+	pub range: *mut *mut AVOptionRange,
 
-	nb_ranges:     c_int,
-	nb_components: c_int,
+	pub nb_ranges:     c_int,
+	pub nb_components: c_int,
 }
 
 #[link(name = "avutil")]
