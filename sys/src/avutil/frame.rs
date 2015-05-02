@@ -5,6 +5,8 @@ use super::buffer::AVBufferRef;
 use super::pixfmt::{AVColorPrimaries, AVColorRange, AVColorSpace, AVColorTransferCharacteristic, AVChromaLocation};
 use super::util::AVPictureType;
 
+pub const AV_NUM_DATA_POINTERS: usize = 8;
+
 #[derive(Eq, PartialEq, Debug)]
 #[repr(C)]
 pub enum AVFrameSideDataType {
@@ -33,8 +35,8 @@ pub struct AVFrameSideData {
 #[derive(Debug)]
 #[repr(C)]
 pub struct AVFrame {
-	pub data: [*mut uint8_t; 8],
-	pub linesize: [c_int; 8],
+	pub data: [*mut uint8_t; AV_NUM_DATA_POINTERS],
+	pub linesize: [c_int; AV_NUM_DATA_POINTERS],
 	pub extended_data: *mut *mut uint8_t,
 
 	pub width: c_int,
@@ -67,7 +69,7 @@ pub struct AVFrame {
 	pub sample_rate: c_int,
 	pub channel_layout: uint64_t,
 
-	pub buf: [*mut AVBufferRef; 8],
+	pub buf: [*mut AVBufferRef; AV_NUM_DATA_POINTERS],
 	pub extended_buf: *mut *mut AVBufferRef,
 	pub nb_extended_buf: c_int,
 
