@@ -1,5 +1,5 @@
 use libc::{c_void, c_char, c_uchar, c_uint, c_int};
-use super::avstring::AVEscapeMode;
+use super::string::AVEscapeMode;
 
 #[repr(C)]
 pub struct AVBPrint {

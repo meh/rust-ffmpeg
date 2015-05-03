@@ -10,9 +10,9 @@ pub use self::aes::*;
 mod audio_fifo;
 pub use self::audio_fifo::*;
 
-mod avstring;
-pub use self::avstring::*;
-pub use self::avstring::AVEscapeMode::*;
+mod string;
+pub use self::string::*;
+pub use self::string::AVEscapeMode::*;
 
 mod base64;
 pub use self::base64::*;
