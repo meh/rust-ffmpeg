@@ -2,6 +2,6 @@
 name = "ffmpeg-sys"
 version = "2.6.2-1"
 authors = ["meh. <meh@schizofreni.co>"]
-license = "MIT"
+license = "WTFPL"
 description = "FFI bindings to FFmpeg"
 repository = "https://github.com/meh/rust-ffmpeg-sys"
