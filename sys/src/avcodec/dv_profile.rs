@@ -1,5 +1,5 @@
 use libc::{c_int, c_uint, uint8_t};
-use super::super::avutil::*;
+use super::super::avutil::{AVPixelFormat, AVRational};
 
 pub const DV_PROFILE_BYTES: c_int = 6 * 80;
 
