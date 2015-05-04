@@ -9,3 +9,6 @@ pub use avutil::*;
 
 mod avcodec;
 pub use avcodec::*;
+
+mod avformat;
+pub use avformat::*;
