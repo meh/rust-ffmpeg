@@ -1,6 +1,6 @@
 use libc::{c_void, c_int, c_uint, uint8_t};
 
-#[derive(Eq, PartialEq, Debug)]
+#[derive(Eq, PartialEq, Copy, Clone, Debug)]
 #[repr(C)]
 pub enum AVHMACType {
 	AV_HMAC_MD5,

@@ -1,6 +1,6 @@
 use libc::{c_char, c_int, uint8_t};
 
-#[derive(Eq, PartialEq, Debug)]
+#[derive(Eq, PartialEq, Copy, Clone, Debug)]
 #[repr(C)]
 pub enum AVSampleFormat {
 	AV_SAMPLE_FMT_NONE = -1,

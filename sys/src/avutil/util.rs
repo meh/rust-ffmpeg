@@ -5,7 +5,7 @@ pub const AV_NOPTS_VALUE: int64_t    = 0x8000000000000000u64 as int64_t;
 pub const AV_TIME_BASE:   int64_t    = 1000000;
 pub const AV_TIME_BASE_Q: AVRational = AVRational { num: 1, den: AV_TIME_BASE as c_int };
 
-#[derive(Eq, PartialEq, Debug)]
+#[derive(Eq, PartialEq, Copy, Clone, Debug)]
 #[repr(C)]
 pub enum AVMediaType {
 	AVMEDIA_TYPE_UNKNOWN = -1,
@@ -17,7 +17,7 @@ pub enum AVMediaType {
 	AVMEDIA_TYPE_NB
 }
 
-#[derive(Eq, PartialEq, Debug)]
+#[derive(Eq, PartialEq, Copy, Clone, Debug)]
 #[repr(C)]
 pub enum AVPictureType {
 	AV_PICTURE_TYPE_NONE = 0,

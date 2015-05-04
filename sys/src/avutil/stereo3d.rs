@@ -1,7 +1,7 @@
 use libc::{c_int};
 use super::frame::AVFrame;
 
-#[derive(Eq, PartialEq, Debug)]
+#[derive(Eq, PartialEq, Copy, Clone, Debug)]
 #[repr(C)]
 pub enum AVStereo3DType {
 	AV_STEREO3D_2D,

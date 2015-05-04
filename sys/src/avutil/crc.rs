@@ -2,7 +2,7 @@ use libc::{c_int, uint8_t, uint32_t, size_t};
 
 pub type AVCRC = uint32_t;
 
-#[derive(Eq, PartialEq, Debug)]
+#[derive(Eq, PartialEq, Copy, Clone, Debug)]
 #[repr(C)]
 pub enum AVCRCId {
 	AV_CRC_8_ATM,

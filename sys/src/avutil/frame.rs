@@ -7,7 +7,7 @@ use super::util::AVPictureType;
 
 pub const AV_NUM_DATA_POINTERS: usize = 8;
 
-#[derive(Eq, PartialEq, Debug)]
+#[derive(Eq, PartialEq, Copy, Clone, Debug)]
 #[repr(C)]
 pub enum AVFrameSideDataType {
 	AV_FRAME_DATA_PANSCAN,
