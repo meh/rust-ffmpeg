@@ -1,6 +1,6 @@
 use libc::{c_int, int64_t, c_double};
 
-#[derive(Debug)]
+#[derive(Eq, PartialEq, Copy, Clone, Debug)]
 #[repr(C)]
 pub struct AVRational {
 	pub num: c_int,
