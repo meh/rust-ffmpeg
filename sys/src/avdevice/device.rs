@@ -12,7 +12,7 @@ pub struct AVDeviceRect {
 	pub height: c_int,
 }
 
-#[derive(Eq, PartialEq, Debug)]
+#[derive(Eq, PartialEq, Copy, Clone, Debug)]
 #[repr(C)]
 pub enum AVAppToDevMessageType {
 	AV_APP_TO_DEV_NONE           = MKBETAG!(b'N', b'O', b'N', b'E'),
@@ -29,7 +29,7 @@ pub enum AVAppToDevMessageType {
 	AV_APP_TO_DEV_GET_MUTE       = MKBETAG!(b'G', b'M', b'U', b'T'),
 }
 
-#[derive(Eq, PartialEq, Debug)]
+#[derive(Eq, PartialEq, Copy, Clone, Debug)]
 #[repr(C)]
 pub enum AVDevToAppMessageType {
 	AV_DEV_TO_APP_NONE                  = MKBETAG!(b'N', b'O', b'N', b'E'),
