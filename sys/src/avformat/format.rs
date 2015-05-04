@@ -113,7 +113,7 @@ pub struct AVInputFormat {
 	pub free_device_capabilities: extern fn(ctx: *mut AVFormatContext, caps: *mut c_void) -> c_int,
 }
 
-#[derive(Eq, PartialEq, Debug)]
+#[derive(Eq, PartialEq, Copy, Clone, Debug)]
 #[repr(C)]
 pub enum AVStreamParseType {
 	AVSTREAM_PARSE_NONE,
@@ -282,7 +282,7 @@ pub struct AVChapter {
 
 pub type av_format_control_message = extern fn(s: *mut AVFormatContext, kind: c_int, data: *mut c_void, data_size: size_t) -> c_int;
 
-#[derive(Eq, PartialEq, Debug)]
+#[derive(Eq, PartialEq, Copy, Clone, Debug)]
 #[repr(C)]
 pub enum AVDurationEstimationMethod {
 	AVFMT_DURATION_FROM_PTS,
