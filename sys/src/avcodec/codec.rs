@@ -1393,7 +1393,7 @@ extern {
 	pub fn av_parser_close(s: *mut AVCodecParserContext);
 
 	pub fn avcodec_find_encoder(id: AVCodecID) -> *mut AVCodec;
-	pub fn avcodec_find_encode_by_name(name: *const c_char) -> *mut AVCodec;
+	pub fn avcodec_find_encoder_by_name(name: *const c_char) -> *mut AVCodec;
 	pub fn avcodec_encode_audio2(avctx: *mut AVCodecContext, avpkt: *mut AVPacket, frame: *const AVFrame, got_packet_ptr: *mut c_int) -> c_int;
 	pub fn avcodec_encode_video2(avctx: *mut AVCodecContext, avpkt: *mut AVPacket, frame: *const AVFrame, got_packet_ptr: *mut c_int) -> c_int;
 	pub fn avcodec_encode_subtitle(avctx: *mut AVCodecContext, buf: *mut uint8_t, buf_size: c_int, sub: *const AVSubtitle) -> c_int;
