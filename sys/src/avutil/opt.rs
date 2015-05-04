@@ -21,7 +21,7 @@ pub const AV_OPT_MULTI_COMPONENT_RANGE:     c_int = 0x1000;
 pub const AV_OPT_SERIALIZE_SKIP_DEFAULTS:   c_int = 0x00000001;
 pub const AV_OPT_SERIALIZE_OPT_FLAGS_EXACT: c_int = 0x00000002;
 
-#[derive(Eq, PartialEq, Debug)]
+#[derive(Eq, PartialEq, Copy, Clone, Debug)]
 #[repr(C)]
 pub enum AVOptionType {
 	AV_OPT_TYPE_FLAGS,

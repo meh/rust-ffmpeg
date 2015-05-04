@@ -1,7 +1,7 @@
 use libc::{c_double};
 use super::frame::AVFrame;
 
-#[derive(Eq, PartialEq, Debug)]
+#[derive(Eq, PartialEq, Copy, Clone, Debug)]
 #[repr(C)]
 pub enum AVDownmixType {
 	AV_DOWNMIX_TYPE_UNKNOWN,

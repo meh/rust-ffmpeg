@@ -57,7 +57,7 @@ pub const AV_CH_LAYOUT_7POINT1_WIDE_BACK: c_ulonglong = AV_CH_LAYOUT_5POINT1_BAC
 pub const AV_CH_LAYOUT_OCTAGONAL:         c_ulonglong = AV_CH_LAYOUT_5POINT0 | AV_CH_BACK_LEFT | AV_CH_BACK_CENTER | AV_CH_BACK_RIGHT;
 pub const AV_CH_LAYOUT_STEREO_DOWNMIX:    c_ulonglong = AV_CH_STEREO_LEFT | AV_CH_STEREO_RIGHT;
 
-#[derive(Eq, PartialEq, Debug)]
+#[derive(Eq, PartialEq, Copy, Clone, Debug)]
 #[repr(C)]
 pub enum AVMatrixEncoding {
 	AV_MATRIX_ENCODING_NONE,

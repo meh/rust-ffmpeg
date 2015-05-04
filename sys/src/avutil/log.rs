@@ -1,7 +1,7 @@
 use libc::{c_void, c_char, c_int};
 use super::opt::{AVOption, AVOptionRanges};
 
-#[derive(Eq, PartialEq, Debug)]
+#[derive(Eq, PartialEq, Copy, Clone, Debug)]
 #[repr(C)]
 pub enum AVClassCategory {
 	AV_CLASS_CATEGORY_NA = 0,

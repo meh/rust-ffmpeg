@@ -1,6 +1,7 @@
 use libc::{c_int, int64_t, uint64_t};
 use super::rational::AVRational;
 
+#[derive(Eq, PartialEq, Copy, Clone, Debug)]
 #[repr(C)]
 pub enum AVRounding {
 	AV_ROUND_ZERO        = 0,

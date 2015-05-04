@@ -3,7 +3,7 @@ use libc::{c_int};
 pub const AVPALETTE_SIZE:  c_int = 1024;
 pub const AVPALETTE_COUNT: c_int = 256;
 
-#[derive(Eq, PartialEq, Debug)]
+#[derive(Eq, PartialEq, Copy, Clone, Debug)]
 #[repr(C)]
 pub enum AVPixelFormat {
     AV_PIX_FMT_NONE = -1,
@@ -388,7 +388,7 @@ pub const PIX_FMT_GBRP12: AVPixelFormat = default::AV_PIX_FMT_GBRP12;
 pub const PIX_FMT_GBRP14: AVPixelFormat = default::AV_PIX_FMT_GBRP14;
 pub const PIX_FMT_GBRP16: AVPixelFormat = default::AV_PIX_FMT_GBRP16;
 
-#[derive(Eq, PartialEq, Debug)]
+#[derive(Eq, PartialEq, Copy, Clone, Debug)]
 #[repr(C)]
 pub enum AVColorPrimaries {
 	AVCOL_PRI_RESERVED0   = 0,
@@ -405,7 +405,7 @@ pub enum AVColorPrimaries {
 	AVCOL_PRI_NB,
 }
 
-#[derive(Eq, PartialEq, Debug)]
+#[derive(Eq, PartialEq, Copy, Clone, Debug)]
 #[repr(C)]
 pub enum AVColorTransferCharacteristic {
 	AVCOL_TRC_RESERVED0    = 0,
@@ -427,7 +427,7 @@ pub enum AVColorTransferCharacteristic {
 	AVCOL_TRC_NB,
 }
 
-#[derive(Eq, PartialEq, Debug)]
+#[derive(Eq, PartialEq, Copy, Clone, Debug)]
 #[repr(C)]
 pub enum AVColorSpace {
 	AVCOL_SPC_RGB         = 0,
@@ -446,7 +446,7 @@ pub enum AVColorSpace {
 
 pub const AVCOL_SPC_YCGCO: AVColorSpace = AVColorSpace::AVCOL_SPC_YCOCG;
 
-#[derive(Eq, PartialEq, Debug)]
+#[derive(Eq, PartialEq, Copy, Clone, Debug)]
 #[repr(C)]
 pub enum AVColorRange {
 	AVCOL_RANGE_UNSPECIFIED = 0,
@@ -455,7 +455,7 @@ pub enum AVColorRange {
 	AVCOL_RANGE_NB,
 }
 
-#[derive(Eq, PartialEq, Debug)]
+#[derive(Eq, PartialEq, Copy, Clone, Debug)]
 #[repr(C)]
 pub enum AVChromaLocation {
 	AVCHROMA_LOC_UNSPECIFIED = 0,

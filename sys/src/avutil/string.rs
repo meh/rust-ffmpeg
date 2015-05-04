@@ -1,6 +1,6 @@
 use libc::{c_char, c_int, c_uint, uint8_t, int32_t, size_t, c_double};
 
-#[derive(Eq, PartialEq, Debug)]
+#[derive(Eq, PartialEq, Copy, Clone, Debug)]
 #[repr(C)]
 pub enum AVEscapeMode {
 	AV_ESCAPE_MODE_AUTO,
