@@ -3,7 +3,7 @@ use super::io::{AVIOContext, AVIOInterruptCB};
 use super::super::avutil::{AVClass, AVRational, AVDictionary, AVFrame, AVMediaType};
 use super::super::avcodec::{AVCodec, AVCodecID, AVCodecContext, AVPacket, AVPacketSideData, AVCodecParserContext, AVDiscard};
 
-#[derive(Debug)]
+#[derive(Eq, PartialEq, Copy, Clone, Debug)]
 #[repr(C)]
 pub struct AVFrac {
 	pub val: int64_t,
@@ -193,7 +193,7 @@ pub struct AVStream {
 	pub id: c_int,
 	pub codec: *mut AVCodecContext,
 	pub priv_data: *mut c_void,
-	pub pts: *mut AVFrac, // figure out how to handle optional compilation things
+	pub pts: AVFrac, // XXX: #if FF_API_LAVF_FRAC
 	pub time_base: AVRational,
 	pub start_time: int64_t,
 	pub duration: int64_t,
