@@ -11,7 +11,7 @@ pub struct FFTComplex {
 
 pub type FFTContext = c_void;
 
-#[derive(Eq, PartialEq, Debug)]
+#[derive(Eq, PartialEq, Copy, Clone, Debug)]
 #[repr(C)]
 pub enum RDFTransformType {
 	DFT_R2C,
@@ -22,7 +22,7 @@ pub enum RDFTransformType {
 
 pub type RDFTContext = c_void;
 
-#[derive(Eq, PartialEq, Debug)]
+#[derive(Eq, PartialEq, Copy, Clone, Debug)]
 #[repr(C)]
 pub enum DCTTransformType {
 	DCT_II = 0,

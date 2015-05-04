@@ -1,7 +1,7 @@
 use libc::{c_void, c_char, c_uchar, c_int, c_uint, c_float, uint8_t, int16_t, uint16_t, uint32_t, int64_t, uint64_t, size_t};
 use avutil::*;
 
-#[derive(Eq, PartialEq, Debug)]
+#[derive(Eq, PartialEq, Copy, Clone, Debug)]
 #[repr(C)]
 pub enum AVCodecID {
 	AV_CODEC_ID_NONE,
@@ -463,7 +463,7 @@ pub const AV_CODEC_PROP_TEXT_SUB:   c_int = 1 << 17;
 pub const FF_INPUT_BUFFER_PADDING_SIZE: c_int = 32;
 pub const FF_MIN_BUFFER_SIZE:           c_int = 16384;
 
-#[derive(Eq, PartialEq, Debug)]
+#[derive(Eq, PartialEq, Copy, Clone, Debug)]
 #[repr(C)]
 pub enum Motion_Est_ID {
 	ME_ZERO = 1,
@@ -478,7 +478,7 @@ pub enum Motion_Est_ID {
 	ME_ITER = 50,
 }
 
-#[derive(Eq, PartialEq, Debug)]
+#[derive(Eq, PartialEq, Copy, Clone, Debug)]
 #[repr(C)]
 pub enum AVDiscard{
 	AVDISCARD_NONE     = -16,
@@ -490,7 +490,7 @@ pub enum AVDiscard{
 	AVDISCARD_ALL      = 48,
 }
 
-#[derive(Eq, PartialEq, Debug)]
+#[derive(Eq, PartialEq, Copy, Clone, Debug)]
 #[repr(C)]
 pub enum AVAudioServiceType {
 	AV_AUDIO_SERVICE_TYPE_MAIN              = 0,
@@ -615,7 +615,7 @@ pub const FF_BUFFER_HINTS_REUSABLE: c_int = 0x08;
 
 pub const AV_GET_BUFFER_FLAG_REF: c_int = 1 << 0;
 
-#[derive(Eq, PartialEq, Debug)]
+#[derive(Eq, PartialEq, Copy, Clone, Debug)]
 #[repr(C)]
 pub enum AVPacketSideDataType {
 	AV_PKT_DATA_PALETTE,
@@ -671,7 +671,7 @@ pub const AV_SIDE_DATA_PARAM_CHANGE_DIMENSIONS:     c_int = 0x0008;
 
 pub type AVCodecInternal = c_void;
 
-#[derive(Eq, PartialEq, Debug)]
+#[derive(Eq, PartialEq, Copy, Clone, Debug)]
 #[repr(C)]
 pub enum AVFieldOrder {
 	AV_FIELD_UNKNOWN,
@@ -1144,7 +1144,7 @@ pub struct AVPicture {
 	pub linesize: [c_int; AV_NUM_DATA_POINTERS],
 }
 
-#[derive(Eq, PartialEq, Debug)]
+#[derive(Eq, PartialEq, Copy, Clone, Debug)]
 #[repr(C)]
 pub enum AVSubtitleType {
 	SUBTITLE_NONE,
@@ -1181,7 +1181,7 @@ pub struct AVSubtitle {
 	pub pts: int64_t,
 }
 
-#[derive(Eq, PartialEq, Debug)]
+#[derive(Eq, PartialEq, Copy, Clone, Debug)]
 #[repr(C)]
 pub enum AVPictureStructure {
 	AV_PICTURE_STRUCTURE_UNKNOWN,
@@ -1268,7 +1268,7 @@ pub struct AVBitStreamFilter {
 	pub next: *mut AVBitStreamFilter,
 }
 
-#[derive(Eq, PartialEq, Debug)]
+#[derive(Eq, PartialEq, Copy, Clone, Debug)]
 #[repr(C)]
 pub enum AVLockOp {
 	AV_LOCK_CREATE,
