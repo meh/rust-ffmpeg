@@ -647,18 +647,18 @@ pub struct AVPacketSideData {
 #[derive(Debug)]
 #[repr(C)]
 pub struct AVPacket {
-	buf: *mut AVBufferRef,
-	pts: int64_t,
-	dts: int64_t,
-	data: *mut uint8_t,
-	size: c_int,
-	stream_index: c_int,
-	flags: c_int,
-	side_data: *mut AVPacketSideData,
-	side_data_elems: c_int,
-	duration: c_int,
-	pos: int64_t,
-	convergence_duration: int64_t,
+	pub buf: *mut AVBufferRef,
+	pub pts: int64_t,
+	pub dts: int64_t,
+	pub data: *mut uint8_t,
+	pub size: c_int,
+	pub stream_index: c_int,
+	pub flags: c_int,
+	pub side_data: *mut AVPacketSideData,
+	pub side_data_elems: c_int,
+	pub duration: c_int,
+	pub pos: int64_t,
+	pub convergence_duration: int64_t,
 }
 
 pub const AV_PKT_FLAG_KEY:     c_int = 0x0001;
