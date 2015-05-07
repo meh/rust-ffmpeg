@@ -644,7 +644,6 @@ pub struct AVPacketSideData {
 	pub kind: AVPacketSideDataType,
 }
 
-#[derive(Debug)]
 #[repr(C)]
 pub struct AVPacket {
 	pub buf: *mut AVBufferRef,
@@ -657,6 +656,8 @@ pub struct AVPacket {
 	pub side_data: *mut AVPacketSideData,
 	pub side_data_elems: c_int,
 	pub duration: c_int,
+	pub destruct: extern fn(*mut AVPacket), // XXX: #if FF_API_DESTRUCT_PACKET
+	pub _priv: *mut c_void, // XXX: #if FF_API_DESTRUCT_PACKET
 	pub pos: int64_t,
 	pub convergence_duration: int64_t,
 }
