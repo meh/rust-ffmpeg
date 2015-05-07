@@ -78,7 +78,7 @@ pub struct AVDeviceInfoList {
 	pub default_device: c_int,
 }
 
-#[link(name = "avformat")]
+#[link(name = "avdevice")]
 extern {
 	pub static av_device_capabilities: *const AVOption;
 
