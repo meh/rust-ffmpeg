@@ -417,7 +417,6 @@ pub const AVFMT_AVOID_NEG_TS_AUTO:              c_int = -1;
 pub const AVFMT_AVOID_NEG_TS_MAKE_NON_NEGATIVE: c_int = 1;
 pub const AVFMT_AVOID_NEG_TS_MAKE_ZERO:         c_int = 2;
 
-#[derive(Debug)]
 #[repr(C)]
 pub struct AVPacketList {
 	pub pkt: AVPacket,
