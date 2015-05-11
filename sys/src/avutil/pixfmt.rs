@@ -330,52 +330,7 @@ pub mod default {
 
 	pub const AV_PIX_FMT_XYZ12: AVPixelFormat = AV_PIX_FMT_XYZ12BE;
 	pub const AV_PIX_FMT_NV20:  AVPixelFormat = AV_PIX_FMT_NV20BE;
-
 }
-
-pub type PixelFormat = AVPixelFormat;
-
-pub const PIX_FMT_Y400A:  AVPixelFormat = AV_PIX_FMT_Y400A;
-pub const PIX_FMT_GBR24P: AVPixelFormat = AV_PIX_FMT_GBR24P;
-
-pub const PIX_FMT_RGB32:   AVPixelFormat = default::AV_PIX_FMT_RGB32;
-pub const PIX_FMT_RGB32_1: AVPixelFormat = default::AV_PIX_FMT_RGB32_1;
-pub const PIX_FMT_BGR32:   AVPixelFormat = default::AV_PIX_FMT_BGR32;
-pub const PIX_FMT_BGR32_1: AVPixelFormat = default::AV_PIX_FMT_BGR32_1;
-pub const PIX_FMT_0RGB32:  AVPixelFormat = default::AV_PIX_FMT_0RGB32;
-pub const PIX_FMT_0BGR32:  AVPixelFormat = default::AV_PIX_FMT_0BGR32;
-
-pub const PIX_FMT_GRAY16: AVPixelFormat = default::AV_PIX_FMT_GRAY16;
-pub const PIX_FMT_RGB48:  AVPixelFormat = default::AV_PIX_FMT_RGB48;
-pub const PIX_FMT_RGB565: AVPixelFormat = default::AV_PIX_FMT_RGB565;
-pub const PIX_FMT_RGB555: AVPixelFormat = default::AV_PIX_FMT_RGB555;
-pub const PIX_FMT_RGB444: AVPixelFormat = default::AV_PIX_FMT_RGB444;
-pub const PIX_FMT_BGR48:  AVPixelFormat = default::AV_PIX_FMT_BGR48;
-pub const PIX_FMT_BGR565: AVPixelFormat = default::AV_PIX_FMT_BGR565;
-pub const PIX_FMT_BGR555: AVPixelFormat = default::AV_PIX_FMT_BGR555;
-pub const PIX_FMT_BGR444: AVPixelFormat = default::AV_PIX_FMT_BGR444;
-
-pub const PIX_FMT_YUV420P9:  AVPixelFormat = default::AV_PIX_FMT_YUV420P9;
-pub const PIX_FMT_YUV422P9:  AVPixelFormat = default::AV_PIX_FMT_YUV422P9;
-pub const PIX_FMT_YUV444P9:  AVPixelFormat = default::AV_PIX_FMT_YUV444P9;
-pub const PIX_FMT_YUV420P10: AVPixelFormat = default::AV_PIX_FMT_YUV420P10;
-pub const PIX_FMT_YUV422P10: AVPixelFormat = default::AV_PIX_FMT_YUV422P10;
-pub const PIX_FMT_YUV444P10: AVPixelFormat = default::AV_PIX_FMT_YUV444P10;
-pub const PIX_FMT_YUV420P12: AVPixelFormat = default::AV_PIX_FMT_YUV420P12;
-pub const PIX_FMT_YUV422P12: AVPixelFormat = default::AV_PIX_FMT_YUV422P12;
-pub const PIX_FMT_YUV444P12: AVPixelFormat = default::AV_PIX_FMT_YUV444P12;
-pub const PIX_FMT_YUV420P14: AVPixelFormat = default::AV_PIX_FMT_YUV420P14;
-pub const PIX_FMT_YUV422P14: AVPixelFormat = default::AV_PIX_FMT_YUV422P14;
-pub const PIX_FMT_YUV444P14: AVPixelFormat = default::AV_PIX_FMT_YUV444P14;
-pub const PIX_FMT_YUV420P16: AVPixelFormat = default::AV_PIX_FMT_YUV420P16;
-pub const PIX_FMT_YUV422P16: AVPixelFormat = default::AV_PIX_FMT_YUV422P16;
-pub const PIX_FMT_YUV444P16: AVPixelFormat = default::AV_PIX_FMT_YUV444P16;
-
-pub const PIX_FMT_GBRP9:  AVPixelFormat = default::AV_PIX_FMT_GBRP9;
-pub const PIX_FMT_GBRP10: AVPixelFormat = default::AV_PIX_FMT_GBRP10;
-pub const PIX_FMT_GBRP12: AVPixelFormat = default::AV_PIX_FMT_GBRP12;
-pub const PIX_FMT_GBRP14: AVPixelFormat = default::AV_PIX_FMT_GBRP14;
-pub const PIX_FMT_GBRP16: AVPixelFormat = default::AV_PIX_FMT_GBRP16;
 
 #[derive(Eq, PartialEq, Copy, Clone, Debug)]
 #[repr(C)]
