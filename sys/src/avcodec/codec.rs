@@ -1384,7 +1384,7 @@ extern {
 
 	pub fn avcodec_decode_audio4(avctx: *mut AVCodecContext, frame: *mut AVFrame, got_frame_ptr: *mut c_int, avpkt: *const AVPacket) -> c_int;
 	pub fn avcodec_decode_video2(avctx: *mut AVCodecContext, picture: *mut AVFrame, got_picture_ptr: *mut c_int, avpkt: *const AVPacket) -> c_int;
-	pub fn avcodec_decode_subtitle2(avctx: *mut AVCodecContext, sub: *mut AVSubtitle, got_sub_ptr: *mut c_int, avpkt: *mut AVPacket) -> c_int;
+	pub fn avcodec_decode_subtitle2(avctx: *mut AVCodecContext, sub: *mut AVSubtitle, got_sub_ptr: *mut c_int, avpkt: *const AVPacket) -> c_int;
 
 	pub fn av_parser_next(c: *const AVCodecParser) -> *mut AVCodecParser;
 	pub fn av_register_codec_parser(parser: *mut AVCodecParser);
