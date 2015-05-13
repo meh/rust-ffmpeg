@@ -5,6 +5,11 @@ pub const AV_NOPTS_VALUE: int64_t    = 0x8000000000000000u64 as int64_t;
 pub const AV_TIME_BASE:   int64_t    = 1000000;
 pub const AV_TIME_BASE_Q: AVRational = AVRational { num: 1, den: AV_TIME_BASE as c_int };
 
+pub const FF_LAMBDA_SHIFT: c_int = 7;
+pub const FF_LAMBDA_SCALE: c_int = 1 << FF_LAMBDA_SHIFT;
+pub const FF_QP2LAMBDA:    c_int = 118;
+pub const FF_LAMBDA_MAX:   c_int = 256 * 128 - 1;
+
 #[derive(Eq, PartialEq, Copy, Clone, Debug)]
 #[repr(C)]
 pub enum AVMediaType {
