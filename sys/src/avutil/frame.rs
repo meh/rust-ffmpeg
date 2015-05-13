@@ -7,6 +7,8 @@ use super::util::AVPictureType;
 
 pub const AV_NUM_DATA_POINTERS: usize = 8;
 
+pub const AV_FRAME_FLAG_CORRUPT: c_int = 1 << 0;
+
 #[derive(Eq, PartialEq, Copy, Clone, Debug)]
 #[repr(C)]
 pub enum AVFrameSideDataType {
