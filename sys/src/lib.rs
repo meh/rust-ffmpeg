@@ -15,3 +15,6 @@ pub use avdevice::*;
 
 mod avformat;
 pub use avformat::*;
+
+mod swscale;
+pub use swscale::*;
