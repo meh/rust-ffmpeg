@@ -122,6 +122,7 @@ pub use self::pixfmt::AVColorPrimaries::*;
 pub use self::pixfmt::AVColorTransferCharacteristic::*;
 pub use self::pixfmt::AVColorSpace::*;
 pub use self::pixfmt::AVColorRange::*;
+pub use self::pixfmt::AVChromaLocation::*;
 
 mod random_seed;
 pub use self::random_seed::*;
