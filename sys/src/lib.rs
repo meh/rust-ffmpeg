@@ -18,3 +18,6 @@ pub use avformat::*;
 
 mod swscale;
 pub use swscale::*;
+
+mod postproc;
+pub use postproc::*;
