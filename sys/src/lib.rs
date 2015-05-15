@@ -22,6 +22,11 @@ mod avformat;
 #[cfg(feature = "avformat")]
 pub use avformat::*;
 
+#[cfg(feature = "avfilter")]
+mod avfilter;
+#[cfg(feature = "avfilter")]
+pub use avfilter::*;
+
 #[cfg(feature = "swscale")]
 mod swscale;
 #[cfg(feature = "swscale")]
