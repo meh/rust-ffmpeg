@@ -32,12 +32,17 @@ mod avresample;
 #[cfg(feature = "avresample")]
 pub use avresample::*;
 
-#[cfg(feature = "swscale")]
-mod swscale;
-#[cfg(feature = "swscale")]
-pub use swscale::*;
-
 #[cfg(feature = "postproc")]
 mod postproc;
 #[cfg(feature = "postproc")]
 pub use postproc::*;
+
+#[cfg(feature = "swresample")]
+mod swresample;
+#[cfg(feature = "swresample")]
+pub use swresample::*;
+
+#[cfg(feature = "swscale")]
+mod swscale;
+#[cfg(feature = "swscale")]
+pub use swscale::*;
