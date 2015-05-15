@@ -27,6 +27,11 @@ mod avfilter;
 #[cfg(feature = "avfilter")]
 pub use avfilter::*;
 
+#[cfg(feature = "avresample")]
+mod avresample;
+#[cfg(feature = "avresample")]
+pub use avresample::*;
+
 #[cfg(feature = "swscale")]
 mod swscale;
 #[cfg(feature = "swscale")]
