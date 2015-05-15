@@ -9,11 +9,12 @@ description = "FFI bindings to FFmpeg"
 repository  = "https://github.com/meh/rust-ffmpeg-sys"
 
 [features]
-default  = ["avcodec", "avdevice", "avfilter", "avformat", "postproc", "swscale"]
+default  = ["avcodec", "avdevice", "avfilter", "avformat", "avresample", "postproc", "swscale"]
 
-avcodec  = []
-avdevice = ["avformat"]
-avfilter = []
-avformat = ["avcodec"]
-postproc = []
-swscale  = []
+avcodec    = []
+avdevice   = ["avformat"]
+avfilter   = []
+avformat   = ["avcodec"]
+avresample = []
+postproc   = []
+swscale    = []
