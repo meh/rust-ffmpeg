@@ -44,17 +44,17 @@ pub const SWS_CS_DEFAULT:   c_int = 5;
 #[derive(Debug)]
 #[repr(C)]
 pub struct SwsVector {
-	coeff: *mut c_double,
-	length: c_int,
+	pub coeff: *mut c_double,
+	pub length: c_int,
 }
 
 #[derive(Debug)]
 #[repr(C)]
 pub struct SwsFilter {
-	lumH: *mut SwsVector,
-	lumV: *mut SwsVector,
-	chrH: *mut SwsVector,
-	chrV: *mut SwsVector,
+	pub lumH: *mut SwsVector,
+	pub lumV: *mut SwsVector,
+	pub chrH: *mut SwsVector,
+	pub chrV: *mut SwsVector,
 }
 
 pub type SwsContext = c_void;
