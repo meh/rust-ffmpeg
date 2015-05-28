@@ -76,7 +76,7 @@ extern {
 	pub fn sws_freeContext(sws_context: *mut SwsContext);
 	pub fn sws_getContext(srcW: c_int, srcH: c_int, srcFormat: AVPixelFormat, dstW: c_int, dstH: c_int, dstFormat: AVPixelFormat, flags: c_int, srcFilter: *mut SwsFilter, dstFilter: *mut SwsFilter, param: *const c_double) -> *mut SwsContext;
 
-	pub fn sws_scale(c: *mut SwsContext, srcSlice: *const *const uint8_t, srcStride: *const c_int, srcSliceY: c_int, srcSliceH: c_int, dst: *mut *mut uint8_t, dstStride: *mut *mut c_int) -> c_int;
+	pub fn sws_scale(c: *mut SwsContext, srcSlice: *const *const uint8_t, srcStride: *const c_int, srcSliceY: c_int, srcSliceH: c_int, dst: *mut *mut uint8_t, dstStride: *mut c_int) -> c_int;
 
 	pub fn sws_setColorspaceDetails(c: *mut SwsContext, inv_table: *const *const c_int, srcRange: c_int, table: *const *const c_int, dstRange: c_int, brightness: c_int, contrast: c_int, saturation: c_int) -> c_int;
 	pub fn sws_getColorspaceDetails(c: *mut SwsContext, inv_table: *mut *mut c_int, srcRange: *mut c_int, table: *mut *mut c_int, dstRange: *mut c_int, brightness: *mut c_int, contrast: *mut c_int, saturation: *mut c_int) -> c_int;
