@@ -8,12 +8,12 @@ pub struct AVRational {
 }
 
 #[inline(always)]
-pub fn av_make_q(num: c_int, den: c_int) -> AVRational {
+pub unsafe fn av_make_q(num: c_int, den: c_int) -> AVRational {
 	AVRational { num: num, den: den }
 }
 
 #[inline(always)]
-pub fn av_cmp_q(a: AVRational, b: AVRational) -> c_int {
+pub unsafe fn av_cmp_q(a: AVRational, b: AVRational) -> c_int {
 	let tmp: int64_t = a.num as int64_t * b.den as int64_t - b.num as int64_t * a.den as int64_t;
 
 	if tmp != 0 {
@@ -31,12 +31,12 @@ pub fn av_cmp_q(a: AVRational, b: AVRational) -> c_int {
 }
 
 #[inline(always)]
-pub fn av_q2d(a: AVRational) -> c_double {
+pub unsafe fn av_q2d(a: AVRational) -> c_double {
 	a.num as c_double / a.den as c_double
 }
 
 #[inline(always)]
-pub fn av_inv_q(q: AVRational) -> AVRational {
+pub unsafe fn av_inv_q(q: AVRational) -> AVRational {
 	AVRational { num: q.den, den: q.num }
 }
 
