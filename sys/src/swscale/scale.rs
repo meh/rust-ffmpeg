@@ -88,13 +88,13 @@ extern {
 
 	pub fn sws_scaleVec(a: *mut SwsVector, scalar: c_double);
 	pub fn sws_normalizeVec(a: *mut SwsVector, height: c_double);
-	pub fn sws_convVec(a: *mut SwsVector, b: *mut SwsVector);
-	pub fn sws_addVec(a: *mut SwsVector, b: *mut SwsVector);
-	pub fn sws_subVec(a: *mut SwsVector, b: *mut SwsVector);
+	pub fn sws_convVec(a: *mut SwsVector, b: *const SwsVector);
+	pub fn sws_addVec(a: *mut SwsVector, b: *const SwsVector);
+	pub fn sws_subVec(a: *mut SwsVector, b: *const SwsVector);
 	pub fn sws_shiftVec(a: *mut SwsVector, shift: c_int);
 
-	pub fn sws_cloneVec(a: *mut SwsVector) -> *mut SwsVector;
-	pub fn sws_printVec2(a: *mut SwsVector, log_ctx: *mut AVClass, log_level: c_int);
+	pub fn sws_cloneVec(a: *const SwsVector) -> *mut SwsVector;
+	pub fn sws_printVec2(a: *const SwsVector, log_ctx: *mut AVClass, log_level: c_int);
 	pub fn sws_freeVec(a: *mut SwsVector);
 
 	pub fn sws_getDefaultFilter(lumaGBlur: c_float, chromaGBlur: c_float, lumaSharpen: c_float, chromaSharpen: c_float, chromaHShift: c_float, chromaVShift: c_float, verbose: c_int) -> *mut SwsFilter;
