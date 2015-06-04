@@ -475,8 +475,8 @@ extern {
 	pub fn avformat_license() -> *const c_char;
 
 	pub fn av_register_all();
-	pub fn av_register_input_format(format: *mut AVInputFormat);
-	pub fn av_register_output_format(format: *mut AVOutputFormat);
+	pub fn av_register_input_format(format: *const AVInputFormat);
+	pub fn av_register_output_format(format: *const AVOutputFormat);
 
 	pub fn avformat_network_init() -> c_int;
 	pub fn avformat_network_deinit() -> c_int;
@@ -502,7 +502,7 @@ extern {
 	pub fn av_probe_input_buffer2(pb: *mut AVIOContext, fmt: *mut *mut AVInputFormat, filename: *const c_char, logctx: *mut c_void, offset: c_uint, max_probe_size: c_uint) -> c_int;
 	pub fn av_probe_input_buffer(pb: *mut AVIOContext, fmt: *mut *mut AVInputFormat, filename: *const c_char, logctx: *mut c_void, offset: c_uint, max_probe_size: c_uint) -> c_int;
 
-	pub fn avformat_open_input(ps: *mut *mut AVFormatContext, filename: *const c_char, fmt: *mut AVInputFormat, options: *mut *mut AVDictionary) -> c_int;
+	pub fn avformat_open_input(ps: *mut *mut AVFormatContext, filename: *const c_char, fmt: *const AVInputFormat, options: *mut *mut AVDictionary) -> c_int;
 	pub fn avformat_find_stream_info(ic: *mut AVFormatContext, options: *mut *mut AVDictionary) -> c_int;
 	pub fn av_find_program_from_stream(ic: *mut AVFormatContext, last: *mut AVProgram, s: c_int) -> *mut AVProgram;
 	pub fn av_find_best_stream(ic: *mut AVFormatContext, kind: AVMediaType, wanetd_stream_nb: c_int, related_stream: c_int, decoder_ret: *mut *mut AVCodec, flags: c_int) -> c_int;
