@@ -49,7 +49,7 @@ pub enum AVDevToAppMessageType {
 #[repr(C)]
 pub struct AVDeviceCapabilitiesQuery {
 	pub av_class: *const AVClass,
-	pub device_context: *mut AVFormatContext,
+	pub device_context: *const AVFormatContext,
 	pub codec: AVCodecID,
 	pub sample_format: AVSampleFormat,
 	pub pixel_format: AVPixelFormat,
@@ -94,13 +94,13 @@ extern {
 	pub fn av_output_audio_device_next(d: *mut AVOutputFormat) -> *mut AVOutputFormat;
 	pub fn av_output_video_device_next(d: *mut AVOutputFormat) -> *mut AVOutputFormat;
 
-	pub fn avdevice_app_to_dev_control_message(s: *mut AVFormatContext, kind: AVAppToDevMessageType, data: *mut c_void, data_size: size_t) -> c_int;
-	pub fn avdevice_dev_to_app_control_message(s: *mut AVFormatContext, kind: AVDevToAppMessageType, data: *mut c_void, data_size: size_t) -> c_int;
+	pub fn avdevice_app_to_dev_control_message(s: *const AVFormatContext, kind: AVAppToDevMessageType, data: *mut c_void, data_size: size_t) -> c_int;
+	pub fn avdevice_dev_to_app_control_message(s: *const AVFormatContext, kind: AVDevToAppMessageType, data: *mut c_void, data_size: size_t) -> c_int;
 
-	pub fn avdevice_capabilities_create(caps: *mut *mut AVDeviceCapabilitiesQuery, s: *mut AVFormatContext, device_options: *mut *mut AVDictionary) -> c_int;
-	pub fn avdevice_capabilities_free(caps: *mut *mut AVDeviceCapabilitiesQuery, s: *mut AVFormatContext);
+	pub fn avdevice_capabilities_create(caps: *mut *mut AVDeviceCapabilitiesQuery, s: *const AVFormatContext, device_options: *mut *mut AVDictionary) -> c_int;
+	pub fn avdevice_capabilities_free(caps: *mut *mut AVDeviceCapabilitiesQuery, s: *const AVFormatContext);
 
-	pub fn avdevice_list_devices(s: *mut AVFormatContext, device_list: *mut *mut AVDeviceInfoList) -> c_int;
+	pub fn avdevice_list_devices(s: *const AVFormatContext, device_list: *mut *mut AVDeviceInfoList) -> c_int;
 	pub fn avdevice_free_list_devices(device_list: *mut *mut AVDeviceInfoList);
 	pub fn avdevice_list_input_sources(device: *mut AVInputFormat, device_name: *const c_char, device_options: *mut AVDictionary, device_list: *mut *mut AVDeviceInfoList) -> c_int;
 	pub fn avdevice_list_output_sinks(device: *mut AVOutputFormat, device_name: *const c_char, device_options: *mut AVDictionary, device_list: *mut *mut AVDeviceInfoList) -> c_int;
