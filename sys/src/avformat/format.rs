@@ -516,8 +516,8 @@ extern {
 	pub fn avformat_close_input(s: *mut *mut AVFormatContext);
 
 	pub fn avformat_write_header(s: *mut AVFormatContext, options: *mut *mut AVDictionary) -> c_int;
-	pub fn av_write_frame(s: *mut AVFormatContext, pkt: *mut AVPacket) -> c_int;
-	pub fn av_interleaved_write_frame(s: *mut AVFormatContext, pkt: *mut AVPacket) -> c_int;
+	pub fn av_write_frame(s: *mut AVFormatContext, pkt: *const AVPacket) -> c_int;
+	pub fn av_interleaved_write_frame(s: *mut AVFormatContext, pkt: *const AVPacket) -> c_int;
 	pub fn av_write_uncoded_frame(s: *mut AVFormatContext, stream_index: c_int, frame: *mut AVFrame) -> c_int;
 	pub fn av_interleaved_write_uncoded_frame(s: *mut AVFormatContext, stream_index: c_int, frame: *mut AVFrame) -> c_int;
 	pub fn av_write_uncoded_frame_query(s: *mut AVFormatContext, stream_index: c_int) -> c_int;
