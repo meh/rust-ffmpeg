@@ -1,4 +1,4 @@
-use libc::{c_void, c_char, c_int, c_uint, uint8_t, size_t, EINVAL};
+use libc::{c_void, c_char, c_int, c_uint, uint8_t, size_t};
 use std::mem;
 use std::ptr;
 use super::error::AVERROR;
@@ -23,19 +23,21 @@ pub unsafe fn av_mallocz_array(nmemb: size_t, size: size_t) -> *mut c_void {
 	}
 }
 
-#[inline(always)]
-pub unsafe fn av_size_mult(a: size_t, b: size_t, r: *mut size_t) -> c_int {
-	let t = a * b;
-
-	if (a | b) >= (1 << (mem::size_of::<size_t>() * 4)) && a != 0 && t / a != b {
-		AVERROR(EINVAL)
-	}
-	else {
-		*r = t;
-
-		0
-	}
-}
+//#[inline(always)]
+//pub unsafe fn av_size_mult(a: size_t, b: size_t, r: *mut size_t) -> c_int {
+//	use libc::EINVAL;
+//
+//	let t = a * b;
+//
+//	if (a | b) >= (1 << (mem::size_of::<size_t>() * 4)) && a != 0 && t / a != b {
+//		AVERROR(EINVAL)
+//	}
+//	else {
+//		*r = t;
+//
+//		0
+//	}
+//}
 
 #[link(name = "avutil")]
 extern {
