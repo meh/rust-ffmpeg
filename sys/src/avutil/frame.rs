@@ -32,6 +32,7 @@ pub struct AVFrameSideData {
 	pub data: *mut uint8_t,
 	pub size: c_int,
 	pub metadata: *mut AVDictionary,
+	pub buf: *mut AVBufferRef,
 }
 
 #[derive(Debug)]

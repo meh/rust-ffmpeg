@@ -230,6 +230,7 @@ pub struct AVStream {
 	pub request_probe: c_int,
 	pub skip_to_keyframe: c_int,
 	pub skip_samples: c_int,
+	pub start_skip_samples: int64_t,
 	pub first_discard_sample: int64_t,
 	pub last_discard_sample: int64_t,
 	pub nb_decoded_frames: c_int,
@@ -281,6 +282,7 @@ pub struct AVChapter {
 }
 
 pub type av_format_control_message = extern fn(s: *mut AVFormatContext, kind: c_int, data: *mut c_void, data_size: size_t) -> c_int;
+pub type AVOpenCallback = extern fn(*mut AVFormatContext, *mut *mut AVIOContext, *const c_char, c_int, *const AVIOInterruptCB, *mut *mut AVDictionary) -> c_int;
 
 #[derive(Eq, PartialEq, Copy, Clone, Debug)]
 #[repr(C)]
@@ -391,6 +393,8 @@ pub struct AVFormatContext {
 
 	pub dump_separator: *mut uint8_t,
 	pub data_codec_id: AVCodecID,
+
+	pub open_cb: extern fn(*mut AVFormatContext, *mut *mut AVIOContext, *const c_char, c_int, *const AVIOInterruptCB, *mut *mut AVDictionary) -> c_int,
 }
 
 pub const AVFMT_FLAG_GENPTS:          c_int = 0x0001;
@@ -408,6 +412,7 @@ pub const AVFMT_FLAG_MP4A_LATM:       c_int = 0x8000;
 pub const AVFMT_FLAG_SORT_DTS:        c_int = 0x10000;
 pub const AVFMT_FLAG_PRIV_OPT:        c_int = 0x20000;
 pub const AVFMT_FLAG_KEEP_SIDE_DATA:  c_int = 0x40000;
+pub const AVFMT_FLAG_FAST_SEEK:       c_int = 0x80000;
 
 pub const FF_FDEBUG_TS: c_int = 0x0001;
 
@@ -465,6 +470,9 @@ extern {
 
 	pub fn av_format_get_control_message_cb(s: *const AVFormatContext) -> av_format_control_message;
 	pub fn av_format_set_control_message_cb(s: *mut AVFormatContext, callback: av_format_control_message);
+
+	pub fn av_format_get_open_cb(s: *const AVFormatContext) -> AVOpenCallback;
+	pub fn av_format_set_open_cb(s: *mut AVFormatContext, callback: AVOpenCallback);
 
 	pub fn av_format_inject_global_side_data(s: *mut AVFormatContext);
 

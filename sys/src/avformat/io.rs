@@ -18,6 +18,45 @@ pub struct AVIOInterruptCB {
 	pub opaque: *mut c_void,
 }
 
+#[derive(Eq, PartialEq, Copy, Clone, Debug)]
+#[repr(C)]
+pub enum AVIODirEntryType {
+	AVIO_ENTRY_UNKNOWN,
+	AVIO_ENTRY_BLOCK_DEVICE,
+	AVIO_ENTRY_CHARACTER_DEVICE,
+	AVIO_ENTRY_DIRECTORY,
+	AVIO_ENTRY_NAMED_PIPE,
+	AVIO_ENTRY_SYMBOLIC_LINK,
+	AVIO_ENTRY_SOCKET,
+	AVIO_ENTRY_FILE,
+	AVIO_ENTRY_SERVER,
+	AVIO_ENTRY_SHARE,
+	AVIO_ENTRY_WORKGROUP,
+}
+
+#[repr(C)]
+pub struct AVIODirEntry {
+	name: *mut c_char,
+	kind: c_int,
+	utf8: c_int,
+
+	size: int64_t,
+	modification_timestamp: int64_t,
+
+	access_timestamp: int64_t,
+
+	status_change_timestamp: int64_t,
+
+	user_id: int64_t,
+	group_id: int64_t,
+	filemode: int64_t,
+}
+
+#[repr(C)]
+pub struct AVIODirContext {
+	url_context: *mut c_void,
+}
+
 #[repr(C)]
 pub struct AVIOContext {
 	pub av_class: *mut AVClass,
@@ -58,6 +97,10 @@ pub unsafe fn avio_tell(s: *mut AVIOContext) -> int64_t {
 extern {
 	pub fn avio_find_protocol_name(url: *const c_char) -> *const c_char;
 	pub fn avio_check(url: *const c_char, flags: c_int) -> c_int;
+	pub fn avio_open_dir(s: *mut *mut AVIODirContext, url: *const c_char, options: *mut *mut AVDictionary) -> c_int;
+	pub fn avio_read_dir(s: *mut AVIODirContext, next: *mut *mut AVIODirEntry) -> c_int;
+	pub fn avio_close_dir(s: *mut *mut AVIODirContext) -> c_int;
+	pub fn avio_free_directory_entry(entry: *mut *mut AVIODirEntry);
 	pub fn avio_alloc_context(buffer: *mut c_uchar, buffer_size: c_int, write_flag: c_int, opaque: *mut c_void, read_packet: extern fn(*mut c_void, *mut uint8_t, c_int) -> c_int, write_packet: extern fn(*mut c_void, *mut uint8_t, c_int) -> c_int, seek: extern fn(*mut c_void, int64_t, c_int) -> int64_t) -> *mut AVIOContext;
 
 	pub fn avio_write(s: *mut AVIOContext, buf: *const c_uchar, size: c_int);

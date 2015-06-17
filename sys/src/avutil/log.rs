@@ -66,6 +66,7 @@ pub const AV_LOG_WARNING:    c_int = 24;
 pub const AV_LOG_INFO:       c_int = 32;
 pub const AV_LOG_VERBOSE:    c_int = 40;
 pub const AV_LOG_DEBUG:      c_int = 48;
+pub const AV_LOG_TRACE:      c_int = 56;
 pub const AV_LOG_MAX_OFFSET: c_int = (AV_LOG_DEBUG - AV_LOG_QUIET);
 
 pub const AV_LOG_SKIP_REPEATED: c_int = 1;

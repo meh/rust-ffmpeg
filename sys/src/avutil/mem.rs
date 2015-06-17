@@ -1,7 +1,7 @@
 use libc::{c_void, c_char, c_int, c_uint, uint8_t, size_t};
-use std::mem;
 use std::ptr;
-use super::error::AVERROR;
+//use std::mem;
+//use super::error::AVERROR;
 
 #[inline(always)]
 pub unsafe fn av_malloc_array(nmemb: size_t, size: size_t) -> *mut c_void {

@@ -64,6 +64,7 @@ extern {
 	pub fn swr_drop_output(s: *mut SwrContext, count: c_int) -> c_int;
 	pub fn swr_inject_silence(s: *mut SwrContext, count: c_int) -> c_int;
 	pub fn swr_get_delay(s: *const SwrContext, base: int64_t) -> int64_t;
+	pub fn swr_get_out_samples(s: *const SwrContext, in_samples: c_int) -> c_int;
 
 	pub fn swr_convert_frame(swr: *mut SwrContext, output: *mut AVFrame, input: *const AVFrame) -> c_int;
 	pub fn swr_config_frame(swr: *mut SwrContext, output: *mut AVFrame, input: *const AVFrame) -> c_int;

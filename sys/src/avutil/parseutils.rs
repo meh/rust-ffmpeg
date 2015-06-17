@@ -16,7 +16,7 @@ extern {
 	pub fn av_parse_color(rgba_color: *mut uint8_t, color_string: *const c_char, slen: c_int, log_ctx: *mut c_void) -> c_int;
 	pub fn av_get_known_color_name(color_idx: c_int, rgb: *const *const uint8_t) -> *const c_char;
 	pub fn av_parse_time(timeval: *mut int64_t, timestr: *const c_char, duration: c_int) -> c_int;
-	pub fn av_small_strptime(p: *const c_char, fmt: *const c_char, dt: *mut c_void) -> *mut c_char;
 	pub fn av_find_info_tag(arg: *mut c_char, arg_size: c_int, tag1: *const c_char, info: *const c_char) -> c_int;
+	pub fn av_small_strptime(p: *const c_char, fmt: *const c_char, dt: *mut c_void) -> *mut c_char;
 	pub fn av_timegm(tm: *mut c_void) -> time_t;
 }

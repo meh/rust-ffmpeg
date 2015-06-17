@@ -193,6 +193,8 @@ pub enum AVCodecID {
 	AV_CODEC_ID_MVC1_DEPRECATED,
 	AV_CODEC_ID_MVC2_DEPRECATED,
 	AV_CODEC_ID_HQX,
+	AV_CODEC_ID_TDSC,
+	AV_CODEC_ID_HQ_HQA,
 
 	AV_CODEC_ID_BRENDER_PIX = MKBETAG!(b'B', b'P', b'I', b'X'),
 	AV_CODEC_ID_Y41P        = MKBETAG!(b'Y', b'4', b'1', b'P'),
@@ -823,11 +825,12 @@ pub const FF_PROFILE_AAC_ELD:       c_int = 38;
 pub const FF_PROFILE_MPEG2_AAC_LOW: c_int = 128;
 pub const FF_PROFILE_MPEG2_AAC_HE:  c_int = 131;
 
-pub const FF_PROFILE_DTS:        c_int = 20;
-pub const FF_PROFILE_DTS_ES:     c_int = 30;
-pub const FF_PROFILE_DTS_96_24:  c_int = 40;
-pub const FF_PROFILE_DTS_HD_HRA: c_int = 50;
-pub const FF_PROFILE_DTS_HD_MA:  c_int = 60;
+pub const FF_PROFILE_DTS:         c_int = 20;
+pub const FF_PROFILE_DTS_ES:      c_int = 30;
+pub const FF_PROFILE_DTS_96_24:   c_int = 40;
+pub const FF_PROFILE_DTS_HD_HRA:  c_int = 50;
+pub const FF_PROFILE_DTS_HD_MA:   c_int = 60;
+pub const FF_PROFILE_DTS_EXPRESS: c_int = 70;
 
 pub const FF_PROFILE_MPEG2_422:          c_int = 0;
 pub const FF_PROFILE_MPEG2_HIGH:         c_int = 1;
@@ -885,6 +888,11 @@ pub const FF_PROFILE_HEVC_MAIN:               c_int = 1;
 pub const FF_PROFILE_HEVC_MAIN_10:            c_int = 2;
 pub const FF_PROFILE_HEVC_MAIN_STILL_PICTURE: c_int = 3;
 pub const FF_PROFILE_HEVC_REXT:               c_int = 4;
+
+pub const FF_PROFILE_VP9_0: c_int = 0;
+pub const FF_PROFILE_VP9_1: c_int = 1;
+pub const FF_PROFILE_VP9_2: c_int = 2;
+pub const FF_PROFILE_VP9_3: c_int = 3;
 
 pub const FF_LEVEL_UNKNOWN: c_int = -99;
 
@@ -1139,6 +1147,7 @@ pub struct AVCodec {
 	pub decode: extern fn(*mut AVCodecContext, *mut c_void, *mut c_int, *mut AVPacket) -> c_int,
 	pub close: extern fn(*mut AVCodecContext) -> c_int,
 	pub flush: extern fn(*mut AVCodecContext),
+	pub caps_internal: c_int,
 }
 
 pub const AV_HWACCEL_FLAG_IGNORE_LEVEL:     c_int = 1 << 0;
@@ -1364,6 +1373,7 @@ extern {
 	pub fn av_packet_get_side_data(pkt: *mut AVPacket, kind: AVPacketSideDataType, size: *mut c_int) -> *mut uint8_t;
 	pub fn av_packet_merge_side_data(pkt: *mut AVPacket) -> c_int;
 	pub fn av_packet_split_side_data(pkt: *mut AVPacket) -> c_int;
+	pub fn av_packet_side_data_name(kind: AVPacketSideDataType) -> *const c_char;
 	pub fn av_packet_pack_dictionary(dict: *mut AVDictionary, size: *mut c_int) -> *mut uint8_t;
 	pub fn av_packet_unpack_dictionary(data: *const uint8_t, size: c_int, dict: *mut *mut AVDictionary) -> c_int;
 	pub fn av_packet_free_side_data(pkt: *mut AVPacket);
