@@ -77,6 +77,7 @@ extern {
 	pub fn av_dirname(path: *mut c_char) -> *const c_char;
 
 	pub fn av_match_name(name: *const c_char, names: *const c_char) -> c_int;
+	pub fn av_append_path_component(path: *const c_char, component: *const c_char) -> *mut c_char;
 	pub fn av_escape(dst: *mut *mut c_char, src: *const c_char, special_chars: *const c_char, mode: AVEscapeMode, flags: c_int) -> c_int;
 	pub fn av_utf8_decode(codep: *mut int32_t, bufp: *const *const uint8_t, buf_end: *const uint8_t, flags: c_uint) -> c_int;
 	pub fn av_match_list(name: *const c_char, list: *const c_char, separator: c_char) -> c_int;

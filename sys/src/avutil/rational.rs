@@ -1,4 +1,4 @@
-use libc::{c_int, int64_t, c_double};
+use libc::{c_int, uint32_t, int64_t, c_double};
 
 #[derive(Eq, PartialEq, Copy, Clone, Debug)]
 #[repr(C)]
@@ -50,4 +50,5 @@ extern {
 	pub fn av_d2q(d: c_double, max: c_int) -> AVRational;
 	pub fn av_nearer_q(q: AVRational, q1: AVRational, q2: AVRational) -> c_int;
 	pub fn av_find_nearest_q_idx(q: AVRational, q_list: *const AVRational) -> c_int;
+	pub fn av_q2intfloat(q: AVRational) -> uint32_t;
 }
