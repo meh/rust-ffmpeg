@@ -23,7 +23,6 @@ pub struct AVStereo3D {
 	pub flags: c_int,
 }
 
-#[link(name = "avutil")]
 extern {
 	pub fn av_stereo3d_alloc() -> *mut AVStereo3D;
 	pub fn av_stereo3d_create_side_data(frame: *mut AVFrame) -> *mut AVStereo3D;

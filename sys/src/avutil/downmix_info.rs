@@ -25,7 +25,6 @@ pub struct AVDownmixInfo {
 	pub lfe_mix_level: c_double,
 }
 
-#[link(name = "avutil")]
 extern {
 	pub fn av_downmix_info_update_side_data(frame: *mut AVFrame) -> *mut AVDownmixInfo;
 }

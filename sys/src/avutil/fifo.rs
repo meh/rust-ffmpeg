@@ -28,7 +28,6 @@ pub unsafe fn av_fifo_peek2(f: *const AVFifoBuffer, offs: c_int) -> *mut uint8_t
 	}
 }
 
-#[link(name = "avutil")]
 extern {
 	pub fn av_fifo_alloc(size: c_uint) -> *mut AVFifoBuffer;
 	pub fn av_fifo_alloc_array(nmemb: size_t, size: size_t) -> *mut AVFifoBuffer;

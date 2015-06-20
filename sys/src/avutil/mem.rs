@@ -39,7 +39,6 @@ pub unsafe fn av_mallocz_array(nmemb: size_t, size: size_t) -> *mut c_void {
 //	}
 //}
 
-#[link(name = "avutil")]
 extern {
 	pub fn av_malloc(size: size_t) -> *mut c_void;
 	pub fn av_realloc(ptr: *mut c_void, size: size_t) -> *mut c_void;

@@ -55,7 +55,6 @@ pub unsafe fn av_make_error_string(errbuf: *mut c_char, errbuf_size: size_t, err
 	errbuf
 }
 
-#[link(name = "avutil")]
 extern {
 	pub fn av_strerror(errnum: c_int, errbuf: *mut c_char, errbuf_size: size_t) -> c_int;
 }

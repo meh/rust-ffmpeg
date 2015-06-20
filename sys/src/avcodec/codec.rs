@@ -1315,7 +1315,6 @@ pub enum AVLockOp {
 	AV_LOCK_DESTROY,
 }
 
-#[link(name = "avcodec")]
 extern {
 	pub fn av_codec_get_pkt_timebase(avctx: *const AVCodecContext) -> AVRational;
 	pub fn av_codec_set_pkt_timebase(avctx: *mut AVCodecContext, val: AVRational);

@@ -3,7 +3,6 @@ use super::samplefmt::AVSampleFormat;
 
 pub type AVAudioFifo = c_void;
 
-#[link(name = "avutil")]
 extern {
 	pub fn av_audio_fifo_free(af: *mut AVAudioFifo);
 	pub fn av_audio_fifo_alloc(sample_fmt: AVSampleFormat, channels: c_int, nb_samples: c_int) -> *mut AVAudioFifo;

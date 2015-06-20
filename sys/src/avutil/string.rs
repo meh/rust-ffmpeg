@@ -51,7 +51,6 @@ pub unsafe fn av_tolower(c: c_int) -> c_int {
 	}
 }
 
-#[link(name = "avutil")]
 extern {
 	pub fn av_strstart(string: *const c_char, pfx: *const c_char, ptr: *const *const c_char) -> c_int;
 	pub fn av_stristart(string: *const c_char, pfx: *const c_char, ptr: *const *const c_char) -> c_int;

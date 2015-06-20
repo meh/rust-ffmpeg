@@ -93,7 +93,6 @@ pub unsafe fn avio_tell(s: *mut AVIOContext) -> int64_t {
 	avio_seek(s, 0, SEEK_CUR)
 }
 
-#[link(name = "avformat")]
 extern {
 	pub fn avio_find_protocol_name(url: *const c_char) -> *const c_char;
 	pub fn avio_check(url: *const c_char, flags: c_int) -> c_int;

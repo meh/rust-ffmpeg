@@ -26,7 +26,6 @@ pub unsafe fn av_mlfg_get(ctx: *mut AVLFG) -> c_uint {
 	c
 }
 
-#[link(name = "avutil")]
 extern {
 	pub fn av_lfg_init(c: *mut AVLFG, seed: c_uint);
 	pub fn av_bmg_get(lfg: *mut AVLFG, out: *mut c_double);

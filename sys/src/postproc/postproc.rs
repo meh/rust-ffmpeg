@@ -21,7 +21,6 @@ pub const PP_FORMAT_440: c_int = 0x00000010 | PP_FORMAT;
 
 pub const PP_PICT_TYPE_QP2: c_int = 0x00000010;
 
-#[link(name = "postproc")]
 extern {
 	pub fn postproc_version() -> c_uint;
 	pub fn postproc_configuration() -> *const c_char;

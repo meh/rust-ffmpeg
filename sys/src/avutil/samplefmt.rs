@@ -19,7 +19,6 @@ pub enum AVSampleFormat {
 	AV_SAMPLE_FMT_NB
 }
 
-#[link(name = "avutil")]
 extern {
 	pub fn av_get_sample_fmt_name(sample_fmt: AVSampleFormat) -> *const c_char;
 	pub fn av_get_sample_fmt(name: *const c_char) -> AVSampleFormat;

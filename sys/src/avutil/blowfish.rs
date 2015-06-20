@@ -8,7 +8,6 @@ pub struct AVBlowfish {
 	pub s: [[uint32_t; 256]; 4],
 }
 
-#[link(name = "avutil")]
 extern {
 	pub fn av_blowfish_init(ctx: *mut AVBlowfish, key: *const uint8_t, key_len: c_int);
 	pub fn av_blowfish_crypt_ecb(ctx: *mut AVBlowfish, xl: *mut uint32_t, xr: *mut uint32_t, decrypt: c_int);

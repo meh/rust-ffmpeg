@@ -77,7 +77,6 @@ pub fn AV_LOG_C(x: c_int) -> c_int {
 	x << 8
 }
 
-#[link(name = "avutil")]
 extern {
 	pub fn av_log(avcl: *mut c_void, level: c_int, fmt: *const char, ...);
 	//pub fn av_vlog(avcl: *mut c_void, level: c_int, fmt: *const c_char, vl: va_list);

@@ -7,7 +7,6 @@ pub const AV_LZO_ERROR:           c_int = 8;
 pub const AV_LZO_INPUT_PADDING:   c_int = 8;
 pub const AV_LZO_OUTPUT_PADDING:  c_int = 12;
 
-#[link(name = "avutil")]
 extern {
 	pub fn av_lzo1x_decode(out: *mut c_void, outlen: *mut c_int, inp: *const c_void, inlen: *mut c_int) -> c_int;
 }

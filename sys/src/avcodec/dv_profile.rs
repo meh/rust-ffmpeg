@@ -25,7 +25,6 @@ pub struct AVDVProfile {
 	pub audio_shuffle: [*const uint8_t; 9],
 }
 
-#[link(name = "avcodec")]
 extern {
 	pub fn av_dv_frame_profile(sys: *const AVDVProfile, frame: *const uint8_t, buf_size: c_uint) -> *const AVDVProfile;
 	pub fn av_dv_codec_profile(width: c_int, height: c_int, pix_fmt: AVPixelFormat) -> *const AVDVProfile;

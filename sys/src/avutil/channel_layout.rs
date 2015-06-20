@@ -70,7 +70,6 @@ pub enum AVMatrixEncoding {
 	AV_MATRIX_ENCODING_NB
 }
 
-#[link(name = "avutil")]
 extern {
 	pub fn av_get_channel_layout(name: *const c_char) -> uint64_t;
 	pub fn av_get_channel_layout_string(buf: *mut c_char, buf_size: c_int, nb_channels: c_int, channel_layout: uint64_t);

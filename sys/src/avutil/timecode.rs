@@ -14,7 +14,6 @@ pub struct AVTimecode {
 	pub fps:   c_uint,
 }
 
-#[link(name = "avutil")]
 extern {
 	pub fn av_timecode_adjust_ntsc_framenum2(framenum: c_int, fps: c_int) -> c_int;
 	pub fn av_timecode_get_smpte_from_framenum(tc: *const AVTimecode, framenum: c_int) -> uint32_t;

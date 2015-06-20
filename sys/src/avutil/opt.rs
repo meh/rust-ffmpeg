@@ -84,7 +84,6 @@ pub struct AVOptionRanges {
 	pub nb_components: c_int,
 }
 
-#[link(name = "avutil")]
 extern {
 	pub fn av_opt_show2(obj: *mut c_void, av_log_obj: *mut c_void, req_flags: c_int, rej_flags: c_int) -> c_int;
 	pub fn av_opt_set_defaults(s: *mut c_void);

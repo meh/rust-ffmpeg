@@ -71,7 +71,6 @@ pub const FF_LOSS_ALPHA:      c_int = 0x0008;
 pub const FF_LOSS_COLORQUANT: c_int = 0x0010;
 pub const FF_LOSS_CHROMA:     c_int = 0x0020;
 
-#[link(name = "avutil")]
 extern {
 	pub fn av_read_image_line(dst: *mut uint16_t, data: *const *const uint8_t, linesize: *const c_int, desc: *const AVPixFmtDescriptor, x: c_int, y: c_int, c: c_int, w: c_int, read_pal_component: c_int);
 	pub fn av_write_image_line(src: *const uint16_t, data: *const *const uint8_t, linesize: *const c_int, desc: *const AVPixFmtDescriptor, x: c_int, y: c_int, c: c_int, w: c_int);

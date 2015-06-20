@@ -7,7 +7,6 @@ pub const AV_BUFFERSRC_FLAG_NO_COPY:         c_int = 2;
 pub const AV_BUFFERSRC_FLAG_PUSH:            c_int = 4;
 pub const AV_BUFFERSRC_FLAG_KEEP_REF:        c_int = 8;
 
-#[link(name = "avfilter")]
 extern {
 	pub fn av_buffersrc_add_ref(buffer_src: *mut AVFilterContext, picref: *mut AVFilterBufferRef, flags: c_int) -> c_int;
 	pub fn av_buffersrc_get_nb_failed_requests(buffer_src: *mut AVFilterContext) -> c_uint;

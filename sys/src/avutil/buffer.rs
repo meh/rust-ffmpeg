@@ -14,7 +14,6 @@ pub type AVBufferPool = c_void;
 
 pub const AV_BUFFER_FLAG_READONLY: c_int = 1;
 
-#[link(name = "avutil")]
 extern {
 	pub fn av_buffer_alloc(size: c_int) -> *mut AVBufferRef;
 	pub fn av_buffer_allocz(size: c_int) -> *mut AVBufferRef;

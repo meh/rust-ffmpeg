@@ -4,7 +4,6 @@ pub type AVHashContext = c_void;
 
 pub const AV_HASH_MAX_SIZE: c_int = 64;
 
-#[link(name = "avutil")]
 extern {
 	pub fn av_hash_alloc(ctx: *mut *mut AVHashContext, name: *const c_char) -> c_int;
 	pub fn av_hash_names(i: c_int) -> *const c_char;

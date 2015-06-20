@@ -15,7 +15,6 @@ pub enum AVCRCId {
 	AV_CRC_MAX,
 }
 
-#[link(name = "avutil")]
 extern {
 	pub fn av_crc_init(ctx: *mut AVCRC, le: c_int, bits: c_int, poly: uint32_t, ctx_size: c_int) -> c_int;
 	pub fn av_crc_get_table(crc_id: AVCRCId) -> *const AVCRC;

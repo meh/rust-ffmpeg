@@ -15,7 +15,6 @@ pub struct AVDictionaryEntry {
 
 pub type AVDictionary = c_void;
 
-#[link(name = "avutil")]
 extern {
 	pub fn av_dict_get(m: *const AVDictionary, key: *const c_char, prev: *const AVDictionaryEntry, flags: c_int) -> *mut AVDictionaryEntry;
 	pub fn av_dict_count(m: *const AVDictionary) -> c_int;

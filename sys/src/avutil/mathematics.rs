@@ -12,7 +12,6 @@ pub enum AVRounding {
 	AV_ROUND_PASS_MINMAX = 8192,
 }
 
-#[link(name = "avutil")]
 extern {
 	pub fn av_gcd(a: int64_t, b: int64_t) -> int64_t;
 	pub fn av_rescale(a: int64_t, b: int64_t, c: int64_t) -> int64_t;

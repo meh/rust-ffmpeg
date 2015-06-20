@@ -36,7 +36,6 @@ pub const AV_CPU_FLAG_NEON:     c_uint = 1 << 5;
 pub const AV_CPU_FLAG_ARMV8:    c_uint = 1 << 6;
 pub const AV_CPU_FLAG_SETEND:   c_uint = 1 << 16;
 
-#[link(name = "avutil")]
 extern {
 	pub fn av_get_cpu_flags() -> c_int;
 	pub fn av_force_cpu_flags(flags: c_int);

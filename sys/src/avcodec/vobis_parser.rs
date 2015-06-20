@@ -6,7 +6,6 @@ pub const VORBIS_FLAG_HEADER:  c_int = 0x00000001;
 pub const VORBIS_FLAG_COMMENT: c_int = 0x00000002;
 pub const VORBIS_FLAG_SETUP:   c_int = 0x00000004;
 
-#[link(name = "avcodec")]
 extern {
 	pub fn av_vorbis_parse_init(extradata: *const uint8_t, extradata_size: c_int) -> *mut AVVorbisParseContext;
 	pub fn av_vorbis_parse_free(s: *mut *mut AVVorbisParseContext);
