@@ -8,7 +8,6 @@ pub unsafe fn av_parse_ratio_quiet(q: *mut AVRational, string: *const c_char, ma
 	av_parse_ratio(q, string, max, AV_LOG_MAX_OFFSET, ptr::null_mut())
 }
 
-#[link(name = "avutil")]
 extern {
 	pub fn av_parse_ratio(q: *mut AVRational, string: *const c_char, max: c_int, log_offset: c_int, log_ctx: *mut c_void) -> c_int;
 	pub fn av_parse_video_size(width_ptr: *mut c_int, height_ptr: *mut c_int, string: *const c_char) -> c_int;

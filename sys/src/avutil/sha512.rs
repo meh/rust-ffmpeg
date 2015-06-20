@@ -2,7 +2,6 @@ use libc::{c_void, c_int, c_uint, uint8_t};
 
 pub type AVSHA512 = c_void;
 
-#[link(name = "avutil")]
 extern {
 	pub static av_sha512_size: c_int;
 

@@ -13,7 +13,6 @@ pub enum AVHMACType {
 
 pub type AVHMAC = c_void;
 
-#[link(name = "avutil")]
 extern {
 	pub fn av_hmac_alloc(kind: AVHMACType) -> *mut AVHMAC;
 	pub fn av_hmac_free(ctx: *mut AVHMAC);

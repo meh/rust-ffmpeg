@@ -2,7 +2,6 @@ use libc::{c_void, c_char, c_int, c_double};
 
 pub type AVExpr = c_void;
 
-#[link(name = "avutil")]
 extern {
 	pub fn av_expr_parse_and_eval(res: *mut c_double, s: *const c_char,
 	                              const_names: *const *const c_char, const_values: *const c_double,

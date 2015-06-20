@@ -15,6 +15,7 @@ libc = "*"
 [features]
 default  = ["avcodec", "avdevice", "avfilter", "avformat", "avresample", "postproc", "swresample", "swscale"]
 
+static     = []
 avcodec    = []
 avdevice   = ["avformat"]
 avfilter   = []

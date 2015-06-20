@@ -2,7 +2,6 @@ use libc::{c_void, c_int, uint8_t};
 
 pub type AVCAST5 = c_void;
 
-#[link(name = "avutil")]
 extern {
 	pub static av_cast5_size: c_int;
 

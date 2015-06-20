@@ -40,7 +40,6 @@ pub unsafe fn av_inv_q(q: AVRational) -> AVRational {
 	AVRational { num: q.den, den: q.num }
 }
 
-#[link(name = "avutil")]
 extern {
 	pub fn av_reduce(dst_num: *mut c_int, dst_den: *mut c_int, num: int64_t, den: int64_t, max: int64_t) -> c_int;
 	pub fn av_mul_q(b: AVRational, c: AVRational) -> AVRational;

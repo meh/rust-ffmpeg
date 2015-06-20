@@ -4,7 +4,6 @@ pub type AVThreadMessageQueue = c_void;
 
 pub const AV_THREAD_MESSAGE_NONBLOCK: c_uint = 1;
 
-#[link(name = "avutil")]
 extern {
 	pub fn av_thread_message_queue_alloc(mq: *mut *mut AVThreadMessageQueue, nelem: c_uint, elsize: c_uint) -> c_int;
 	pub fn av_thread_message_queue_free(mq: *mut *mut AVThreadMessageQueue);

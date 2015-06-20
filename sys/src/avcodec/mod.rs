@@ -35,3 +35,7 @@ pub use self::vobis_parser::*;
 
 mod xvmc;
 pub use self::xvmc::*;
+
+#[cfg_attr(feature = "static", link(name = "avcodec", kind = "static"))]
+#[cfg_attr(not(feature = "static"), link(name = "avcodec"))]
+extern { }

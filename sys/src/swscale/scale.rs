@@ -59,7 +59,6 @@ pub struct SwsFilter {
 
 pub type SwsContext = c_void;
 
-#[link(name = "swscale")]
 extern {
 	pub fn swscale_version() -> c_uint;
 	pub fn swscale_configuration() -> *const c_char;

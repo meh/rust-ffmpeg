@@ -100,7 +100,6 @@ pub struct AVFrame {
 	pub qp_table_buf: *mut AVBufferRef,
 }
 
-#[link(name = "avutil")]
 extern {
 	pub fn av_frame_get_best_effort_timestamp(frame: *const AVFrame) -> int64_t;
 	pub fn av_frame_set_best_effort_timestamp(frame: *mut AVFrame, val: int64_t);

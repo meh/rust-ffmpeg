@@ -219,7 +219,6 @@ pub struct AVFilterInOut {
 	pub next: *mut AVFilterInOut,
 }
 
-#[link(name = "avfilter")]
 extern {
 	pub fn avfilter_version() -> c_uint;
 	pub fn avfilter_configuration() -> *const c_char;

@@ -3,7 +3,6 @@ use super::pixdesc::AVPixFmtDescriptor;
 use super::pixfmt::AVPixelFormat;
 use super::rational::AVRational;
 
-#[link(name = "avutil")]
 extern {
 	pub fn av_image_fill_max_pixsteps(max_pixsteps: *mut c_int, max_pixstep_comps: *mut c_int, pixdesc: *const AVPixFmtDescriptor);
 	pub fn av_image_get_linesize(pix_fmt: AVPixelFormat, width: c_int, plane: c_int) -> c_int;

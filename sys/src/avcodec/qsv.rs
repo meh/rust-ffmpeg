@@ -9,7 +9,6 @@ pub struct AVQSVContext {
 	pub nb_ext_buffers: c_int,
 }
 
-#[link(name = "avcodec")]
 extern {
 	pub fn av_qsv_alloc_context() -> *mut AVQSVContext;
 }

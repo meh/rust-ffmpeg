@@ -19,7 +19,6 @@ pub struct AVABufferSinkParams {
 	pub sample_rates: *mut c_int,
 }
 
-#[link(name = "avfilter")]
 extern {
 	pub fn av_buffersink_get_frame_flags(ctx: *mut AVFilterContext, frame: *mut AVFrame, flags: c_int) -> c_int;
 

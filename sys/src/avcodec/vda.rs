@@ -23,7 +23,6 @@ pub struct AVVDAContext {
 	pub output_callback: extern fn(*mut c_void, *mut c_void, i32, uint32_t, *mut c_void),
 }
 
-#[link(name = "avcodec")]
 extern {
 	pub fn ff_vda_create_decoder(vda_ctx: *mut vda_context, extradata: *mut uint8_t, extradata_size: c_int) -> c_int;
 	pub fn ff_vda_destroy_decoder(vda_ctx: *mut vda_context) -> c_int;

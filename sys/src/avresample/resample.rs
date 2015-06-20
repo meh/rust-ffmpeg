@@ -33,7 +33,6 @@ pub enum AVResampleDitherMethod {
 	AV_RESAMPLE_DITHER_NB,
 }
 
-#[link(name = "avresample")]
 extern {
 	pub fn avresample_version() -> c_uint;
 	pub fn avresample_configuration() -> *const c_char;

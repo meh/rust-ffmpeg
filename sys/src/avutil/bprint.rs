@@ -21,7 +21,6 @@ pub unsafe fn av_bprint_is_complete(buf: *const AVBPrint) -> c_int {
 	}
 }
 
-#[link(name = "avutil")]
 extern {
 	pub fn av_bprint_init(buf: *mut AVBPrint, size_init: c_uint, size_max: c_uint);
 	pub fn av_bprint_init_for_buffer(buf: *mut AVBPrint, buffer: *mut c_char, size: c_uint);

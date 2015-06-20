@@ -2,7 +2,6 @@ use libc::{c_void, c_int, uint8_t, uint64_t};
 
 pub type AVMurMur3 = c_void;
 
-#[link(name = "avutil")]
 extern {
 	pub fn av_murmur3_alloc() -> *mut AVMurMur3;
 	pub fn av_murmur3_init_seeded(c: *mut AVMurMur3, seed: uint64_t);

@@ -42,7 +42,6 @@ pub enum SwrFilterType {
 
 pub type SwrContext = c_void;
 
-#[link(name = "swresample")]
 extern {
 	pub fn swresample_version() -> c_uint;
 	pub fn swresample_configuration() -> *const c_char;

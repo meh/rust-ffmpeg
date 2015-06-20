@@ -33,7 +33,6 @@ pub enum DCTTransformType {
 
 pub type DCTContext = c_void;
 
-#[link(name = "avcodec")]
 extern {
 	pub fn av_fft_init(nbits: c_int, inverse: c_int) -> *mut FFTContext;
 	pub fn av_fft_permute(s: *mut FFTContext, z: *mut FFTComplex);

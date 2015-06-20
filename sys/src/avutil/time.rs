@@ -1,6 +1,5 @@
 use libc::{c_int, c_uint, int64_t};
 
-#[link(name = "avutil")]
 extern {
 	pub fn av_gettime() -> int64_t;
 	pub fn av_gettime_relative() -> int64_t;

@@ -35,7 +35,6 @@ pub enum AVPictureType {
 	AV_PICTURE_TYPE_BI,
 }
 
-#[link(name = "avutil")]
 extern {
 	pub fn avutil_version() -> c_uint;
 	pub fn avutil_configuration() -> *const c_char;

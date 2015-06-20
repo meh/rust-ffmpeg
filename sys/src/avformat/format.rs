@@ -433,7 +433,6 @@ pub const AVSEEK_FLAG_BYTE:     c_int = 2;
 pub const AVSEEK_FLAG_ANY:      c_int = 4;
 pub const AVSEEK_FLAG_FRAME:    c_int = 8;
 
-#[link(name = "avformat")]
 extern {
 	pub fn av_get_packet(s: *mut AVIOContext, pkt: *mut AVPacket, size: c_int) -> c_int;
 	pub fn av_append_packet(s: *mut AVIOContext, pkt: *mut AVPacket, size: c_int) -> c_int;
