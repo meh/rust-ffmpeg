@@ -931,8 +931,8 @@ pub struct AVCodecContext {
 	pub gop_size: c_int,
 	pub pix_fmt: AVPixelFormat,
 	pub me_method: c_int,
-	pub draw_horiz_band: extern fn(*mut AVCodecContext, *const AVFrame, *mut c_int, c_int, c_int, c_int),
-	pub get_format: extern fn(*mut AVCodecContext, *const AVPixelFormat) -> AVPixelFormat,
+	pub draw_horiz_band: Option<extern fn(*mut AVCodecContext, *const AVFrame, *mut c_int, c_int, c_int, c_int)>,
+	pub get_format: Option<extern fn(*mut AVCodecContext, *const AVPixelFormat) -> AVPixelFormat>,
 	pub max_b_frames: c_int,
 	pub b_quant_factor: c_float,
 	pub rc_strategy: c_int,
@@ -1008,10 +1008,10 @@ pub struct AVCodecContext {
 	pub request_channel_layout: uint64_t,
 	pub audio_service_type: AVAudioServiceType,
 	pub request_sample_fmt: AVSampleFormat,
-	pub get_buffer: extern fn(*mut AVCodecContext, *mut AVFrame) -> c_int, // XXX: #if FF_API_GET_BUFFER
-	pub release_buffer: extern fn(*mut AVCodecContext, *mut AVFrame), // XXX: #if FF_API_GET_BUFFER
-	pub reget_buffer: extern fn(*mut AVCodecContext, *mut AVFrame) -> c_int, // XXX: #if FF_API_GET_BUFFER
-	pub get_buffer2: extern fn(*mut AVCodecContext, *mut AVFrame, c_int) -> c_int,
+	pub get_buffer: Option<extern fn(*mut AVCodecContext, *mut AVFrame) -> c_int>, // XXX: #if FF_API_GET_BUFFER
+	pub release_buffer: Option<extern fn(*mut AVCodecContext, *mut AVFrame)>, // XXX: #if FF_API_GET_BUFFER
+	pub reget_buffer: Option<extern fn(*mut AVCodecContext, *mut AVFrame) -> c_int>, // XXX: #if FF_API_GET_BUFFER
+	pub get_buffer2: Option<extern fn(*mut AVCodecContext, *mut AVFrame, c_int) -> c_int>,
 	pub refcounted_frames: c_int,
 	pub qcompress: c_float,
 	pub qblur: c_float,
@@ -1044,7 +1044,7 @@ pub struct AVCodecContext {
 	pub min_prediction_order: c_int,
 	pub max_prediction_order: c_int,
 	pub timecode_frame_start: int64_t,
-	pub rtp_callback: extern fn(*mut AVCodecContext, *mut c_void, c_int, c_int),
+	pub rtp_callback: Option<extern fn(*mut AVCodecContext, *mut c_void, c_int, c_int)>,
 	pub rtp_payload_size: c_int,
 	pub mv_bits: c_int,
 	pub header_bits: c_int,
@@ -1137,7 +1137,7 @@ pub struct AVCodec {
 
 	pub priv_data_size: c_int,
 	pub next: *mut AVCodec,
-	pub init_thread_copy: extern fn(*mut AVCodecContext) -> c_int,
+	pub init_thread_copy: Option<extern fn(*mut AVCodecContext) -> c_int>,
 	pub update_thread_context: extern fn(*mut AVCodecContext, *const AVCodecContext) -> c_int,
 	pub defaults: *const AVCodecDefault,
 	pub init_static_data: extern fn(*mut AVCodec),
