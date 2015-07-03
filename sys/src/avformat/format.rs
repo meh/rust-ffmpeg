@@ -548,7 +548,7 @@ extern {
 	pub fn av_add_index_entry(st: *mut AVStream, pos: int64_t, timestamp: int64_t, size: c_int, distance: c_int, flags: c_int) -> c_int;
 	pub fn av_url_split(proto: *mut c_char, proto_size: c_int, authorization: *mut c_char, authorization_size: c_int, hostname: *mut c_char, hostname_size: c_int, port_ptr: *mut c_int, path: *mut c_char, path_size: c_int, url: *const c_char);
 
-	pub fn av_dump_format(ic: *mut AVFormatContext, index: c_int, url: *const c_char, is_output: c_int);
+	pub fn av_dump_format(ic: *const AVFormatContext, index: c_int, url: *const c_char, is_output: c_int);
 
 	pub fn av_get_frame_filename(buf: *mut c_char, buf_size: c_int, path: *const c_char, number: c_int) -> c_int;
 	pub fn av_filename_number_test(filename: *const c_char) -> c_int;
