@@ -1,8 +1,10 @@
+use std::ptr;
 use std::marker::PhantomData;
 
 use libc::c_uint;
 use ffi::*;
 use ::{Error, Codec, Stream, StreamMut, Packet, Dictionary};
+use ::media;
 
 pub struct Context {
 	ptr: *mut AVFormatContext,
@@ -86,6 +88,21 @@ impl Context {
 	pub fn metadata(&self) -> Dictionary {
 		unsafe {
 			Dictionary::wrap((*self.as_ptr()).metadata)
+		}
+	}
+
+	pub fn find_best_stream(&self, kind: media::Type, wanted_stream: Option<usize>, related_stream: Option<usize>) -> Result<Stream, Error> {
+		let wanted_stream_raw = wanted_stream.map(|i| i as i32).unwrap_or(-1);
+		let related_stream_raw = related_stream.map(|i| i as i32).unwrap_or(-1);
+		unsafe {
+			let index = av_find_best_stream(self.as_ptr(), kind.into(), wanted_stream_raw, related_stream_raw, ptr::null_mut(), 0);
+			if index >= 0 {
+				Ok(Stream::wrap(*(*self.ptr).streams.offset(index as isize)))
+			}
+			else {
+				Err(Error::from(index))
+			}
+
 		}
 	}
 
