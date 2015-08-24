@@ -512,7 +512,7 @@ extern {
 	pub fn avformat_open_input(ps: *mut *mut AVFormatContext, filename: *const c_char, fmt: *const AVInputFormat, options: *mut *mut AVDictionary) -> c_int;
 	pub fn avformat_find_stream_info(ic: *mut AVFormatContext, options: *mut *mut AVDictionary) -> c_int;
 	pub fn av_find_program_from_stream(ic: *mut AVFormatContext, last: *mut AVProgram, s: c_int) -> *mut AVProgram;
-	pub fn av_find_best_stream(ic: *mut AVFormatContext, kind: AVMediaType, wanetd_stream_nb: c_int, related_stream: c_int, decoder_ret: *mut *mut AVCodec, flags: c_int) -> c_int;
+	pub fn av_find_best_stream(ic: *mut AVFormatContext, kind: AVMediaType, wanted_stream_nb: c_int, related_stream: c_int, decoder_ret: *mut *mut AVCodec, flags: c_int) -> c_int;
 
 	pub fn av_read_frame(s: *mut AVFormatContext, pkt: *mut AVPacket) -> c_int;
 	pub fn av_seek_frame(s: *mut AVFormatContext, stream_index: c_int, timestamp: int64_t, flags: c_int) -> c_int;
