@@ -500,7 +500,7 @@ extern {
 
 	pub fn av_new_program(s: *mut AVFormatContext, id: c_int) -> *mut AVProgram;
 
-	pub fn avformat_alloc_output_context2(ctx: *mut *mut AVFormatContext, oformat: *mut AVOutputFormat, format_name: *const c_char, filename: *const c_char) -> c_int;
+	pub fn avformat_alloc_output_context2(ctx: *mut *mut AVFormatContext, oformat: *const AVOutputFormat, format_name: *const c_char, filename: *const c_char) -> c_int;
 
 	pub fn av_find_input_format(short_name: *const c_char) -> *mut AVInputFormat;
 	pub fn av_probe_input_format(pd: *mut AVProbeData, is_opened: c_int) -> *mut AVInputFormat;
