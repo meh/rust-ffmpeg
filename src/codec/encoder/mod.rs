@@ -1,11 +1,14 @@
 pub mod video;
 pub use self::video::Video;
+pub use self::video::Encoder as VideoEncoder;
 
 pub mod audio;
 pub use self::audio::Audio;
+pub use self::audio::Encoder as AudioEncoder;
 
 pub mod subtitle;
 pub use self::subtitle::Subtitle;
+pub use self::subtitle::Encoder as SubtitleEncoder;
 
 pub mod motion_estimation;
 pub use self::motion_estimation::MotionEstimation;
