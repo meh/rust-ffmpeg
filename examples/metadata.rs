@@ -7,6 +7,17 @@ fn print_metadata(context: &ffmpeg::format::Context) {
 	for (k, v) in context.metadata().iter() {
 		println!("{}: {}", k, v);
 	}
+
+	if let Ok(stream) = context.find_best_stream(ffmpeg::media::Type::Video, None, None) {
+	    println!("Best video stream index: {}", stream.index());
+	}
+	if let Ok(stream) = context.find_best_stream(ffmpeg::media::Type::Audio, None, None) {
+	    println!("Best audio stream index: {}", stream.index());
+	}
+	if let Ok(stream) = context.find_best_stream(ffmpeg::media::Type::Subtitle, None, None) {
+	    println!("Best subtitle stream index: {}", stream.index());
+	}
+
 	for stream in context.streams() {
 		println!("stream index {}:", stream.index());
 		println!("\ttime_base: {}", stream.time_base());
