@@ -1133,6 +1133,7 @@ pub struct AVCodec {
 	pub sample_fmts: *const AVSampleFormat,
 	pub channel_layouts: *const uint64_t,
 	pub priv_class: *const AVClass,
+	pub max_lowres: uint8_t,
 	pub profiles: *const AVProfile,
 
 	pub priv_data_size: c_int,
