@@ -15,44 +15,82 @@ pub use self::conceal::Conceal;
 pub mod check;
 pub use self::check::Check;
 
+pub mod opened;
+pub use self::opened::Opened;
+
+use std::ptr;
 use std::ffi::CString;
-use std::slice::from_raw_parts;
 use std::ops::{Deref, DerefMut};
 
 use ffi::*;
-use super::{Id, Profile};
-use super::context::Opened;
-use ::{Codec, Error, Discard, Rational};
-use ::media;
+use super::{Id, Context};
+use ::{Codec, Error, Discard, Dictionary};
 
-pub struct Decoder(pub Opened);
+pub struct Decoder(pub Context);
 
 impl Decoder {
+	pub fn open(mut self) -> Result<Opened, Error> {
+		unsafe {
+			match avcodec_open2(self.as_mut_ptr(), ptr::null(), ptr::null_mut()) {
+				0 => Ok(Opened(self)),
+				e => Err(Error::from(e))
+			}
+		}
+	}
+
+	pub fn open_as(mut self, codec: &Codec) -> Result<Opened, Error> {
+        if codec.is_decoder() {
+            unsafe {
+                match avcodec_open2(self.as_mut_ptr(), codec.as_ptr(), ptr::null_mut()) {
+                    0 => Ok(Opened(self)),
+                    e => Err(Error::from(e))
+                }
+            }
+        }
+        else {
+            Err(Error::InvalidData)
+        }
+	}
+
+	pub fn open_as_with(mut self, codec: &Codec, options: Dictionary) -> Result<Opened, Error> {
+        if codec.is_decoder() {
+            unsafe {
+                match avcodec_open2(self.as_mut_ptr(), codec.as_ptr(), &mut options.take()) {
+                    0 => Ok(Opened(self)),
+                    e => Err(Error::from(e))
+                }
+            }
+        }
+        else {
+            Err(Error::InvalidData)
+        }
+	}
+
 	pub fn video(self) -> Result<Video, Error> {
-		if self.medium() == media::Type::Video {
-			Ok(Video(self))
-		}
-		else {
-			Err(Error::InvalidData)
-		}
+        if let Some(ref codec) = find(self.id()) {
+            self.open_as(codec).and_then(|o| o.video())
+        }
+        else {
+            Err(Error::DecoderNotFound)
+        }
 	}
 
 	pub fn audio(self) -> Result<Audio, Error> {
-		if self.medium() == media::Type::Audio {
-			Ok(Audio(self))
-		}
-		else {
-			Err(Error::InvalidData)
-		}
+        if let Some(ref codec) = find(self.id()) {
+            self.open_as(codec).and_then(|o| o.audio())
+        }
+        else {
+            Err(Error::DecoderNotFound)
+        }
 	}
 
 	pub fn subtitle(self) -> Result<Subtitle, Error> {
-		if self.medium() == media::Type::Subtitle {
-			Ok(Subtitle(self))
-		}
-		else {
-			Err(Error::InvalidData)
-		}
+        if let Some(ref codec) = find(self.id()) {
+            self.open_as(codec).and_then(|o| o.subtitle())
+        }
+        else {
+            Err(Error::DecoderNotFound)
+        }
 	}
 
 	pub fn conceal(&mut self, value: Conceal) {
@@ -64,12 +102,6 @@ impl Decoder {
 	pub fn check(&mut self, value: Check) {
 		unsafe {
 			(*self.as_mut_ptr()).err_recognition = value.bits();
-		}
-	}
-
-	pub fn profile(&self) -> Profile {
-		unsafe {
-			Profile::from((self.id(), (*self.as_ptr()).profile))
 		}
 	}
 
@@ -90,35 +122,10 @@ impl Decoder {
 			(*self.as_mut_ptr()).skip_frame = value.into();
 		}
 	}
-
-	pub fn subtitle_header(&self) -> &[u8] {
-		unsafe {
-			from_raw_parts((*self.as_ptr()).subtitle_header, (*self.as_ptr()).subtitle_header_size as usize)
-		}
-	}
-
-	pub fn frame_rate(&self) -> Option<Rational> {
-		unsafe {
-			let value = (*self.as_ptr()).framerate;
-
-			if value == (AVRational { num: 0, den: 1 }) {
-				None
-			}
-			else {
-				Some(Rational::from(value))
-			}
-		}
-	}
-
-	pub fn time_base(&self) -> Rational {
-		unsafe {
-			Rational::from((*self.as_ptr()).time_base)
-		}
-	}
 }
 
 impl Deref for Decoder {
-	type Target = Opened;
+	type Target = Context;
 
 	fn deref(&self) -> &<Self as Deref>::Target {
 		&self.0

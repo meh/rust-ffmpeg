@@ -1,11 +1,14 @@
 pub mod video;
 pub use self::video::Video;
+pub use self::video::Encoder as VideoEncoder;
 
 pub mod audio;
 pub use self::audio::Audio;
+pub use self::audio::Encoder as AudioEncoder;
 
 pub mod subtitle;
 pub use self::subtitle::Subtitle;
+pub use self::subtitle::Encoder as SubtitleEncoder;
 
 pub mod motion_estimation;
 pub use self::motion_estimation::MotionEstimation;
@@ -24,12 +27,11 @@ use std::ops::{Deref, DerefMut};
 
 use libc::c_int;
 use ffi::*;
-use super::Id;
-use super::context::Opened;
+use super::{Id, Context};
 use ::{Codec, Error, Rational};
 use ::media;
 
-pub struct Encoder(pub Opened);
+pub struct Encoder(pub Context);
 
 impl Encoder {
 	pub fn video(self) -> Result<Video, Error> {
@@ -108,7 +110,7 @@ impl Encoder {
 }
 
 impl Deref for Encoder {
-	type Target = Opened;
+	type Target = Context;
 
 	fn deref(&self) -> &<Self as Deref>::Target {
 		&self.0
