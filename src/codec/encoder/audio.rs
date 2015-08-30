@@ -5,8 +5,9 @@ use libc::c_int;
 use ffi::*;
 
 use super::Encoder as Super;
-use ::{Packet, Error, Dictionary, Codec};
+use ::{Packet, Error, Dictionary, Codec, ChannelLayout};
 use ::frame;
+use ::util::format;
 
 pub struct Audio(pub Super);
 
@@ -45,6 +46,24 @@ impl Audio {
 			else {
 				Err(Error::InvalidData)
 			}
+		}
+	}
+
+	pub fn set_rate(&mut self, rate: i32) {
+		unsafe {
+			(*self.as_mut_ptr()).sample_rate = rate;
+		}
+	}
+
+	pub fn set_format(&mut self, value: format::Sample) {
+		unsafe {
+			(*self.as_mut_ptr()).sample_fmt = value.into();
+		}
+	}
+
+	pub fn set_channel_layout(&mut self, value: ChannelLayout) {
+		unsafe {
+			(*self.as_mut_ptr()).channel_layout = value.bits();
 		}
 	}
 }
