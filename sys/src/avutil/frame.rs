@@ -61,6 +61,7 @@ pub struct AVFrame {
 	pub quality: c_int,
 
 	pub opaque: *mut c_void,
+	pub error: [uint8_t; AV_NUM_DATA_POINTERS],
 
 	pub repeat_pict: c_int,
 	pub interlaced_frame: c_int,
