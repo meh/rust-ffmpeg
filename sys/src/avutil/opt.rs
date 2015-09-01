@@ -113,13 +113,13 @@ extern {
 	pub fn av_opt_set_int(obj: *mut c_void, name: *const c_char, val: int64_t, search_flags: c_int) -> c_int;
 	pub fn av_opt_set_double(obj: *mut c_void, name: *const c_char, val: c_double, search_flags: c_int) -> c_int;
 	pub fn av_opt_set_q(obj: *mut c_void, name: *const c_char, val: AVRational, search_flags: c_int) -> c_int;
-	pub fn av_set_bin(obj: *mut c_void, name: *const c_char, val: *const uint8_t, search_flags: c_int) -> c_int;
-	pub fn av_set_image_size(obj: *mut c_void, name: *const c_char, w: c_int, h: c_int, size: c_int, search_flags: c_int) -> c_int;
-	pub fn av_set_pixel_fmt(obj: *mut c_void, name: *const c_char, fmt: AVPixelFormat, search_flags: c_int) -> c_int;
-	pub fn av_set_sample_fmt(obj: *mut c_void, name: *const c_char, fmt: AVSampleFormat, search_flags: c_int) -> c_int;
-	pub fn av_set_video_rate(obj: *mut c_void, name: *const c_char, val: AVRational, search_flags: c_int) -> c_int;
-	pub fn av_set_channel_layout(obj: *mut c_void, name: *const c_char, ch_layout: int64_t, search_flags: c_int) -> c_int;
-	pub fn av_set_dict_val(obj: *mut c_void, name: *const c_char, val: *const AVDictionary, search_flags: c_int) -> c_int;
+	pub fn av_opt_set_bin(obj: *mut c_void, name: *const c_char, val: *const uint8_t, len: c_int, search_flags: c_int) -> c_int;
+	pub fn av_opt_set_image_size(obj: *mut c_void, name: *const c_char, w: c_int, h: c_int, size: c_int, search_flags: c_int) -> c_int;
+	pub fn av_opt_set_pixel_fmt(obj: *mut c_void, name: *const c_char, fmt: AVPixelFormat, search_flags: c_int) -> c_int;
+	pub fn av_opt_set_sample_fmt(obj: *mut c_void, name: *const c_char, fmt: AVSampleFormat, search_flags: c_int) -> c_int;
+	pub fn av_opt_set_video_rate(obj: *mut c_void, name: *const c_char, val: AVRational, search_flags: c_int) -> c_int;
+	pub fn av_opt_set_channel_layout(obj: *mut c_void, name: *const c_char, ch_layout: int64_t, search_flags: c_int) -> c_int;
+	pub fn av_opt_set_dict_val(obj: *mut c_void, name: *const c_char, val: *const AVDictionary, search_flags: c_int) -> c_int;
 
 	pub fn av_opt_get(obj: *mut c_void, name: *const c_char, search_flags: c_int, out_val: *mut *mut uint8_t) -> c_int;
 	pub fn av_opt_get_int(obj: *mut c_void, name: *const c_char, search_flags: c_int, out_val: *mut int64_t) -> c_int;
