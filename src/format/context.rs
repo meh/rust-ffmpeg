@@ -22,6 +22,14 @@ impl Context {
 		}
 	}
 
+	pub unsafe fn output(ptr: *mut AVFormatContext) -> Self {
+		Context {
+			ptr: ptr,
+
+			_input: false,
+		}
+	}
+
 	pub unsafe fn as_ptr(&self) -> *const AVFormatContext {
 		self.ptr as *const _
 	}
@@ -48,6 +56,38 @@ impl Context {
 
 	pub fn is_output(&self) -> bool {
 		!self._input
+	}
+
+	pub fn write_header(&mut self) -> Result<(), Error> {
+		unsafe {
+			match avformat_write_header(self.as_mut_ptr(), ptr::null_mut()) {
+				0 => Ok(()),
+				e => Err(Error::from(e)),
+			}
+		}
+	}
+
+	pub fn write_header_with(&mut self, options: Dictionary) -> Result<(), Error> {
+		unsafe {
+			let mut opts   = options.take();
+			let     status =  avformat_write_header(self.as_mut_ptr(), &mut opts);
+
+			Dictionary::own(opts);
+
+			match status {
+				0 => Ok(()),
+				e => Err(Error::from(e)),
+			}
+		}
+	}
+
+	pub fn write_trailer(&mut self) -> Result<(), Error> {
+		unsafe {
+			match av_write_trailer(self.as_mut_ptr()) {
+				0 => Ok(()),
+				e => Err(Error::from(e)),
+			}
+		}
 	}
 
 	pub fn stream(&self, index: usize) -> Option<Stream> {
@@ -82,6 +122,18 @@ impl Context {
 		unsafe {
 			StreamIterMut::new(self.as_mut_ptr())
 		}
+	}
+
+	pub fn new_stream(&mut self, codec: &Codec) -> Option<StreamMut> {
+	    unsafe {
+	        let ptr = avformat_new_stream(self.as_mut_ptr(), codec.as_ptr());
+			if ptr.is_null() {
+				None
+			}
+			else {
+				Some(StreamMut::wrap(ptr))
+			}
+	    }
 	}
 
 	pub fn metadata(&self) -> Dictionary {
