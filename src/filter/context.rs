@@ -31,3 +31,13 @@ impl<'a> Context<'a> {
 		self.ptr
 	}
 }
+
+impl<'a> Drop for Context<'a> {
+	fn drop(&mut self) {
+		unsafe {
+			if self._own && self.as_ptr() != ptr::null() {
+				avfilter_free(self.as_mut_ptr());
+			}
+		}
+	}
+}
