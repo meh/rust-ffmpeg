@@ -1,8 +1,10 @@
 use std::ptr;
+use std::ffi::CString;
 use std::marker::PhantomData;
 
 use ffi::*;
 use ::Error;
+use super::{Context, Filter, InOut};
 
 pub struct FilterGraph<'a> {
 	ptr: *mut AVFilterGraph,
@@ -48,6 +50,59 @@ impl<'a> FilterGraph<'a> {
 				_own: true,
 				_marker: PhantomData
 			})
+		}
+	}
+
+	pub fn create_filter<'b>(&mut self, filter: &Filter, name: &str, args: &str) -> Result<Context<'b>, Error> {
+		let mut context = ptr::null_mut::<AVFilterContext>();
+		let name_cstr = CString::new(name).unwrap();
+		let args_cstr = CString::new(args).unwrap();
+		let ret = unsafe {
+			avfilter_graph_create_filter(&mut context as *mut _, filter.as_ptr(),
+				name_cstr.as_ptr(), args_cstr.as_ptr(), ptr::null_mut(), self.as_mut_ptr())
+		};
+		if ret >= 0 {
+			unsafe { Ok(Context::wrap(context)) }
+		}
+		else {
+			Err(Error::from(ret))
+		}
+	}
+
+	pub fn create_filter_by_name<'b>(&mut self, filter_name: &str, name: &str, args: &str) -> Result<Context<'b>, Error> {
+		let filter = try!(Filter::get_by_name(filter_name));
+		self.create_filter(&filter, name, args)
+	}
+
+	pub fn parse_ptr(&mut self, filters: &str, inputs: InOut, outputs: InOut) -> Result<(), Error> {
+		let filters_cstr = CString::new(filters).unwrap();
+		unsafe {
+		    let mut inpts = inputs.take();
+		    let mut otpts = outputs.take();
+		    let ret = avfilter_graph_parse_ptr(self.as_mut_ptr(), filters_cstr.as_ptr(),
+				&mut inpts, &mut otpts, ptr::null_mut());
+
+		    InOut::own(inpts);
+		    InOut::own(otpts);
+
+		    if ret >= 0 {
+			    Ok(())
+		    }
+			else {
+			    Err(Error::from(ret))
+		    }
+		}
+	}
+
+	pub fn config(&mut self) -> Result<(), Error> {
+		let ret = unsafe {
+			avfilter_graph_config(self.as_mut_ptr(), ptr::null_mut())
+		};
+		if ret >= 0 {
+			Ok(())
+		}
+		else {
+			Err(Error::from(ret))
 		}
 	}
 }
