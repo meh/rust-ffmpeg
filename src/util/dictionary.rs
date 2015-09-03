@@ -83,6 +83,23 @@ impl<'a> Drop for Dictionary<'a> {
 	}
 }
 
+impl<'a> Clone for Dictionary<'a> {
+	fn clone(&self) -> Self {
+		let mut dictionary = Dictionary::new();
+		dictionary.clone_from(self);
+
+		dictionary
+	}
+
+	fn clone_from(&mut self, source: &Self) {
+		unsafe {
+			let mut ptr = self.as_mut_ptr();
+			av_dict_copy(&mut ptr as *mut _, source.as_ptr(), AV_DICT_DONT_OVERWRITE);
+			self.ptr = ptr;
+		}
+	}
+}
+
 pub struct DictionaryIter<'a> {
 	ptr: *const AVDictionary,
 	cur: *mut AVDictionaryEntry,
