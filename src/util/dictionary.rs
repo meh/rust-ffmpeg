@@ -2,6 +2,7 @@ use std::marker::PhantomData;
 use std::ptr;
 use std::ffi::{CStr, CString};
 use std::str::from_utf8_unchecked;
+use std::collections::HashMap;
 
 use ffi::*;
 
@@ -97,6 +98,16 @@ impl<'a> Clone for Dictionary<'a> {
 			av_dict_copy(&mut ptr as *mut _, source.as_ptr(), AV_DICT_DONT_OVERWRITE);
 			self.ptr = ptr;
 		}
+	}
+}
+
+impl<'a> From<HashMap<String, String>> for Dictionary<'a> {
+	fn from(map: HashMap<String, String>) -> Self {
+		let mut dictionary = Dictionary::new();
+		for (k, v) in map.into_iter() {
+			dictionary.set(&k, &v);
+		}
+		dictionary
 	}
 }
 
