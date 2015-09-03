@@ -40,6 +40,17 @@ impl<'a> Dictionary<'a> {
 		Dictionary { ptr: ptr::null_mut(), _own: true, _marker: PhantomData }
 	}
 
+	pub fn set(&mut self, key: &str, value: &str) {
+		let key_cstr = CString::new(key).unwrap();
+		let value_cstr = CString::new(value).unwrap();
+		unsafe {
+			let mut ptr = self.as_mut_ptr();
+			if av_dict_set(&mut ptr as *mut _, key_cstr.as_ptr(), value_cstr.as_ptr(), 0) >= 0 {
+				self.ptr = ptr;
+			}
+		}
+	}
+
 	pub fn iter(&self) -> DictionaryIter {
 		unsafe {
 			DictionaryIter::new(self.as_ptr())
