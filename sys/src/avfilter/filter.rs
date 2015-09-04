@@ -237,7 +237,7 @@ extern {
 	pub fn avfilter_process_command(filter: *mut AVFilterContext, cmd: *const c_char, arg: *const c_char, res: *const c_char, res_len: c_int, flags: c_int) -> c_int;
 
 	pub fn avfilter_register_all();
-	pub fn avfilter_register(filter: *mut AVFilter) -> c_int;
+	pub fn avfilter_register(filter: *const AVFilter) -> c_int;
 
 	pub fn avfilter_get_by_name(name: *const c_char) -> *mut AVFilter;
 	pub fn avfilter_next(prev: *const AVFilter) -> *const AVFilter;
