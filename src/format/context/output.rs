@@ -1,9 +1,10 @@
 use std::ops::{Deref, DerefMut};
 use std::ptr;
+use std::path::Path;
 use std::ffi::CString;
 
 use ffi::*;
-use ::{Error, Codec, StreamMut, Dictionary};
+use ::{Error, media, codec, Codec, StreamMut, Dictionary};
 use super::common::Context;
 
 pub struct Output {
@@ -28,6 +29,15 @@ impl Output {
 }
 
 impl Output {
+	pub fn guess_codec<P: AsRef<Path>>(&self, path: &P, kind: media::Type) -> codec::Id {
+		// XXX: use to_cstring when stable
+		let path = CString::new(path.as_ref().as_os_str().to_str().unwrap()).unwrap();
+		unsafe {
+			codec::Id::from(av_guess_codec((*self.ptr).oformat, ptr::null(), path.as_ptr(), ptr::null(), kind.into()))
+		}
+
+	}
+
 	pub fn write_header(&mut self) -> Result<(), Error> {
 		unsafe {
 			match avformat_write_header(self.as_mut_ptr(), ptr::null_mut()) {
