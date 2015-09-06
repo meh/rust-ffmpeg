@@ -51,6 +51,8 @@ pub struct AVFrame {
 	pub pict_type: AVPictureType,
 	pub sample_aspect_ratio: AVRational,
 
+	pub base: [*mut uint8_t; AV_NUM_DATA_POINTERS],
+
 	pub pts: int64_t,
 	pub pkt_pts: int64_t,
 	pub pkt_dts: int64_t,
