@@ -265,6 +265,6 @@ extern {
 	pub fn avfilter_graph_parse2(graph: *mut AVFilterGraph, filters: *const c_char, inputs: *mut *mut AVFilterInOut, outputs: *mut *mut AVFilterInOut) -> c_int;
 	pub fn avfilter_graph_send_command(graph: *mut AVFilterGraph, target: *const c_char, cmd: *const c_char, arg: *const c_char, res: *mut c_char, res_len: c_int, flags: c_int) -> c_int;
 	pub fn avfilter_graph_queue_command(graph: *mut AVFilterGraph, target: *const c_char, cmd: *const c_char, arg: *const c_char, flags: c_int, ts: c_double) -> c_int;
-	pub fn avfilter_graph_dump(graph: *mut AVFilterGraph, options: *const c_char) -> *mut c_char;
+	pub fn avfilter_graph_dump(graph: *const AVFilterGraph, options: *const c_char) -> *mut c_char;
 	pub fn avfilter_graph_request_oldest(graph: *mut AVFilterGraph) -> c_int;
 }
