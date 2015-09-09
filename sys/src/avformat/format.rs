@@ -531,7 +531,7 @@ extern {
 	pub fn av_write_trailer(s: *mut AVFormatContext) -> c_int;
 
 	pub fn av_guess_format(short_name: *const c_char, filename: *const c_char, mime_type: *const c_char) -> *mut AVOutputFormat;
-	pub fn av_guess_codec(fmt: *mut AVOutputFormat, short_name: *const c_char, filename: *const c_char, mime_type: *const c_char, kind: AVMediaType) -> AVCodecID;
+	pub fn av_guess_codec(fmt: *const AVOutputFormat, short_name: *const c_char, filename: *const c_char, mime_type: *const c_char, kind: AVMediaType) -> AVCodecID;
 
 	pub fn av_get_output_timestamp(s: *mut AVFormatContext, stream: c_int, dts: *mut int64_t, wall: *mut int64_t) -> c_int;
 
