@@ -1,6 +1,6 @@
 [package]
 name    = "ffmpeg-sys"
-version = "2.7.1-8"
+version = "2.7.1-9"
 
 authors = ["meh. <meh@schizofreni.co>"]
 license = "WTFPL"
