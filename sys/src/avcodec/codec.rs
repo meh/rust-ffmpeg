@@ -195,6 +195,8 @@ pub enum AVCodecID {
 	AV_CODEC_ID_HQX,
 	AV_CODEC_ID_TDSC,
 	AV_CODEC_ID_HQ_HQA,
+	AV_CODEC_ID_HAP,
+	AV_CODEC_ID_DDS,
 
 	AV_CODEC_ID_BRENDER_PIX = MKBETAG!(b'B', b'P', b'I', b'X'),
 	AV_CODEC_ID_Y41P        = MKBETAG!(b'Y', b'4', b'1', b'P'),
@@ -256,6 +258,7 @@ pub enum AVCodecID {
 	AV_CODEC_ID_PCM_S8_PLANAR,
 	AV_CODEC_ID_PCM_S24LE_PLANAR_DEPRECATED,
 	AV_CODEC_ID_PCM_S32LE_PLANAR_DEPRECATED,
+	AV_CODEC_ID_PCM_S16BE_PLANAR_DEPRECATED,
 	AV_CODEC_ID_PCM_S24LE_PLANAR = MKBETAG!(  24, b'P', b'S', b'P'),
 	AV_CODEC_ID_PCM_S32LE_PLANAR = MKBETAG!(  32, b'P', b'S', b'P'),
 	AV_CODEC_ID_PCM_S16BE_PLANAR = MKBETAG!(b'P', b'S', b'P', 16),
@@ -298,6 +301,7 @@ pub enum AVCodecID {
 	AV_CODEC_ID_ADPCM_DTK     = MKBETAG!(b'D', b'T', b'K', b' '),
 	AV_CODEC_ID_ADPCM_IMA_RAD = MKBETAG!(b'R', b'A', b'D', b' '),
 	AV_CODEC_ID_ADPCM_G726LE  = MKBETAG!(b'6', b'2', b'7', b'G'),
+	AV_CODEC_ID_ADPCM_THP_LE  = MKBETAG!(b'T', b'H', b'P', b'L'),
 
 	/* AMR */
 	AV_CODEC_ID_AMR_NB = 0x12000,
@@ -394,6 +398,7 @@ pub enum AVCodecID {
 	AV_CODEC_ID_DSD_MSBF        = MKBETAG!(b'D', b'S', b'D', b'M'),
 	AV_CODEC_ID_DSD_LSBF_PLANAR = MKBETAG!(b'D', b'S', b'D', b'1'),
 	AV_CODEC_ID_DSD_MSBF_PLANAR = MKBETAG!(b'D', b'S', b'D', b'8'),
+	AV_CODEC_ID_4GV             = MKBETAG!(b's', b'4', b'g', b'v'),
 
 	/* subtitle codecs */
 	AV_CODEC_ID_DVD_SUBTITLE   = 0x17000,
@@ -405,20 +410,21 @@ pub enum AVCodecID {
 	AV_CODEC_ID_HDMV_PGS_SUBTITLE,
 	AV_CODEC_ID_DVB_TELETEXT,
 	AV_CODEC_ID_SRT,
-	AV_CODEC_ID_MICRODVD   = MKBETAG!(b'm', b'D', b'V', b'D'),
-	AV_CODEC_ID_EIA_608    = MKBETAG!(b'c', b'6', b'0', b'8'),
-	AV_CODEC_ID_JACOSUB    = MKBETAG!(b'J', b'S', b'U', b'B'),
-	AV_CODEC_ID_SAMI       = MKBETAG!(b'S', b'A', b'M', b'I'),
-	AV_CODEC_ID_REALTEXT   = MKBETAG!(b'R', b'T', b'X', b'T'),
-	AV_CODEC_ID_STL        = MKBETAG!(b'S', b'p', b'T', b'L'),
-	AV_CODEC_ID_SUBVIEWER1 = MKBETAG!(b'S', b'b', b'V', b'1'),
-	AV_CODEC_ID_SUBVIEWER  = MKBETAG!(b'S', b'u', b'b', b'V'),
-	AV_CODEC_ID_SUBRIP     = MKBETAG!(b'S', b'R', b'i', b'p'),
-	AV_CODEC_ID_WEBVTT     = MKBETAG!(b'W', b'V', b'T', b'T'),
-	AV_CODEC_ID_MPL2       = MKBETAG!(b'M', b'P', b'L', b'2'),
-	AV_CODEC_ID_VPLAYER    = MKBETAG!(b'V', b'P', b'l', b'r'),
-	AV_CODEC_ID_PJS        = MKBETAG!(b'P', b'h', b'J', b'S'),
-	AV_CODEC_ID_ASS        = MKBETAG!(b'A', b'S', b'S', b' '),
+	AV_CODEC_ID_MICRODVD           = MKBETAG!(b'm', b'D', b'V', b'D'),
+	AV_CODEC_ID_EIA_608            = MKBETAG!(b'c', b'6', b'0', b'8'),
+	AV_CODEC_ID_JACOSUB            = MKBETAG!(b'J', b'S', b'U', b'B'),
+	AV_CODEC_ID_SAMI               = MKBETAG!(b'S', b'A', b'M', b'I'),
+	AV_CODEC_ID_REALTEXT           = MKBETAG!(b'R', b'T', b'X', b'T'),
+	AV_CODEC_ID_STL                = MKBETAG!(b'S', b'p', b'T', b'L'),
+	AV_CODEC_ID_SUBVIEWER1         = MKBETAG!(b'S', b'b', b'V', b'1'),
+	AV_CODEC_ID_SUBVIEWER          = MKBETAG!(b'S', b'u', b'b', b'V'),
+	AV_CODEC_ID_SUBRIP             = MKBETAG!(b'S', b'R', b'i', b'p'),
+	AV_CODEC_ID_WEBVTT             = MKBETAG!(b'W', b'V', b'T', b'T'),
+	AV_CODEC_ID_MPL2               = MKBETAG!(b'M', b'P', b'L', b'2'),
+	AV_CODEC_ID_VPLAYER            = MKBETAG!(b'V', b'P', b'l', b'r'),
+	AV_CODEC_ID_PJS                = MKBETAG!(b'P', b'h', b'J', b'S'),
+	AV_CODEC_ID_ASS                = MKBETAG!(b'A', b'S', b'S', b' '),
+	AV_CODEC_ID_HDMV_TEXT_SUBTITLE = MKBETAG!(b'B', b'D', b'T', b'X'),
 
 	/* other specific kind of codecs (generally used for attachments) */
 	AV_CODEC_ID_TTF           = 0x18000,
@@ -464,8 +470,8 @@ pub const AV_CODEC_PROP_REORDER:    c_int = 1 << 3;
 pub const AV_CODEC_PROP_BITMAP_SUB: c_int = 1 << 16;
 pub const AV_CODEC_PROP_TEXT_SUB:   c_int = 1 << 17;
 
-pub const FF_INPUT_BUFFER_PADDING_SIZE: c_int = 32;
-pub const FF_MIN_BUFFER_SIZE:           c_int = 16384;
+pub const AV_INPUT_BUFFER_PADDING_SIZE: c_int = 32;
+pub const AV_MIN_BUFFER_SIZE:           c_int = 16384;
 
 #[derive(Eq, PartialEq, Copy, Clone, Debug)]
 #[repr(C)]
@@ -518,58 +524,60 @@ pub struct RcOverride {
 	quality_factor: c_float,
 }
 
-pub const CODEC_FLAG_UNALIGNED:       c_uint = 0x0001;
-pub const CODEC_FLAG_QSCALE:          c_uint = 0x0002;
-pub const CODEC_FLAG_4MV:             c_uint = 0x0004;
-pub const CODEC_FLAG_OUTPUT_CORRUPT:  c_uint = 0x0008;
-pub const CODEC_FLAG_QPEL:            c_uint = 0x0010;
-pub const CODEC_FLAG_GMC:             c_uint = 0x0020;
-pub const CODEC_FLAG_MV0:             c_uint = 0x0040;
-pub const CODEC_FLAG_INPUT_PRESERVED: c_uint = 0x0100;
-pub const CODEC_FLAG_PASS1:           c_uint = 0x0200;
-pub const CODEC_FLAG_PASS2:           c_uint = 0x0400;
-pub const CODEC_FLAG_GRAY:            c_uint = 0x2000;
-pub const CODEC_FLAG_EMU_EDGE:        c_uint = 0x4000;
-pub const CODEC_FLAG_PSNR:            c_uint = 0x8000;
-pub const CODEC_FLAG_TRUNCATED:       c_uint = 0x00010000;
-pub const CODEC_FLAG_NORMALIZE_AQP:   c_uint = 0x00020000;
-pub const CODEC_FLAG_INTERLACED_DCT:  c_uint = 0x00040000;
-pub const CODEC_FLAG_LOW_DELAY:       c_uint = 0x00080000;
-pub const CODEC_FLAG_GLOBAL_HEADER:   c_uint = 0x00400000;
-pub const CODEC_FLAG_BITEXACT:        c_uint = 0x00800000;
-pub const CODEC_FLAG_AC_PRED:         c_uint = 0x01000000;
-pub const CODEC_FLAG_LOOP_FILTER:     c_uint = 0x00000800;
-pub const CODEC_FLAG_INTERLACED_ME:   c_uint = 0x20000000;
-pub const CODEC_FLAG_CLOSED_GOP:      c_uint = 0x80000000;
+pub const AV_CODEC_FLAG_UNALIGNED:       c_uint = 0x0001;
+pub const AV_CODEC_FLAG_QSCALE:          c_uint = 0x0002;
+pub const AV_CODEC_FLAG_4MV:             c_uint = 0x0004;
+pub const AV_CODEC_FLAG_OUTPUT_CORRUPT:  c_uint = 0x0008;
+pub const AV_CODEC_FLAG_QPEL:            c_uint = 0x0010;
+pub const AV_CODEC_FLAG_GMC:             c_uint = 0x0020;
+pub const AV_CODEC_FLAG_MV0:             c_uint = 0x0040;
+pub const AV_CODEC_FLAG_INPUT_PRESERVED: c_uint = 0x0100;
+pub const AV_CODEC_FLAG_PASS1:           c_uint = 0x0200;
+pub const AV_CODEC_FLAG_PASS2:           c_uint = 0x0400;
+pub const AV_CODEC_FLAG_GRAY:            c_uint = 0x2000;
+pub const AV_CODEC_FLAG_EMU_EDGE:        c_uint = 0x4000;
+pub const AV_CODEC_FLAG_PSNR:            c_uint = 0x8000;
+pub const AV_CODEC_FLAG_TRUNCATED:       c_uint = 0x00010000;
+pub const AV_CODEC_FLAG_NORMALIZE_AQP:   c_uint = 0x00020000;
+pub const AV_CODEC_FLAG_INTERLACED_DCT:  c_uint = 0x00040000;
+pub const AV_CODEC_FLAG_LOW_DELAY:       c_uint = 0x00080000;
+pub const AV_CODEC_FLAG_GLOBAL_HEADER:   c_uint = 0x00400000;
+pub const AV_CODEC_FLAG_BITEXACT:        c_uint = 0x00800000;
+pub const AV_CODEC_FLAG_AC_PRED:         c_uint = 0x01000000;
+pub const AV_CODEC_FLAG_LOOP_FILTER:     c_uint = 0x00000800;
+pub const AV_CODEC_FLAG_INTERLACED_ME:   c_uint = 0x20000000;
+pub const AV_CODEC_FLAG_CLOSED_GOP:      c_uint = 0x80000000;
 
-pub const CODEC_FLAG2_FAST:                c_uint = 0x00000001;
-pub const CODEC_FLAG2_NO_OUTPUT:           c_uint = 0x00000004;
-pub const CODEC_FLAG2_LOCAL_HEADER:        c_uint = 0x00000008;
-pub const CODEC_FLAG2_DROP_FRAME_TIMECODE: c_uint = 0x00002000;
-pub const CODEC_FLAG2_IGNORE_CROP:         c_uint = 0x00010000;
-pub const CODEC_FLAG2_CHUNKS:              c_uint = 0x00008000;
-pub const CODEC_FLAG2_SHOW_ALL:            c_uint = 0x00400000;
-pub const CODEC_FLAG2_EXPORT_MVS:          c_uint = 0x10000000;
-pub const CODEC_FLAG2_SKIP_MANUAL:         c_uint = 0x20000000;
+pub const AV_CODEC_FLAG2_FAST:                c_uint = 0x00000001;
+pub const AV_CODEC_FLAG2_NO_OUTPUT:           c_uint = 0x00000004;
+pub const AV_CODEC_FLAG2_LOCAL_HEADER:        c_uint = 0x00000008;
+pub const AV_CODEC_FLAG2_DROP_FRAME_TIMECODE: c_uint = 0x00002000;
+pub const AV_CODEC_FLAG2_IGNORE_CROP:         c_uint = 0x00010000;
+pub const AV_CODEC_FLAG2_CHUNKS:              c_uint = 0x00008000;
+pub const AV_CODEC_FLAG2_SHOW_ALL:            c_uint = 0x00400000;
+pub const AV_CODEC_FLAG2_EXPORT_MVS:          c_uint = 0x10000000;
+pub const AV_CODEC_FLAG2_SKIP_MANUAL:         c_uint = 0x20000000;
 
-pub const CODEC_CAP_DRAW_HORIZ_BAND:     c_uint = 0x0001;
-pub const CODEC_CAP_DR1:                 c_uint = 0x0002;
-pub const CODEC_CAP_TRUNCATED:           c_uint = 0x0008;
-pub const CODEC_CAP_HWACCEL:             c_uint = 0x0010;
-pub const CODEC_CAP_DELAY:               c_uint = 0x0020;
-pub const CODEC_CAP_SMALL_LAST_FRAME:    c_uint = 0x0040;
-pub const CODEC_CAP_HWACCEL_VDPAU:       c_uint = 0x0080;
-pub const CODEC_CAP_SUBFRAMES:           c_uint = 0x0100;
-pub const CODEC_CAP_EXPERIMENTAL:        c_uint = 0x0200;
-pub const CODEC_CAP_CHANNEL_CONF:        c_uint = 0x0400;
-pub const CODEC_CAP_NEG_LINESIZES:       c_uint = 0x0800;
-pub const CODEC_CAP_FRAME_THREADS:       c_uint = 0x1000;
-pub const CODEC_CAP_SLICE_THREADS:       c_uint = 0x2000;
-pub const CODEC_CAP_PARAM_CHANGE:        c_uint = 0x4000;
-pub const CODEC_CAP_AUTO_THREADS:        c_uint = 0x8000;
-pub const CODEC_CAP_VARIABLE_FRAME_SIZE: c_uint = 0x10000;
-pub const CODEC_CAP_INTRA_ONLY:          c_uint = 0x40000000;
-pub const CODEC_CAP_LOSSLESS:            c_uint = 0x80000000;
+pub const AV_CODEC_CAP_DRAW_HORIZ_BAND:     c_uint = 0x0001;
+pub const AV_CODEC_CAP_DR1:                 c_uint = 0x0002;
+pub const AV_CODEC_CAP_TRUNCATED:           c_uint = 0x0008;
+pub const AV_CODEC_CAP_HWACCEL:             c_uint = 0x0010;
+pub const AV_CODEC_CAP_DELAY:               c_uint = 0x0020;
+pub const AV_CODEC_CAP_SMALL_LAST_FRAME:    c_uint = 0x0040;
+pub const AV_CODEC_CAP_HWACCEL_VDPAU:       c_uint = 0x0080;
+pub const AV_CODEC_CAP_SUBFRAMES:           c_uint = 0x0100;
+pub const AV_CODEC_CAP_EXPERIMENTAL:        c_uint = 0x0200;
+pub const AV_CODEC_CAP_CHANNEL_CONF:        c_uint = 0x0400;
+pub const AV_CODEC_CAP_NEG_LINESIZES:       c_uint = 0x0800;
+pub const AV_CODEC_CAP_FRAME_THREADS:       c_uint = 0x1000;
+pub const AV_CODEC_CAP_SLICE_THREADS:       c_uint = 0x2000;
+pub const AV_CODEC_CAP_PARAM_CHANGE:        c_uint = 0x4000;
+pub const AV_CODEC_CAP_AUTO_THREADS:        c_uint = 0x8000;
+pub const AV_CODEC_CAP_VARIABLE_FRAME_SIZE: c_uint = 0x10000;
+pub const AV_CODEC_CAP_INTRA_ONLY:          c_uint = 0x40000000;
+pub const AV_CODEC_CAP_LOSSLESS:            c_uint = 0x80000000;
+
+pub const HWACCEL_CODEC_CAP_EXPERIMENTAL: c_uint = 0x0200;
 
 pub const MB_TYPE_INTRA4x4:   c_int = 0x0001;
 pub const MB_TYPE_INTRA16x16: c_int = 0x0002;
@@ -630,6 +638,7 @@ pub enum AVPacketSideDataType {
 	AV_PKT_DATA_DISPLAYMATRIX,
 	AV_PKT_DATA_STEREO3D,
 	AV_PKT_DATA_AUDIO_SERVICE_TYPE,
+	AV_PKT_DATA_QUALITY_STATS,
 	AV_PKT_DATA_SKIP_SAMPLES = 70,
 	AV_PKT_DATA_JP_DUALMONO,
 	AV_PKT_DATA_STRINGS_METADATA,
@@ -771,6 +780,7 @@ pub const FF_DEBUG_VIS_QP:      c_int = 0x00002000;
 pub const FF_DEBUG_VIS_MB_TYPE: c_int = 0x00004000;
 pub const FF_DEBUG_BUFFERS:     c_int = 0x00008000;
 pub const FF_DEBUG_THREADS:     c_int = 0x00010000;
+pub const FF_DEBUG_GREEN_MD:    c_int = 0x00800000;
 pub const FF_DEBUG_NOMC:        c_int = 0x01000000;
 
 pub const AV_EF_CRCCHECK:   c_int = 1 << 0;
@@ -900,6 +910,9 @@ pub const FF_SUB_CHARENC_MODE_DO_NOTHING:  c_int = -1;
 pub const FF_SUB_CHARENC_MODE_AUTOMATIC:   c_int = 0;
 pub const FF_SUB_CHARENC_MODE_PRE_DECODER: c_int = 1;
 
+pub const FF_CODEC_PROPERTY_LOSSLESS:        c_int = 0x00000001;
+pub const FF_CODEC_PROPERTY_CLOSED_CAPTIONS: c_int = 0x00000002;
+
 #[repr(C)]
 pub struct AVCodecContext {
 	pub av_class: *const AVClass,
@@ -930,12 +943,12 @@ pub struct AVCodecContext {
 	pub coded_height: c_int,
 	pub gop_size: c_int,
 	pub pix_fmt: AVPixelFormat,
-	pub me_method: c_int,
+	pub me_method: c_int, // XXX: #if FF_API_MOTION_EST
 	pub draw_horiz_band: Option<extern fn(*mut AVCodecContext, *const AVFrame, *mut c_int, c_int, c_int, c_int)>,
 	pub get_format: Option<extern fn(*mut AVCodecContext, *const AVPixelFormat) -> AVPixelFormat>,
 	pub max_b_frames: c_int,
 	pub b_quant_factor: c_float,
-	pub rc_strategy: c_int,
+	pub rc_strategy: c_int, // XXX: #if FF_API_RC_STRATEGY
 	pub b_frame_strategy: c_int,
 	pub b_quant_offset: c_float,
 	pub has_b_frames: c_int,
@@ -963,8 +976,8 @@ pub struct AVCodecContext {
 	pub me_subpel_quality: c_int,
 	pub dtg_active_format: c_int, // XXX: #if FF_API_AFD
 	pub me_range: c_int,
-	pub intra_quant_bias: c_int,
-	pub inter_quant_bias: c_int,
+	pub intra_quant_bias: c_int, // XXX: #if FF_API_QUANT_BIAS
+	pub inter_quant_bias: c_int, // XXX: #if FF_API_QUANT_BIAS
 	pub slice_flags: c_int,
 	pub xvmc_acceleration: c_int, // XXX: #if FF_API_XVMC
 	pub mb_decision: c_int,
@@ -1071,7 +1084,7 @@ pub struct AVCodecContext {
 	pub bits_per_coded_sample: c_int,
 	pub bits_per_raw_sample: c_int,
 	pub lowres: c_int, // XXX: #if FF_API_LOWRES
-	pub coded_frame: *mut AVFrame,
+	pub coded_frame: *mut AVFrame, // XXX: #if FF_API_CODED_FRAME
 	pub thread_count: c_int,
 	pub thread_type: c_int,
 	pub active_thread_type: c_int,
@@ -1109,6 +1122,7 @@ pub struct AVCodecContext {
 	pub chroma_intra_matrix: *mut uint16_t,
 	pub dump_separator: *mut uint8_t,
 	pub codec_whitelist: *mut c_char,
+	pub properties: c_uint,
 }
 
 #[derive(Debug)]
@@ -1322,6 +1336,8 @@ extern {
 
 	pub fn av_codec_get_codec_descriptor(avctx: *const AVCodecContext) -> *const AVCodecDescriptor;
 	pub fn av_codec_set_codec_descriptor(avctx: *mut AVCodecContext, val: *const AVCodecDescriptor);
+
+	pub fn av_codec_get_codec_properties(avctx: *const AVCodecContext) -> c_uint;
 
 	pub fn av_codec_get_lowres(avctx: *const AVCodecContext) -> c_int;
 	pub fn av_codec_set_lowres(avctx: *mut AVCodecContext, val: c_int);

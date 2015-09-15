@@ -36,6 +36,8 @@ pub enum AVPictureType {
 }
 
 extern {
+	pub fn av_version_info() -> *const c_char;
+
 	pub fn avutil_version() -> c_uint;
 	pub fn avutil_configuration() -> *const c_char;
 	pub fn avutil_license() -> *const c_char;

@@ -36,6 +36,7 @@ extern {
 	pub fn av_fifo_reset(f: *mut AVFifoBuffer);
 	pub fn av_fifo_size(f: *const AVFifoBuffer) -> c_int;
 	pub fn av_fifo_space(f: *const AVFifoBuffer) -> c_int;
+	pub fn av_fifo_generic_peek(f: *mut AVFifoBuffer, dest: *mut c_void, buf_size: c_int, func: extern fn(*mut c_void, *mut c_void, c_int)) -> c_int;
 	pub fn av_fifo_generic_read(f: *mut AVFifoBuffer, dest: *mut c_void, buf_size: c_int, func: extern fn(*mut c_void, *mut c_void, c_int)) -> c_int;
 	pub fn av_fifo_generic_write(f: *mut AVFifoBuffer, src: *mut c_void, size: c_int, func: extern fn(*mut c_void, *mut c_void, c_int) -> c_int) -> c_int;
 	pub fn av_fifo_realloc2(f: *mut AVFifoBuffer, size: c_uint) -> c_int;

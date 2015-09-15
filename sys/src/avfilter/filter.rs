@@ -159,7 +159,7 @@ pub struct AVFilterLink {
 	pub in_channel_layouts: *mut AVFilterChannelLayouts,
 	pub out_channel_layouts: *mut AVFilterChannelLayouts,
 	pub request_samples: c_int,
-	pub pool: *mut AVFilterPool,
+	pub pool: *mut AVFilterPool, // XXX: #if FF_API_AVFILTERBUFFER
 	pub graph: *mut AVFilterGraph,
 	pub current_pts: int64_t,
 	pub age_index: c_int,
@@ -168,7 +168,7 @@ pub struct AVFilterLink {
 	pub partial_buf_size: c_int,
 	pub min_samples: c_int,
 	pub max_samples: c_int,
-	pub cur_buf_copy: *mut AVFilterBufferRef,
+	pub cur_buf_copy: *mut AVFilterBufferRef, // XXX: #if FF_API_AVFILTERBUFFER
 	pub closed: c_int,
 	pub channels: c_int,
 	pub frame_requested: c_uint,

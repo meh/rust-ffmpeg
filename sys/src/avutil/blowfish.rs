@@ -9,6 +9,7 @@ pub struct AVBlowfish {
 }
 
 extern {
+	pub fn av_blowfish_alloc() -> *mut AVBlowfish;
 	pub fn av_blowfish_init(ctx: *mut AVBlowfish, key: *const uint8_t, key_len: c_int);
 	pub fn av_blowfish_crypt_ecb(ctx: *mut AVBlowfish, xl: *mut uint32_t, xr: *mut uint32_t, decrypt: c_int);
 	pub fn av_blowfish_crypt(ctx: *mut AVBlowfish, dst: *mut uint8_t, src: *const uint8_t, count: c_int, iv: *mut uint8_t, decrypt: c_int);

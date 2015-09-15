@@ -246,6 +246,7 @@ pub struct AVStream {
 	pub inject_global_side_data: c_int,
 	pub recommended_encoder_configuration: *mut c_char,
 	pub display_aspect_ratio: AVRational,
+	pub priv_pts: *mut c_void,
 }
 
 pub const AV_PROGRAM_RUNNING: c_int = 1;
@@ -320,8 +321,8 @@ pub struct AVFormatContext {
 	pub max_delay:   c_int,
 	pub flags:       c_int,
 
-	pub probesize: c_uint,
-	pub max_analyze_duration: c_int,
+	pub probesize: c_uint, // XXX: #if FF_API_PROBESIZE_32
+	pub max_analyze_duration: c_int, // XXX: #if FF_API_PROBESIZE_32
 
 	pub key:    *const uint8_t,
 	pub keylen: c_int,
@@ -388,8 +389,11 @@ pub struct AVFormatContext {
 	pub control_message_cb: av_format_control_message,
 
 	pub output_ts_offset: int64_t,
-	pub max_analyze_duration2: int64_t,
-	pub probesize2: int64_t,
+	pub max_analyze_duration2: int64_t, // XXX: #if FF_API_PROBESIZE_32
+	pub probesize2: int64_t, // XXX: #if FF_API_PROBESIZE_32
+
+// pub max_analyze_duration: int64_t, // XXX: #if !FF_API_PROBESIZE_32
+// pub probesize: int64_t, // XXX: #if !FF_API_PROBESIZE_32
 
 	pub dump_separator: *mut uint8_t,
 	pub data_codec_id: AVCodecID,
