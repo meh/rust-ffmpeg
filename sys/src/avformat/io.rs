@@ -86,6 +86,7 @@ pub struct AVIOContext {
 	pub seek_count: c_int,
 	pub writeout_count: c_int,
 	pub orig_buffer_size: c_int,
+	pub short_seek_threshold: c_int,
 }
 
 #[inline(always)]
@@ -153,4 +154,10 @@ extern {
 	pub fn avio_pause(h: *mut AVIOContext, pause: c_int) -> c_int;
 	pub fn avio_seek_time(h: *mut AVIOContext, stream_index: c_int, timestamp: int64_t, flags: c_int) -> int64_t;
 	pub fn avio_read_to_bprint(h: *mut AVIOContext, pb: *mut AVBPrint, max_size: size_t) -> c_int;
+
+	pub fn avio_accept(s: *mut AVIOContext, c: *mut *mut AVIOContext) -> c_int;
+	pub fn avio_handshake(c: *mut AVIOContext) -> c_int;
+
+	pub fn avpriv_io_move(url_src: *const c_char, url_dst: *const c_char) -> c_int;
+	pub fn avpriv_io_delete(url: *const c_char) -> c_int;
 }

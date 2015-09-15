@@ -63,9 +63,11 @@ pub enum AVPixelFormat {
 	AV_PIX_FMT_BGR555BE,
 	AV_PIX_FMT_BGR555LE,
 
-	AV_PIX_FMT_VAAPI_MOCO,
-	AV_PIX_FMT_VAAPI_IDCT,
-	AV_PIX_FMT_VAAPI_VLD,
+	AV_PIX_FMT_VAAPI_MOCO, // XXX: #if FF_API_VAAPI
+	AV_PIX_FMT_VAAPI_IDCT, // XXX: #if FF_API_VAAPI
+	AV_PIX_FMT_VAAPI_VLD, // XXX: #if FF_API_VAAPI
+
+// AV_PIX_FMT_VAAPI, // XXX: #if !FF_API_VAAPI
 
 	AV_PIX_FMT_YUV420P16LE,
 	AV_PIX_FMT_YUV420P16BE,
@@ -202,6 +204,10 @@ pub enum AVPixelFormat {
 	AV_PIX_FMT_YUV440P10BE,
 	AV_PIX_FMT_YUV440P12LE,
 	AV_PIX_FMT_YUV440P12BE,
+	AV_PIX_FMT_AYUV64LE,
+	AV_PIX_FMT_AYUV64BE,
+
+	AV_PIX_FMT_VIDEOTOOLBOX,
 
 	AV_PIX_FMT_NB,
 }
@@ -274,8 +280,9 @@ pub mod default {
 	pub const AV_PIX_FMT_YUVA422P16: AVPixelFormat = AV_PIX_FMT_YUVA422P16LE;
 	pub const AV_PIX_FMT_YUVA444P16: AVPixelFormat = AV_PIX_FMT_YUVA444P16LE;
 
-	pub const AV_PIX_FMT_XYZ12: AVPixelFormat = AV_PIX_FMT_XYZ12LE;
-	pub const AV_PIX_FMT_NV20:  AVPixelFormat = AV_PIX_FMT_NV20LE;
+	pub const AV_PIX_FMT_XYZ12:  AVPixelFormat = AV_PIX_FMT_XYZ12LE;
+	pub const AV_PIX_FMT_NV20:   AVPixelFormat = AV_PIX_FMT_NV20LE;
+	pub const AV_PIX_FMT_AYUV64: AVPixelFormat = AV_PIX_FMT_AYUV64LE;
 }
 
 #[cfg(target_endian = "big")]
@@ -341,8 +348,9 @@ pub mod default {
 	pub const AV_PIX_FMT_YUVA422P16: AVPixelFormat = AV_PIX_FMT_YUVA422P16BE;
 	pub const AV_PIX_FMT_YUVA444P16: AVPixelFormat = AV_PIX_FMT_YUVA444P16BE;
 
-	pub const AV_PIX_FMT_XYZ12: AVPixelFormat = AV_PIX_FMT_XYZ12BE;
-	pub const AV_PIX_FMT_NV20:  AVPixelFormat = AV_PIX_FMT_NV20BE;
+	pub const AV_PIX_FMT_XYZ12:  AVPixelFormat = AV_PIX_FMT_XYZ12BE;
+	pub const AV_PIX_FMT_NV20:   AVPixelFormat = AV_PIX_FMT_NV20BE;
+	pub const AV_PIX_FMT_AYUV64: AVPixelFormat = AV_PIX_FMT_AYUV64BE;
 }
 
 #[derive(Eq, PartialEq, Copy, Clone, Debug)]
