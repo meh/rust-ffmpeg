@@ -1,6 +1,7 @@
 [package]
 name    = "ffmpeg-sys"
 version = "2.8.0-1"
+build   = "build.rs"
 
 authors = ["meh. <meh@schizofreni.co>"]
 license = "WTFPL"
@@ -13,9 +14,15 @@ keywords    = ["audio", "video"]
 libc = "*"
 
 [features]
-default  = ["avcodec", "avdevice", "avfilter", "avformat", "avresample", "postproc", "swresample", "swscale"]
+default  = ["avcodec", "avdevice", "avfilter", "avformat", "avresample", "swresample", "swscale"]
 
-static     = []
+static = []
+
+build          = ["static"]
+build-gpl      = []
+build-nonfree  = []
+build-version3 = []
+
 avcodec    = []
 avdevice   = ["avformat"]
 avfilter   = []
