@@ -19,9 +19,9 @@ default  = ["avcodec", "avdevice", "avfilter", "avformat", "avresample", "swresa
 static = []
 
 build          = ["static"]
-build-gpl      = []
-build-nonfree  = []
-build-version3 = []
+build-gpl      = ["build"]
+build-nonfree  = ["build"]
+build-version3 = ["build"]
 
 avcodec    = []
 avdevice   = ["avformat"]

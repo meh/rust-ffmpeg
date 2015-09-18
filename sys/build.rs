@@ -231,6 +231,10 @@ fn build() -> io::Result<()> {
 }
 
 fn main() {
+	if env::var("CARGO_FEATURE_BUILD").is_err() {
+		return;
+	}
+
 	println!("cargo:rustc-link-search=native={}", search().join("lib").to_string_lossy());
 
 	if fs::metadata(&search().join("lib").join("libavutil.a")).is_ok() {
