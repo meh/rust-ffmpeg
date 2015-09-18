@@ -17,12 +17,65 @@ libc = "*"
 default  = ["avcodec", "avdevice", "avfilter", "avformat", "avresample", "swresample", "swscale"]
 
 static = []
+build  = ["static"]
 
-build          = ["static"]
+# licensing
 build-gpl      = ["build"]
 build-nonfree  = ["build"]
 build-version3 = ["build"]
 
+# ssl
+build-lib-gnutls  = ["build"]
+build-lib-openssl = ["build"]
+
+# filters
+build-lib-fontconfig = ["build"]
+build-lib-frei0r     = ["build"]
+build-lib-ladspa     = ["build"]
+build-lib-ass        = ["build"]
+build-lib-freetype   = ["build"]
+build-lib-freebidi   = ["build"]
+build-lib-opencv     = ["build"]
+
+# encoders/decoders
+build-lib-aacplus          = ["build"]
+build-lib-celt             = ["build"]
+build-lib-dcadec           = ["build"]
+build-lib-faac             = ["build"]
+build-lib-fdk-aac          = ["build"]
+build-lib-gsm              = ["build"]
+build-lib-ilbc             = ["build"]
+build-lib-kvazaar          = ["build"]
+build-lib-mp3lame          = ["build"]
+build-lib-opencore-amrnb   = ["build"]
+build-lib-opencore-amrwb   = ["build"]
+build-lib-openh264         = ["build"]
+build-lib-openjpeg         = ["build"]
+build-lib-opus             = ["build"]
+build-lib-schroedinger     = ["build"]
+build-lib-shine            = ["build"]
+build-lib-snappy           = ["build"]
+build-lib-speex            = ["build"]
+build-lib-stagefright-h264 = ["build"]
+build-lib-theora           = ["build"]
+build-lib-twolame          = ["build"]
+build-lib-utvideo          = ["build"]
+build-lib-vo-aacenc        = ["build"]
+build-lib-vo-amrwbenc      = ["build"]
+build-lib-vorbis           = ["build"]
+build-lib-vpx              = ["build"]
+build-lib-wavpack          = ["build"]
+build-lib-webp             = ["build"]
+build-lib-x264             = ["build"]
+build-lib-x265             = ["build"]
+build-lib-avs              = ["build"]
+build-lib-xvid             = ["build"]
+
+# protocols
+build-lib-smbclient = ["build"]
+build-lib-ssh       = ["build"]
+
+# components
 avcodec    = []
 avdevice   = ["avformat"]
 avfilter   = []

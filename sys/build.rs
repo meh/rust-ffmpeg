@@ -99,132 +99,120 @@ fn build() -> io::Result<()> {
 	configure.arg("--enable-static");
 	configure.arg("--disable-shared");
 
-	// the binary using ffmpeg-sys must comply with GPL
-	if env::var("CARGO_FEATURE_BUILD_GPL").is_ok() {
-		configure.arg("--enable-gpl");
-	}
-	
-	// the binary using ffmpeg-sys must comply with (L)GPLv3
-	if env::var("CARGO_FEATURE_BUILD_VERSION3").is_ok() {
-		configure.arg("--enable-version3");
-	}
-
-	// the binary using ffmpeg-sys cannot be redistributed
-	if env::var("CARGO_FEATURE_BUILD_NONFREE").is_ok() {
-		configure.arg("--enable-nonfree");
-	}
-
 	// do not build programs since we don't need them
 	configure.arg("--disable-programs");
 
-	// disable/enable building libraries based on features
-	if env::var("CARGO_FEATURE_AVCODEC").is_ok() {
-		configure.arg("--enable-avcodec");
-	}
-	else {
-		configure.arg("--disable-avcodec");
-	}
-
-	if env::var("CARGO_FEATURE_AVDEVICE").is_ok() {
-		configure.arg("--enable-avdevice");
-	}
-	else {
-		configure.arg("--disable-avdevice");
+	macro_rules! switch {
+		($conf:expr, $feat:expr, $name:expr) => (
+			if env::var(concat!("CARGO_FEATURE_", $feat)).is_ok() {
+				$conf.arg(concat!("--enable-", $name));
+			}
+			else {
+				$conf.arg(concat!("--disable-", $name));
+			}
+		)
 	}
 
-	if env::var("CARGO_FEATURE_AVFILTER").is_ok() {
-		configure.arg("--enable-avfilter");
-	}
-	else {
-		configure.arg("--disable-avfilter");
-	}
-
-	if env::var("CARGO_FEATURE_AVFORMAT").is_ok() {
-		configure.arg("--enable-avformat");
-	}
-	else {
-		configure.arg("--disable-avformat");
+	macro_rules! enable {
+		($conf:expr, $feat:expr, $name:expr) => (
+			if env::var(concat!("CARGO_FEATURE_", $feat)).is_ok() {
+				$conf.arg(concat!("--enable-", $name));
+			}
+		)
 	}
 
-	if env::var("CARGO_FEATURE_AVRESAMPLE").is_ok() {
-		configure.arg("--enable-avresample");
-	}
-	else {
-		configure.arg("--disable-avresample");
-	}
-
-	if env::var("CARGO_FEATURE_POSTPROC").is_ok() {
-		if env::var("CARGO_FEATURE_BUILD_GPL").is_err() {
-			return Err(io::Error::new(io::ErrorKind::Other, "postproc is GPL"));
-		}
-
-		configure.arg("--enable-postproc");
-	}
-	else {
-		configure.arg("--disable-postproc");
+	macro_rules! disable {
+		($conf:expr, $feat:expr, $name:expr) => (
+			if env::var(concat!("CARGO_FEATURE_", $feat)).is_err() {
+				$conf.arg(concat!("--disable-", $name));
+			}
+		)
 	}
 
-	if env::var("CARGO_FEATURE_SWRESAMPLE").is_ok() {
-		configure.arg("--enable-swresample");
-	}
-	else {
-		configure.arg("--disable-swresample");
-	}
+	// the binary using ffmpeg-sys must comply with GPL
+	switch!(configure, "BUILD_GPL", "gpl");
 
-	if env::var("CARGO_FEATURE_SWSCALE").is_ok() {
-		configure.arg("--enable-swscale");
-	}
-	else {
-		configure.arg("--disable-swscale");
-	}
+	// the binary using ffmpeg-sys must comply with (L)GPLv3
+	switch!(configure, "BUILD_VERSION3", "version3");
 
-	// enable external codecs
-	configure.arg("--enable-avisynth");
-	configure.arg("--enable-avresample");
-	configure.arg("--enable-fontconfig");
-	configure.arg("--enable-gnutls");
-	configure.arg("--enable-ladspa");
-	configure.arg("--enable-libass");
-	configure.arg("--enable-libbluray");
-	configure.arg("--enable-libfreetype");
-	configure.arg("--enable-libfribidi");
-	configure.arg("--enable-libgsm");
-	configure.arg("--enable-libmodplug");
-	configure.arg("--enable-libmp3lame");
-	configure.arg("--enable-libopenjpeg");
-	configure.arg("--enable-libopus");
-	configure.arg("--enable-libpulse");
-	configure.arg("--enable-libschroedinger");
-	configure.arg("--enable-libsoxr");
-	configure.arg("--enable-libspeex");
-	configure.arg("--enable-libssh");
-	configure.arg("--enable-libtheora");
-	configure.arg("--enable-libv4l2");
-	configure.arg("--enable-libvorbis");
-	configure.arg("--enable-libvpx");
-	configure.arg("--enable-libwebp");
+	// the binary using ffmpeg-sys cannot be redistributed
+	switch!(configure, "BUILD_NONFREE", "nonfree");
 
-	if env::var("CARGO_FEATURE_BUILD_GPL").is_ok() {
-		configure.arg("--enable-libx264");
-		configure.arg("--enable-libx265");
-		configure.arg("--enable-libxvid");
-	}
+	// configure building libraries based on features
+	switch!(configure, "AVCODEC",    "avcodec");
+	switch!(configure, "AVDEVICE",   "avdevice");
+	switch!(configure, "AVFILTER",   "avfilter");
+	switch!(configure, "AVFORMAT",   "avformat");
+	switch!(configure, "AVRESAMPLE", "avresample");
+	switch!(configure, "POSTPROC",   "postproc");
+	switch!(configure, "SWRESAMPLE", "swresample");
+	switch!(configure, "SWSCALE",    "swscale");
 
-	if env::var("CARGO_FEATURE_BUILD_VERSION3").is_ok() {
-		configure.arg("--enable-libopencore_amrnb");
-		configure.arg("--enable-libopencore_amrwb");
-	}
+	// configure external SSL libraries
+	enable!(configure, "BUILD_LIB_GNUTLS",  "gnutls");
+	enable!(configure, "BUILD_LIB_OPENSSL", "openssl");
 
+	// configure external filters
+	enable!(configure, "BUILD_LIB_FONTCONFIG", "fontconfig");
+	enable!(configure, "BUILD_LIB_FREI0R", "frei0r");
+	enable!(configure, "BUILD_LIB_LADSPA", "ladspa");
+	enable!(configure, "BUILD_LIB_ASS", "libass");
+	enable!(configure, "BUILD_LIB_FREETYPE", "libfreetype");
+	enable!(configure, "BUILD_LIB_FRIBIDI", "libfribidi");
+	enable!(configure, "BUILD_LIB_OPENCV", "libopencv");
+
+	// configure external encoders/decoders
+	enable!(configure, "BUILD_LIB_AACPLUS", "libaacplus");
+	enable!(configure, "BUILD_LIB_CELT", "libcelt");
+	enable!(configure, "BUILD_LIB_DCADEC", "libdcadec");
+	enable!(configure, "BUILD_LIB_FAAC", "libfaac");
+	enable!(configure, "BUILD_LIB_FDK_AAC", "libfdk-aac");
+	enable!(configure, "BUILD_LIB_GSM", "libgsm");
+	enable!(configure, "BUILD_LIB_ILBC", "libilbc");
+	enable!(configure, "BUILD_LIB_VAZAAR", "libvazaar");
+	enable!(configure, "BUILD_LIB_MP3LAME", "libmp3lame");
+	enable!(configure, "BUILD_LIB_OPENCORE_AMRNB", "libopencore-amrnb");
+	enable!(configure, "BUILD_LIB_OPENCORE_AMRWB", "libopencore-amrwrb");
+	enable!(configure, "BUILD_LIB_OPENH264", "libopenh264");
+	enable!(configure, "BUILD_LIB_OPENH265", "libopenh265");
+	enable!(configure, "BUILD_LIB_OPENJPEG", "libopenjpeg");
+	enable!(configure, "BUILD_LIB_OPUS", "libopus");
+	enable!(configure, "BUILD_LIB_SCHROEDINGER", "libschroedinger");
+	enable!(configure, "BUILD_LIB_SHINE", "libshine");
+	enable!(configure, "BUILD_LIB_SNAPPY", "libsnappy");
+	enable!(configure, "BUILD_LIB_SPEEX", "libspeex");
+	enable!(configure, "BUILD_LIB_STAGEFRIGHT_H264", "libstagefright-h264");
+	enable!(configure, "BUILD_LIB_THEORA", "libtheora");
+	enable!(configure, "BUILD_LIB_TWOLAME", "libtwolame");
+	enable!(configure, "BUILD_LIB_UTVIDEO", "libutvideo");
+	enable!(configure, "BUILD_LIB_VO_AACENC", "libvo-aacenc");
+	enable!(configure, "BUILD_LIB_VO_AMRWBENC", "libvo-amrwbenc");
+	enable!(configure, "BUILD_LIB_VORBIS", "libvorbis");
+	enable!(configure, "BUILD_LIB_VPX", "libvpx");
+	enable!(configure, "BUILD_LIB_WAVPACK", "libwavpack");
+	enable!(configure, "BUILD_LIB_WEBP", "libwebp");
+	enable!(configure, "BUILD_LIB_X264", "libx264");
+	enable!(configure, "BUILD_LIB_X265", "libx265");
+	enable!(configure, "BUILD_LIB_AVS", "libavs");
+	enable!(configure, "BUILD_LIB_XVID", "libxvid");
+
+	// configure external protocols
+	enable!(configure, "BUILD_LIB_SMBCLIENT", "libsmbclient");
+	enable!(configure, "BUILD_LIB_SSH", "libssh");
+
+	// run ./configure
 	if !try!(configure.status()).success() {
 		return Err(io::Error::new(io::ErrorKind::Other, "configure failed"));
 	}
 
+	// run make
 	if !try!(Command::new("make").current_dir(&source()).status()).success() {
 		return Err(io::Error::new(io::ErrorKind::Other, "make failed"));
 	}
 
+	// run make install
 	if !try!(Command::new("make").current_dir(&source()).arg("install").status()).success() {
-		return Err(io::Error::new(io::ErrorKind::Other, "install failed"));
+		return Err(io::Error::new(io::ErrorKind::Other, "make install failed"));
 	}
 
 	Ok(())
