@@ -20,9 +20,9 @@ static = []
 build  = ["static"]
 
 # licensing
-build-gpl      = ["build"]
-build-nonfree  = ["build"]
-build-version3 = ["build"]
+build-license-gpl      = ["build"]
+build-license-nonfree  = ["build"]
+build-license-version3 = ["build"]
 
 # ssl
 build-lib-gnutls  = ["build"]

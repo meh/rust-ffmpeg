@@ -130,13 +130,13 @@ fn build() -> io::Result<()> {
 	}
 
 	// the binary using ffmpeg-sys must comply with GPL
-	switch!(configure, "BUILD_GPL", "gpl");
+	switch!(configure, "BUILD_LICENSE_GPL", "gpl");
 
 	// the binary using ffmpeg-sys must comply with (L)GPLv3
-	switch!(configure, "BUILD_VERSION3", "version3");
+	switch!(configure, "BUILD_LICENSE_VERSION3", "version3");
 
 	// the binary using ffmpeg-sys cannot be redistributed
-	switch!(configure, "BUILD_NONFREE", "nonfree");
+	switch!(configure, "BUILD_LICENSE_NONFREE", "nonfree");
 
 	// configure building libraries based on features
 	switch!(configure, "AVCODEC",    "avcodec");
