@@ -304,6 +304,11 @@ impl Encoder {
 		}
 	}
 
+	pub fn flush(&mut self, out: &mut Packet) -> Result<bool, Error> {
+		let frame = unsafe { frame::Video::wrap(ptr::null_mut()) };
+		self.encode(&frame, out)
+	}
+
 	pub fn frame_size(&self) -> u32 {
 		unsafe {
 			(*self.as_ptr()).frame_size as u32
