@@ -1,3 +1,5 @@
+use std::ptr;
+
 use ffi::*;
 use ::{Error, Frame};
 use super::Context;
@@ -26,5 +28,10 @@ impl<'a> Source<'a> {
 				e => Err(Error::from(e)),
 			}
 		}
+	}
+
+	pub fn flush(&mut self) -> Result<(), Error> {
+		let frame = unsafe { Frame::wrap(ptr::null_mut()) };
+		self.add(&frame)
 	}
 }
