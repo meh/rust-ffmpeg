@@ -8,6 +8,7 @@ use super::Encoder as Super;
 use super::{MotionEstimation, Prediction, Comparison, Decision};
 use ::{Packet, Error, Rational, Dictionary, frame, format};
 use codec::traits;
+use codec::packet::traits::Mut;
 
 pub struct Video(pub Super);
 
