@@ -9,6 +9,7 @@ use ::frame;
 use ::util::format;
 use ::util::chroma;
 use ::color;
+use codec::packet::traits::Ref;
 
 pub struct Video(pub Opened);
 

@@ -8,6 +8,7 @@ use super::Encoder as Super;
 use ::{Packet, Error, Dictionary, ChannelLayout, frame};
 use ::util::format;
 use codec::traits;
+use codec::packet::traits::Mut;
 
 pub struct Audio(pub Super);
 

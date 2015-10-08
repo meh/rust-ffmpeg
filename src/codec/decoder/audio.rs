@@ -7,6 +7,7 @@ use super::Opened;
 use ::{Packet, Error, AudioService, ChannelLayout};
 use ::frame;
 use ::util::format;
+use codec::packet::traits::Ref;
 
 pub struct Audio(pub Opened);
 

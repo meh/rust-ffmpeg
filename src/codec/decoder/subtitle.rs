@@ -5,6 +5,7 @@ use ffi::*;
 
 use super::Opened;
 use ::{Packet, Error};
+use codec::packet::traits::Ref;
 
 pub struct Subtitle(pub Opened);
 
