@@ -115,6 +115,15 @@ impl Input {
 			}
 		}
 	}
+
+	pub fn seek(&mut self, min_ts: i64, ts: i64, max_ts: i64) -> Result<(), Error> {
+		unsafe {
+			match avformat_seek_file(self.as_mut_ptr(), -1, min_ts, ts, max_ts, 0) {
+				s if s >= 0 => Ok(()),
+				e => Err(Error::from(e)),
+			}
+		}
+	}
 }
 
 impl Deref for Input {
