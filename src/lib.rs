@@ -19,6 +19,7 @@ pub use util::picture;
 pub use util::color;
 pub use util::chroma;
 pub use util::time;
+pub use util::timebase;
 pub use util::frame::{self, Frame};
 pub use util::channel_layout::{self, ChannelLayout};
 pub use util::option;

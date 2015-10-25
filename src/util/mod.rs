@@ -8,6 +8,7 @@ pub mod format;
 pub mod frame;
 pub mod chroma;
 pub mod time;
+pub mod timebase;
 pub mod channel_layout;
 pub mod option;
 pub mod range;
