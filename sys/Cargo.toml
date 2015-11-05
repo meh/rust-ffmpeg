@@ -1,6 +1,6 @@
 [package]
 name    = "ffmpeg-sys"
-version = "2.8.0-4"
+version = "2.8.0-5"
 build   = "build.rs"
 
 authors = ["meh. <meh@schizofreni.co>"]
@@ -11,7 +11,7 @@ repository  = "https://github.com/meh/rust-ffmpeg-sys"
 keywords    = ["audio", "video"]
 
 [dependencies]
-libc = "*"
+libc = "0.2"
 
 [features]
 default  = ["avcodec", "avdevice", "avfilter", "avformat", "avresample", "swresample", "swscale"]
