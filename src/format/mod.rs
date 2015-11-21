@@ -17,6 +17,7 @@ use std::path::Path;
 use std::ffi::{CString, CStr};
 use std::str::from_utf8_unchecked;
 
+use libc::c_int;
 use ffi::*;
 use ::{Error, Format, Dictionary};
 
@@ -61,6 +62,14 @@ fn from_path<P: AsRef<Path>>(path: &P) -> CString {
 	CString::new(path.as_ref().as_os_str().to_str().unwrap()).unwrap()
 }
 
+// This returns a non-negative number on success, so let's centralize that in one place
+unsafe fn find_stream_info(ic: *mut AVFormatContext, options: *mut *mut AVDictionary) -> Result<c_int, Error> {
+	match avformat_find_stream_info(ic, options) {
+		e if e >= 0 => Ok(e),
+		e => Err(Error::from(e)),
+	}
+}
+
 // NOTE: this will be better with specialization or anonymous return types
 pub fn open<P: AsRef<Path>>(path: &P, format: &Format) -> Result<Context, Error> {
 	unsafe {
@@ -71,9 +80,9 @@ pub fn open<P: AsRef<Path>>(path: &P, format: &Format) -> Result<Context, Error>
 			&Format::Input(ref format) => {
 				match avformat_open_input(&mut ps, path.as_ptr(), format.as_ptr(), ptr::null_mut()) {
 					0 => {
-						match avformat_find_stream_info(ps, ptr::null_mut()) {
-							0 => Ok(Context::Input(context::Input::wrap(ps))),
-							e => Err(Error::from(e)),
+						match find_stream_info(ps, ptr::null_mut()) {
+							Ok(_) => Ok(Context::Input(context::Input::wrap(ps))),
+							Err(e) => Err(e),
 						}
 					}
 
@@ -111,9 +120,9 @@ pub fn open_with<P: AsRef<Path>>(path: &P, format: &Format, options: Dictionary)
 
 				match res {
 					0 => {
-						match avformat_find_stream_info(ps, ptr::null_mut()) {
-							0 => Ok(Context::Input(context::Input::wrap(ps))),
-							e => Err(Error::from(e)),
+						match find_stream_info(ps, ptr::null_mut()) {
+							Ok(_) => Ok(Context::Input(context::Input::wrap(ps))),
+							Err(e) => Err(e),
 						}
 					}
 
@@ -144,9 +153,9 @@ pub fn input<P: AsRef<Path>>(path: &P) -> Result<context::Input, Error> {
 
 		match avformat_open_input(&mut ps, path.as_ptr(), ptr::null_mut(), ptr::null_mut()) {
 			0 => {
-				match avformat_find_stream_info(ps, ptr::null_mut()) {
-					0 => Ok(context::Input::wrap(ps)),
-					e => Err(Error::from(e))
+				match find_stream_info(ps, ptr::null_mut()) {
+					Ok(_) => Ok(context::Input::wrap(ps)),
+					Err(e) => Err(e),
 				}
 			}
 
@@ -166,9 +175,9 @@ pub fn input_with<P: AsRef<Path>>(path: &P, options: Dictionary) -> Result<conte
 
 		match res {
 			0 => {
-				match avformat_find_stream_info(ps, ptr::null_mut()) {
-					0 => Ok(context::Input::wrap(ps)),
-					e => Err(Error::from(e))
+				match find_stream_info(ps, ptr::null_mut()) {
+					Ok(_) => Ok(context::Input::wrap(ps)),
+					Err(e) => Err(e),
 				}
 			}
 			
