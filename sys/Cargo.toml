@@ -2,6 +2,7 @@
 name    = "ffmpeg-sys"
 version = "2.8.0-5"
 build   = "build.rs"
+links   = "ffmpeg"
 
 authors = ["meh. <meh@schizofreni.co>"]
 license = "WTFPL"
