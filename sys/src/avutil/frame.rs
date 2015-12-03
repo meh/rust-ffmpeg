@@ -51,7 +51,8 @@ pub struct AVFrame {
 	pub key_frame: c_int,
 	pub pict_type: AVPictureType,
 
-	pub base: [*mut uint8_t; AV_NUM_DATA_POINTERS], // XXX: #if FF_API_AVFRAME_LAVC
+	#[cfg(feature = "ff_api_avframe_lavc")]
+	pub base: [*mut uint8_t; AV_NUM_DATA_POINTERS],
 
 	pub sample_aspect_ratio: AVRational,
 	pub pts: int64_t,
@@ -63,20 +64,30 @@ pub struct AVFrame {
 
 	pub quality: c_int,
 
-	pub reference: c_int, // XXX: #if FF_API_AVFRAME_LAVC
-	pub qscale_table: *mut int8_t, // XXX: #if FF_API_AVFRAME_LAVC
-	pub qstride: c_int, // XXX: #if FF_API_AVFRAME_LAVC
-	pub qscale_type: c_int, // XXX: #if FF_API_AVFRAME_LAVC
-	pub mbskip_table: *mut uint8_t, // XXX: #if FF_API_AVFRAME_LAVC
-	pub motion_val: [*mut [int16_t; 2]; 2], // XXX: #if FF_API_AVFRAME_LAVC
-	pub mb_type: *mut uint32_t, // XXX: #if FF_API_AVFRAME_LAVC
-	pub dct_coeff: *mut c_short, // XXX: #if FF_API_AVFRAME_LAVC
-	pub ref_index: [*mut int8_t; 2], // XXX: #if FF_API_AVFRAME_LAVC
+	#[cfg(feature = "ff_api_avframe_lavc")]
+	pub reference: c_int,
+	#[cfg(feature = "ff_api_avframe_lavc")]
+	pub qscale_table: *mut int8_t,
+	#[cfg(feature = "ff_api_avframe_lavc")]
+	pub qstride: c_int,
+	#[cfg(feature = "ff_api_avframe_lavc")]
+	pub qscale_type: c_int,
+	#[cfg(feature = "ff_api_avframe_lavc")]
+	pub mbskip_table: *mut uint8_t,
+	#[cfg(feature = "ff_api_avframe_lavc")]
+	pub motion_val: [*mut [int16_t; 2]; 2],
+	#[cfg(feature = "ff_api_avframe_lavc")]
+	pub mb_type: *mut uint32_t,
+	#[cfg(feature = "ff_api_avframe_lavc")]
+	pub dct_coeff: *mut c_short,
+	#[cfg(feature = "ff_api_avframe_lavc")]
+	pub ref_index: [*mut int8_t; 2],
 
 	pub opaque: *mut c_void,
 	pub error: [uint64_t; AV_NUM_DATA_POINTERS],
 
-	pub type_: c_int, // XXX: #if FF_API_AVFRAME_LAVC
+	#[cfg(feature = "ff_api_avframe_lavc")]
+	pub type_: c_int,
 
 	pub repeat_pict: c_int,
 	pub interlaced_frame: c_int,
@@ -84,15 +95,21 @@ pub struct AVFrame {
 
 	pub palette_has_changed: c_int,
 
-	pub buffer_hints: c_int, // XXX: #if FF_API_AVFRAME_LAVC
-	pub pan_scan: *mut c_void, // XXX: #if FF_API_AVFRAME_LAVC
+	#[cfg(feature = "ff_api_avframe_lavc")]
+	pub buffer_hints: c_int,
+	#[cfg(feature = "ff_api_avframe_lavc")]
+	pub pan_scan: *mut c_void,
 
 	pub reordered_opaque: int64_t,
 
-	pub hwaccel_picture_private: *mut c_void, // XXX: #if FF_API_AVFRAME_LAVC
-	pub owner: *mut c_void, // XXX: #if FF_API_AVFRAME_LAVC
-	pub thread_opaque: *mut c_void, // XXX: #if FF_API_AVFRAME_LAVC
-	pub motion_subsample_log2: uint8_t, // XXX: #if FF_API_AVFRAME_LAVC
+	#[cfg(feature = "ff_api_avframe_lavc")]
+	pub hwaccel_picture_private: *mut c_void,
+	#[cfg(feature = "ff_api_avframe_lavc")]
+	pub owner: *mut c_void,
+	#[cfg(feature = "ff_api_avframe_lavc")]
+	pub thread_opaque: *mut c_void,
+	#[cfg(feature = "ff_api_avframe_lavc")]
+	pub motion_subsample_log2: uint8_t,
 
 	pub sample_rate: c_int,
 	pub channel_layout: uint64_t,

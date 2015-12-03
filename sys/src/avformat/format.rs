@@ -193,7 +193,8 @@ pub struct AVStream {
 	pub id: c_int,
 	pub codec: *mut AVCodecContext,
 	pub priv_data: *mut c_void,
-	pub pts: AVFrac, // XXX: #if FF_API_LAVF_FRAC
+	#[cfg(feature = "ff_api_lavf_frac")]
+	pub pts: AVFrac,
 	pub time_base: AVRational,
 	pub start_time: int64_t,
 	pub duration: int64_t,
@@ -321,8 +322,10 @@ pub struct AVFormatContext {
 	pub max_delay:   c_int,
 	pub flags:       c_int,
 
-	pub probesize: c_uint, // XXX: #if FF_API_PROBESIZE_32
-	pub max_analyze_duration: c_int, // XXX: #if FF_API_PROBESIZE_32
+	#[cfg(feature = "ff_api_probesize_32")]
+	pub probesize: c_uint,
+	#[cfg(feature = "ff_api_probesize_32")]
+	pub max_analyze_duration: c_int,
 
 	pub key:    *const uint8_t,
 	pub keylen: c_int,
@@ -389,11 +392,15 @@ pub struct AVFormatContext {
 	pub control_message_cb: av_format_control_message,
 
 	pub output_ts_offset: int64_t,
-	pub max_analyze_duration2: int64_t, // XXX: #if FF_API_PROBESIZE_32
-	pub probesize2: int64_t, // XXX: #if FF_API_PROBESIZE_32
+	#[cfg(feature = "ff_api_probesize_32")]
+	pub max_analyze_duration2: int64_t,
+	#[cfg(feature = "ff_api_probesize_32")]
+	pub probesize2: int64_t,
 
-// pub max_analyze_duration: int64_t, // XXX: #if !FF_API_PROBESIZE_32
-// pub probesize: int64_t, // XXX: #if !FF_API_PROBESIZE_32
+	#[cfg(not(feature = "ff_api_probesize_32"))]
+	pub max_analyze_duration: int64_t,
+	#[cfg(not(feature = "ff_api_probesize_32"))]
+	pub probesize: int64_t,
 
 	pub dump_separator: *mut uint8_t,
 	pub data_codec_id: AVCodecID,

@@ -9,7 +9,8 @@ pub enum AVCodecID {
 	/* video codecs */
 	AV_CODEC_ID_MPEG1VIDEO,
 	AV_CODEC_ID_MPEG2VIDEO,
-	AV_CODEC_ID_MPEG2VIDEO_XVMC, // XXX: #if FF_API_XVMC
+	#[cfg(feature = "ff_api_xvmc")]
+	AV_CODEC_ID_MPEG2VIDEO_XVMC,
 	AV_CODEC_ID_H261,
 	AV_CODEC_ID_H263,
 	AV_CODEC_ID_RV10,
@@ -350,7 +351,8 @@ pub enum AVCodecID {
 	AV_CODEC_ID_MLP,
 	AV_CODEC_ID_GSM_MS,
 	AV_CODEC_ID_ATRAC3,
-	AV_CODEC_ID_VOXWARE, // XXX: #if VOXWARE
+	#[cfg(feature = "voxware")]
+	AV_CODEC_ID_VOXWARE,
 	AV_CODEC_ID_APE,
 	AV_CODEC_ID_NELLYMOSER,
 	AV_CODEC_ID_MUSEPACK8,
@@ -669,8 +671,10 @@ pub struct AVPacket {
 	pub side_data: *mut AVPacketSideData,
 	pub side_data_elems: c_int,
 	pub duration: c_int,
-	pub destruct: Option<extern fn(*mut AVPacket)>, // XXX: #if FF_API_DESTRUCT_PACKET
-	pub private: *mut c_void, // XXX: #if FF_API_DESTRUCT_PACKET
+	#[cfg(feature = "ff_api_destruct_packet")]
+	pub destruct: Option<extern fn(*mut AVPacket)>,
+	#[cfg(feature = "ff_api_destruct_packet")]
+	pub private: *mut c_void,
 	pub pos: int64_t,
 	pub convergence_duration: int64_t,
 }
@@ -919,10 +923,12 @@ pub struct AVCodecContext {
 	pub log_level_offset: c_int,
 	pub codec_type: AVMediaType,
 	pub codec: *const AVCodec,
-	pub codec_name: [c_char; 32], // XXX: #if FF_API_CODEC_NAME
+	#[cfg(feature = "ff_api_codec_name")]
+	pub codec_name: [c_char; 32],
 	pub codec_id: AVCodecID,
 	pub codec_tag: c_uint,
-	pub stream_codec_tag: c_uint, // XXX: #if FF_API_STREAM_CODEC_TAG
+	#[cfg(feature = "ff_api_stream_codec_tag")]
+	pub stream_codec_tag: c_uint,
 	pub priv_data: *mut c_void,
 	pub internal: *mut AVCodecInternal,
 	pub opaque: *mut c_void,
@@ -943,12 +949,14 @@ pub struct AVCodecContext {
 	pub coded_height: c_int,
 	pub gop_size: c_int,
 	pub pix_fmt: AVPixelFormat,
-	pub me_method: c_int, // XXX: #if FF_API_MOTION_EST
+	#[cfg(feature = "ff_api_motion_est")]
+	pub me_method: c_int,
 	pub draw_horiz_band: Option<extern fn(*mut AVCodecContext, *const AVFrame, *mut c_int, c_int, c_int, c_int)>,
 	pub get_format: Option<extern fn(*mut AVCodecContext, *const AVPixelFormat) -> AVPixelFormat>,
 	pub max_b_frames: c_int,
 	pub b_quant_factor: c_float,
-	pub rc_strategy: c_int, // XXX: #if FF_API_RC_STRATEGY
+	#[cfg(feature = "ff_api_rc_strategy")]
+	pub rc_strategy: c_int,
 	pub b_frame_strategy: c_int,
 	pub b_quant_offset: c_float,
 	pub has_b_frames: c_int,
@@ -974,23 +982,30 @@ pub struct AVCodecContext {
 	pub me_pre_cmp: c_int,
 	pub pre_dia_size: c_int,
 	pub me_subpel_quality: c_int,
-	pub dtg_active_format: c_int, // XXX: #if FF_API_AFD
+	#[cfg(feature = "ff_api_afd")]
+	pub dtg_active_format: c_int,
 	pub me_range: c_int,
-	pub intra_quant_bias: c_int, // XXX: #if FF_API_QUANT_BIAS
-	pub inter_quant_bias: c_int, // XXX: #if FF_API_QUANT_BIAS
+	#[cfg(feature = "ff_api_quant_bias")]
+	pub intra_quant_bias: c_int,
+	#[cfg(feature = "ff_api_quant_bias")]
+	pub inter_quant_bias: c_int,
 	pub slice_flags: c_int,
-	pub xvmc_acceleration: c_int, // XXX: #if FF_API_XVMC
+	#[cfg(feature = "ff_api_xvmc")]
+	pub xvmc_acceleration: c_int,
 	pub mb_decision: c_int,
 	pub intra_matrix: *mut uint16_t,
 	pub inter_matrix: *mut uint16_t,
 	pub scenechange_threshold: c_int,
 	pub noise_reduction: c_int,
-	pub me_threshold: c_int, // XXX: #if FF_API_MPV_OPT
-	pub mb_threshold: c_int, // XXX: #if FF_API_MPV_OPT
+	#[cfg(feature = "ff_api_mpv_opt")]
+	pub me_threshold: c_int,
+	#[cfg(feature = "ff_api_mpv_opt")]
+	pub mb_threshold: c_int,
 	pub intra_dc_precision: c_int,
 	pub skip_top: c_int,
 	pub skip_bottom: c_int,
-	pub border_masking: c_float, // XXX: #if FF_API_MPV_OPT
+	#[cfg(feature = "ff_api_mpv_opt")]
+	pub border_masking: c_float,
 	pub mb_lmin: c_int,
 	pub mb_lmax: c_int,
 	pub me_penalty_compensation: c_int,
@@ -999,7 +1014,8 @@ pub struct AVCodecContext {
 	pub keyint_min: c_int,
 	pub refs: c_int,
 	pub chromaoffset: c_int,
-	pub scenechange_factor: c_int, // XXX: #if FF_API_UNUSED_MEMBERS
+	#[cfg(feature = "ff_api_unused_members")]
+	pub scenechange_factor: c_int,
 	pub mv0_threshold: c_int,
 	pub b_sensitivity: c_int,
 	pub color_primaries: AVColorPrimaries,
@@ -1016,14 +1032,18 @@ pub struct AVCodecContext {
 	pub frame_number: c_int,
 	pub block_align: c_int,
 	pub cutoff: c_int,
-	pub request_channels: c_int, // #if FF_API_REQUEST_CHANNELS
+	#[cfg(feature = "ff_api_request_channels")]
+	pub request_channels: c_int,
 	pub channel_layout: uint64_t,
 	pub request_channel_layout: uint64_t,
 	pub audio_service_type: AVAudioServiceType,
 	pub request_sample_fmt: AVSampleFormat,
-	pub get_buffer: Option<extern fn(*mut AVCodecContext, *mut AVFrame) -> c_int>, // XXX: #if FF_API_GET_BUFFER
-	pub release_buffer: Option<extern fn(*mut AVCodecContext, *mut AVFrame)>, // XXX: #if FF_API_GET_BUFFER
-	pub reget_buffer: Option<extern fn(*mut AVCodecContext, *mut AVFrame) -> c_int>, // XXX: #if FF_API_GET_BUFFER
+	#[cfg(feature = "ff_api_get_buffer")]
+	pub get_buffer: Option<extern fn(*mut AVCodecContext, *mut AVFrame) -> c_int>,
+	#[cfg(feature = "ff_api_get_buffer")]
+	pub release_buffer: Option<extern fn(*mut AVCodecContext, *mut AVFrame)>,
+	#[cfg(feature = "ff_api_get_buffer")]
+	pub reget_buffer: Option<extern fn(*mut AVCodecContext, *mut AVFrame) -> c_int>,
 	pub get_buffer2: Option<extern fn(*mut AVCodecContext, *mut AVFrame, c_int) -> c_int>,
 	pub refcounted_frames: c_int,
 	pub qcompress: c_float,
@@ -1031,24 +1051,32 @@ pub struct AVCodecContext {
 	pub qmin: c_int,
 	pub qmax: c_int,
 	pub max_qdiff: c_int,
-	pub rc_qsquish: c_float, // XXX: #if FF_API_MPV_OPT
-	pub rc_qmod_amp: c_float, // XXX: #if FF_API_MPV_OPT
-	pub rc_qmod_freq: c_int, // XXX: #if FF_API_MPV_OPT
+	#[cfg(feature = "ff_api_mpv_opt")]
+	pub rc_qsquish: c_float,
+	#[cfg(feature = "ff_api_mpv_opt")]
+	pub rc_qmod_amp: c_float,
+	#[cfg(feature = "ff_api_mpv_opt")]
+	pub rc_qmod_freq: c_int,
 	pub rc_buffer_size: c_int,
 	pub rc_override_count: c_int,
 	pub rc_override: *mut RcOverride,
-	pub rc_eq: *const c_char, // XXX: #if FF_API_MPV_OPT
+	#[cfg(feature = "ff_api_mpv_opt")]
+	pub rc_eq: *const c_char,
 	pub rc_max_rate: c_int,
 	pub rc_min_rate: c_int,
-	pub rc_buffer_aggressivity: c_float, // XXX: #if FF_API_MPV_OPT
-	pub rc_initial_cplx: c_float, // XXX: #if FF_API_MPV_OPT
+	#[cfg(feature = "ff_api_mpv_opt")]
+	pub rc_buffer_aggressivity: c_float,
+	#[cfg(feature = "ff_api_mpv_opt")]
+	pub rc_initial_cplx: c_float,
 	pub rc_max_available_vbv_use: c_float,
 	pub rc_min_vbvb_overflow_use: c_float,
 	pub rc_initial_buffer_occupancy: c_int,
 	pub coder_type: c_int,
 	pub context_model: c_int,
-	pub lmin: c_int, // XXX: #if FF_API_MPV_OPT
-	pub lmax: c_int, // XXX: #if FF_API_MPV_OPT
+	#[cfg(feature = "ff_api_mpv_opt")]
+	pub lmin: c_int, 
+	#[cfg(feature = "ff_api_mpv_opt")]
+	pub lmax: c_int, 
 	pub frame_skip_threshold: c_int,
 	pub frame_skip_factor: c_int,
 	pub frame_skip_exp: c_int,
@@ -1083,15 +1111,18 @@ pub struct AVCodecContext {
 	pub idct_algo: c_int,
 	pub bits_per_coded_sample: c_int,
 	pub bits_per_raw_sample: c_int,
-	pub lowres: c_int, // XXX: #if FF_API_LOWRES
-	pub coded_frame: *mut AVFrame, // XXX: #if FF_API_CODED_FRAME
+	#[cfg(feature = "ff_api_lowres")]
+	pub lowres: c_int,
+	#[cfg(feature = "ff_api_coded_frame")]
+	pub coded_frame: *mut AVFrame,
 	pub thread_count: c_int,
 	pub thread_type: c_int,
 	pub active_thread_type: c_int,
 	pub thread_safe_callbacks: c_int,
 	pub execute: extern fn(*mut AVCodecContext, extern fn(*mut AVCodecContext, *mut c_void) -> c_int, *mut c_void, *mut c_int, c_int, c_int) -> c_int,
 	pub execute2: extern fn(*mut AVCodecContext, extern fn(*mut AVCodecContext, *mut c_void, c_int, c_int) -> c_int, *mut c_void, *mut c_int, c_int) -> c_int,
-	pub thread_opaque: *mut c_void, // XXX: #if FF_API_THREAD_OPAQUE
+	#[cfg(feature = "ff_api_thread_opaque")]
+	pub thread_opaque: *mut c_void,
 	pub nsse_weight: c_int,
 	pub profile: c_int,
 	pub level: c_int,
@@ -1100,8 +1131,10 @@ pub struct AVCodecContext {
 	pub skip_frame: AVDiscard,
 	pub subtitle_header: *mut uint8_t,
 	pub subtitle_header_size: c_int,
-	pub error_rate: c_int, // XXX: #if FF_API_ERROR_RATE
-	pub pkt: *mut AVPacket, // XXX: #if FF_API_CODEC_PKT
+	#[cfg(feature = "ff_api_error_rate")]
+	pub error_rate: c_int,
+	#[cfg(feature = "ff_api_codec_pkt")]
+	pub pkt: *mut AVPacket,
 	pub vbv_delay: uint64_t,
 	pub side_data_only_packets: c_int,
 	pub initial_padding: c_int,
@@ -1109,7 +1142,8 @@ pub struct AVCodecContext {
 	pub sw_pix_fmt: AVPixelFormat,
 	pub pkt_timebase: AVRational,
 	pub codec_descriptor: *const AVCodecDescriptor,
-	// pub lowres: c_int, // XXX: #if !FF_API_LOWRES
+	#[cfg(not(feature = "ff_api_lowres"))]
+	pub lowres: c_int,
 	pub pts_correction_num_faulty_pts: int64_t,
 	pub pts_correction_num_faulty_dts: int64_t,
 	pub pts_correction_last_pts: int64_t,
@@ -1118,7 +1152,8 @@ pub struct AVCodecContext {
 	pub sub_charenc_mode: c_int,
 	pub skip_alpha: c_int,
 	pub seek_preroll: c_int,
-	// pub debug_mv: c_int, // XXX: #if !FF_API_DEBUG_MV
+	#[cfg(not(feature = "ff_api_debug_mv"))]
+	pub debug_mv: c_int,
 	pub chroma_intra_matrix: *mut uint16_t,
 	pub dump_separator: *mut uint8_t,
 	pub codec_whitelist: *mut c_char,

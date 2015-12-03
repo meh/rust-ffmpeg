@@ -7,8 +7,10 @@ pub enum AVHMACType {
 	AV_HMAC_SHA1,
 	AV_HMAC_SHA224,
 	AV_HMAC_SHA256,
-	AV_HMAC_SHA224_DEPRECATED = 10, // XXX: #if FF_API_HMAC
-	AV_HMAC_SHA256_DEPRECATED, // XXX: #if FF_API_HMAC
+	#[cfg(feature = "ff_api_hmac")]
+	AV_HMAC_SHA224_DEPRECATED = 10,
+	#[cfg(feature = "ff_api_hmac")]
+	AV_HMAC_SHA256_DEPRECATED,
 	AV_HMAC_SHA384 = 12,
 	AV_HMAC_SHA512,
 }
