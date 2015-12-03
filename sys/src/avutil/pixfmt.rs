@@ -22,8 +22,10 @@ pub enum AVPixelFormat {
 	AV_PIX_FMT_YUVJ420P,
 	AV_PIX_FMT_YUVJ422P,
 	AV_PIX_FMT_YUVJ444P,
-	AV_PIX_FMT_XVMC_MPEG2_MC, // XXX: #if FF_API_XVMC
-	AV_PIX_FMT_XVMC_MPEG2_IDCT, // XXX: #if FF_API_XVMC
+	#[cfg(feature = "ff_api_xvmc")]
+	AV_PIX_FMT_XVMC_MPEG2_MC,
+	#[cfg(feature = "ff_api_xvmc")]
+	AV_PIX_FMT_XVMC_MPEG2_IDCT,
 	AV_PIX_FMT_UYVY422,
 	AV_PIX_FMT_UYYVYY411,
 	AV_PIX_FMT_BGR8,
@@ -45,11 +47,16 @@ pub enum AVPixelFormat {
 	AV_PIX_FMT_YUV440P,
 	AV_PIX_FMT_YUVJ440P,
 	AV_PIX_FMT_YUVA420P,
-	AV_PIX_FMT_VDPAU_H264, // XXX: #if FF_API_VDPAU
-	AV_PIX_FMT_VDPAU_MPEG1, // XXX: #if FF_API_VDPAU
-	AV_PIX_FMT_VDPAU_MPEG2, // XXX: #if FF_API_VDPAU
-	AV_PIX_FMT_VDPAU_WMV3, // XXX: #if FF_API_VDPAU
-	AV_PIX_FMT_VDPAU_VC1, // XXX: #if FF_API_VDPAU
+	#[cfg(feature = "ff_api_vdpau")]
+	AV_PIX_FMT_VDPAU_H264,
+	#[cfg(feature = "ff_api_vdpau")]
+	AV_PIX_FMT_VDPAU_MPEG1,
+	#[cfg(feature = "ff_api_vdpau")]
+	AV_PIX_FMT_VDPAU_MPEG2,
+	#[cfg(feature = "ff_api_vdpau")]
+	AV_PIX_FMT_VDPAU_WMV3,
+	#[cfg(feature = "ff_api_vdpau")]
+	AV_PIX_FMT_VDPAU_VC1,
 	AV_PIX_FMT_RGB48BE,
 	AV_PIX_FMT_RGB48LE,
 
@@ -63,11 +70,15 @@ pub enum AVPixelFormat {
 	AV_PIX_FMT_BGR555BE,
 	AV_PIX_FMT_BGR555LE,
 
-	AV_PIX_FMT_VAAPI_MOCO, // XXX: #if FF_API_VAAPI
-	AV_PIX_FMT_VAAPI_IDCT, // XXX: #if FF_API_VAAPI
-	AV_PIX_FMT_VAAPI_VLD, // XXX: #if FF_API_VAAPI
+	#[cfg(feature = "ff_api_vaapi")]
+	AV_PIX_FMT_VAAPI_MOCO,
+	#[cfg(feature = "ff_api_vaapi")]
+	AV_PIX_FMT_VAAPI_IDCT,
+	#[cfg(feature = "ff_api_vaapi")]
+	AV_PIX_FMT_VAAPI_VLD,
 
-// AV_PIX_FMT_VAAPI, // XXX: #if !FF_API_VAAPI
+	#[cfg(not(feature = "ff_api_vaapi"))]
+	AV_PIX_FMT_VAAPI,
 
 	AV_PIX_FMT_YUV420P16LE,
 	AV_PIX_FMT_YUV420P16BE,
@@ -75,7 +86,8 @@ pub enum AVPixelFormat {
 	AV_PIX_FMT_YUV422P16BE,
 	AV_PIX_FMT_YUV444P16LE,
 	AV_PIX_FMT_YUV444P16BE,
-	AV_PIX_FMT_VDPAU_MPEG4, // XXX: #if FF_API_VDPAU
+	#[cfg(feature = "ff_api_vdpau")]
+	AV_PIX_FMT_VDPAU_MPEG4,
 	AV_PIX_FMT_DXVA2_VLD,
 
 	AV_PIX_FMT_RGB444LE,
