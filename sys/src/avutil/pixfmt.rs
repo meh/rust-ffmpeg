@@ -224,6 +224,7 @@ pub enum AVPixelFormat {
 	AV_PIX_FMT_NB,
 }
 
+#[cfg(feature = "ff_api_xvmc")]
 pub const AV_PIX_FMT_XVMC:   AVPixelFormat = AVPixelFormat::AV_PIX_FMT_XVMC_MPEG2_IDCT;
 pub const AV_PIX_FMT_Y400A:  AVPixelFormat = AVPixelFormat::AV_PIX_FMT_YA8;
 pub const AV_PIX_FMT_GRAY8A: AVPixelFormat = AVPixelFormat::AV_PIX_FMT_YA8;
