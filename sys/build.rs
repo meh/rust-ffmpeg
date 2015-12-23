@@ -227,15 +227,19 @@ fn feature(header: &str, feature: Option<&str>, var: &str) -> io::Result<()> {
 
 	try!(write!(try!(File::create(output().join("check.c"))), r#"
 		#include <stdio.h>
-		#include <{}>
+		#include <{header}>
+
+		#ifndef {var}
+		#define {var} 0
+		#endif
 
 		int
 		main (int argc, char* argv[])
 		{{
-			printf("%d\n", {});
+			printf("%d\n", {var});
 			return 0;
 		}}
-	"#, header, var));
+	"#, header=header, var=var));
 
 	if Command::new("cc").current_dir(&output())
 		.arg("-I").arg(search().join("dist").join("include").to_string_lossy().into_owned())
