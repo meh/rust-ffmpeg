@@ -225,7 +225,9 @@ fn feature(header: &str, feature: Option<&str>, var: &str) -> io::Result<()> {
 		}
 	}
 
-	try!(write!(try!(File::create(output().join("check.c"))), r#"
+	let out_dir = output();
+
+	try!(write!(try!(File::create(out_dir.join("check.c"))), r#"
 		#include <stdio.h>
 		#include <{header}>
 
@@ -241,16 +243,22 @@ fn feature(header: &str, feature: Option<&str>, var: &str) -> io::Result<()> {
 		}}
 	"#, header=header, var=var));
 
-	if Command::new("cc").current_dir(&output())
-		.arg("-I").arg(search().join("dist").join("include").to_string_lossy().into_owned())
-		.arg("-o").arg("check")
-		.arg("check.c")
-		.status().is_err()
-	{
-		return Ok(());
-	}
+	let executable = if cfg!(windows) { "check.exe" } else { "check" };
+	let compiler =
+		if cfg!(windows) || env::var("MSYSTEM").unwrap_or("".to_string()).starts_with("MINGW32") {
+			"gcc"
+		}
+		else {
+			"cc"
+		};
 
-	if try!(Command::new("./check").current_dir(&output()).output()).stdout[0] == b'1' {
+	try!(Command::new(compiler).current_dir(&out_dir)
+		.arg("-I").arg(search().join("dist").join("include").to_string_lossy().into_owned())
+		.arg("-o").arg(&executable)
+		.arg("check.c")
+		.status());
+
+	if try!(Command::new(out_dir.join(&executable)).current_dir(&out_dir).output()).stdout[0] == b'1' {
 		println!(r#"cargo:rustc-cfg=feature="{}""#, var.to_lowercase());
 		println!(r#"cargo:{}=true"#, var.to_lowercase());
 	}
