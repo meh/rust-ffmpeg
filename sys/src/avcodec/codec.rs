@@ -670,6 +670,9 @@ pub struct AVPacket {
 	pub flags: c_int,
 	pub side_data: *mut AVPacketSideData,
 	pub side_data_elems: c_int,
+	#[cfg(feature = "ff_api_convergence_duration_is_defined")] // see FFmpeg commit b01891a9 (no other way to distinguish size of duration field)
+	pub duration: int64_t,
+	#[cfg(not(feature = "ff_api_convergence_duration_is_defined"))]
 	pub duration: c_int,
 	#[cfg(feature = "ff_api_destruct_packet")]
 	pub destruct: Option<extern fn(*mut AVPacket)>,

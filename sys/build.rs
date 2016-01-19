@@ -233,12 +233,15 @@ fn feature(header: &str, feature: Option<&str>, var: &str) -> io::Result<()> {
 
 		#ifndef {var}
 		#define {var} 0
+		#define {var}_is_defined 0
+		#else
+		#define {var}_is_defined 1
 		#endif
 
 		int
 		main (int argc, char* argv[])
 		{{
-			printf("%d\n", {var});
+			printf("%d%d\n", {var}, {var}_is_defined);
 			return 0;
 		}}
 	"#, header=header, var=var));
@@ -258,9 +261,18 @@ fn feature(header: &str, feature: Option<&str>, var: &str) -> io::Result<()> {
 		.arg("check.c")
 		.status());
 
-	if try!(Command::new(out_dir.join(&executable)).current_dir(&out_dir).output()).stdout[0] == b'1' {
+	let stdout = try!(Command::new(out_dir.join(&executable)).current_dir(&out_dir).output()).stdout;
+
+	if stdout[0] == b'1' {
 		println!(r#"cargo:rustc-cfg=feature="{}""#, var.to_lowercase());
 		println!(r#"cargo:{}=true"#, var.to_lowercase());
+	}
+
+	// Also find out if defined or not (useful for cases where only the definition of a macro
+	// can be used as distinction)
+	if stdout[1] == b'1' {
+		println!(r#"cargo:rustc-cfg=feature="{}_is_defined""#, var.to_lowercase());
+		println!(r#"cargo:{}_is_defined=true"#, var.to_lowercase());
 	}
 
 	Ok(())
@@ -350,6 +362,7 @@ fn main() {
 	feature("libavcodec/avcodec.h", Some("avcodec"), "FF_API_CODED_FRAME").unwrap();
 	feature("libavcodec/avcodec.h", Some("avcodec"), "FF_API_MOTION_EST").unwrap();
 	feature("libavcodec/avcodec.h", Some("avcodec"), "FF_API_WITHOUT_PREFIX").unwrap();
+	feature("libavcodec/avcodec.h", Some("avcodec"), "FF_API_CONVERGENCE_DURATION").unwrap();
 
 	feature("libavformat/avformat.h", Some("avformat"), "FF_API_LAVF_BITEXACT").unwrap();
 	feature("libavformat/avformat.h", Some("avformat"), "FF_API_LAVF_FRAC").unwrap();
