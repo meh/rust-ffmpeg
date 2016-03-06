@@ -3,6 +3,7 @@ use std::fs::{self, File};
 use std::io::{self, Write};
 use std::path::PathBuf;
 use std::process::Command;
+use std::str;
 
 fn version() -> String {
 	let major: u8 = env::var("CARGO_PKG_VERSION_MAJOR").unwrap().parse().unwrap();
@@ -218,35 +219,48 @@ fn build() -> io::Result<()> {
 	Ok(())
 }
 
-fn feature(header: &str, feature: Option<&str>, var: &str) -> io::Result<()> {
-	if let Some(feature) = feature {
-		if env::var(format!("CARGO_FEATURE_{}", feature.to_uppercase())).is_err() {
-			return Ok(());
+fn check_features(infos: &Vec<(&'static str, Option<&'static str>, &'static str)>) {
+	let mut includes_code = String::new();
+	let mut main_code = String::new();
+
+	for &(header, feature, var) in infos {
+		if let Some(feature) = feature {
+			if env::var(format!("CARGO_FEATURE_{}", feature.to_uppercase())).is_err() {
+				continue
+			}
 		}
+
+		let include = format!("#include <{}>", header);
+		if includes_code.find(&include).is_none() {
+			includes_code.push_str(&include);
+			includes_code.push_str(&"\n");
+		}
+		includes_code.push_str(&format!(r#"
+			#ifndef {var}
+			#define {var} 0
+			#define {var}_is_defined 0
+			#else
+			#define {var}_is_defined 1
+			#endif
+		"#, var=var));
+
+		main_code.push_str(&format!(r#"printf("[{var}]%d%d\n", {var}, {var}_is_defined);"#, var=var));
 	}
 
 	let out_dir = output();
 
-	try!(write!(try!(File::create(out_dir.join("check.c"))), r#"
+	write!(File::create(out_dir.join("check.c")).expect("Failed to create file"), r#"
 		#include <stdio.h>
-		#include <{header}>
+		{includes_code}
 
-		#ifndef {var}
-		#define {var} 0
-		#define {var}_is_defined 0
-		#else
-		#define {var}_is_defined 1
-		#endif
-
-		int
-		main (int argc, char* argv[])
+		int main()
 		{{
-			printf("%d%d\n", {var}, {var}_is_defined);
+			{main_code}
 			return 0;
 		}}
-	"#, header=header, var=var));
+	"#, includes_code=includes_code, main_code=main_code).expect("Write failed");
 
-	let executable = if cfg!(windows) { "check.exe" } else { "check" };
+	let executable = out_dir.join(if cfg!(windows) { "check.exe" } else { "check" });
 	let compiler =
 		if cfg!(windows) || env::var("MSYSTEM").unwrap_or("".to_string()).starts_with("MINGW32") {
 			"gcc"
@@ -255,27 +269,40 @@ fn feature(header: &str, feature: Option<&str>, var: &str) -> io::Result<()> {
 			"cc"
 		};
 
-	try!(Command::new(compiler).current_dir(&out_dir)
+	if !Command::new(compiler).current_dir(&out_dir)
 		.arg("-I").arg(search().join("dist").join("include").to_string_lossy().into_owned())
 		.arg("-o").arg(&executable)
 		.arg("check.c")
-		.status());
-
-	let stdout = try!(Command::new(out_dir.join(&executable)).current_dir(&out_dir).output()).stdout;
-
-	if stdout[0] == b'1' {
-		println!(r#"cargo:rustc-cfg=feature="{}""#, var.to_lowercase());
-		println!(r#"cargo:{}=true"#, var.to_lowercase());
+		.status().expect("Command failed").success() {
+		panic!("Compile failed");
 	}
 
-	// Also find out if defined or not (useful for cases where only the definition of a macro
-	// can be used as distinction)
-	if stdout[1] == b'1' {
-		println!(r#"cargo:rustc-cfg=feature="{}_is_defined""#, var.to_lowercase());
-		println!(r#"cargo:{}_is_defined=true"#, var.to_lowercase());
-	}
+	let stdout_raw = Command::new(out_dir.join(&executable)).current_dir(&out_dir).output().expect("Check failed").stdout;
+	let stdout = str::from_utf8(stdout_raw.as_slice()).unwrap();
 
-	Ok(())
+	println!("stdout={}",stdout);
+
+	for &(_, feature, var) in infos {
+		if let Some(feature) = feature {
+			if env::var(format!("CARGO_FEATURE_{}", feature.to_uppercase())).is_err() {
+				continue
+			}
+		}
+
+		let var_str = format!("[{var}]", var=var);
+		let pos = stdout.find(&var_str).expect("Variable not found in output") + var_str.len();
+		if &stdout[pos..pos+1] == "1" {
+			println!(r#"cargo:rustc-cfg=feature="{}""#, var.to_lowercase());
+			println!(r#"cargo:{}=true"#, var.to_lowercase());
+		}
+
+		// Also find out if defined or not (useful for cases where only the definition of a macro
+		// can be used as distinction)
+		if &stdout[pos+1..pos+2] == "1" {
+			println!(r#"cargo:rustc-cfg=feature="{}_is_defined""#, var.to_lowercase());
+			println!(r#"cargo:{}_is_defined=true"#, var.to_lowercase());
+		}
+	}
 }
 
 fn main() {
@@ -292,95 +319,99 @@ fn main() {
 		build().unwrap();
 	}
 
-	feature("libavutil/avutil.h", None, "FF_API_OLD_AVOPTIONS").unwrap();
-	feature("libavutil/avutil.h", None, "FF_API_PIX_FMT").unwrap();
-	feature("libavutil/avutil.h", None, "FF_API_CONTEXT_SIZE").unwrap();
-	feature("libavutil/avutil.h", None, "FF_API_PIX_FMT_DESC").unwrap();
-	feature("libavutil/avutil.h", None, "FF_API_AV_REVERSE").unwrap();
-	feature("libavutil/avutil.h", None, "FF_API_AUDIOCONVERT").unwrap();
-	feature("libavutil/avutil.h", None, "FF_API_CPU_FLAG_MMX2").unwrap();
-	feature("libavutil/avutil.h", None, "FF_API_LLS_PRIVATE").unwrap();
-	feature("libavutil/avutil.h", None, "FF_API_AVFRAME_LAVC").unwrap();
-	feature("libavutil/avutil.h", None, "FF_API_VDPAU").unwrap();
-	feature("libavutil/avutil.h", None, "FF_API_GET_CHANNEL_LAYOUT_COMPAT").unwrap();
-	feature("libavutil/avutil.h", None, "FF_API_XVMC").unwrap();
-	feature("libavutil/avutil.h", None, "FF_API_OPT_TYPE_METADATA").unwrap();
-	feature("libavutil/avutil.h", None, "FF_API_DLOG").unwrap();
-	feature("libavutil/avutil.h", None, "FF_API_HMAC").unwrap();
-	feature("libavutil/avutil.h", None, "FF_API_VAAPI").unwrap();
 
-	feature("libavcodec/avcodec.h", Some("avcodec"), "FF_API_VIMA_DECODER").unwrap();
-	feature("libavcodec/avcodec.h", Some("avcodec"), "FF_API_REQUEST_CHANNELS").unwrap();
-	feature("libavcodec/avcodec.h", Some("avcodec"), "FF_API_OLD_DECODE_AUDIO").unwrap();
-	feature("libavcodec/avcodec.h", Some("avcodec"), "FF_API_OLD_ENCODE_AUDIO").unwrap();
-	feature("libavcodec/avcodec.h", Some("avcodec"), "FF_API_OLD_ENCODE_VIDEO").unwrap();
-	feature("libavcodec/avcodec.h", Some("avcodec"), "FF_API_CODEC_ID").unwrap();
-	feature("libavcodec/avcodec.h", Some("avcodec"), "FF_API_AUDIO_CONVERT").unwrap();
-	feature("libavcodec/avcodec.h", Some("avcodec"), "FF_API_AVCODEC_RESAMPLE").unwrap();
-	feature("libavcodec/avcodec.h", Some("avcodec"), "FF_API_DEINTERLACE").unwrap();
-	feature("libavcodec/avcodec.h", Some("avcodec"), "FF_API_DESTRUCT_PACKET").unwrap();
-	feature("libavcodec/avcodec.h", Some("avcodec"), "FF_API_GET_BUFFER").unwrap();
-	feature("libavcodec/avcodec.h", Some("avcodec"), "FF_API_MISSING_SAMPLE").unwrap();
-	feature("libavcodec/avcodec.h", Some("avcodec"), "FF_API_LOWRES").unwrap();
-	feature("libavcodec/avcodec.h", Some("avcodec"), "FF_API_CAP_VDPAU").unwrap();
-	feature("libavcodec/avcodec.h", Some("avcodec"), "FF_API_BUFS_VDPAU").unwrap();
-	feature("libavcodec/avcodec.h", Some("avcodec"), "FF_API_VOXWARE").unwrap();
-	feature("libavcodec/avcodec.h", Some("avcodec"), "FF_API_SET_DIMENSIONS").unwrap();
-	feature("libavcodec/avcodec.h", Some("avcodec"), "FF_API_DEBUG_MV").unwrap();
-	feature("libavcodec/avcodec.h", Some("avcodec"), "FF_API_AC_VLC").unwrap();
-	feature("libavcodec/avcodec.h", Some("avcodec"), "FF_API_OLD_MSMPEG4").unwrap();
-	feature("libavcodec/avcodec.h", Some("avcodec"), "FF_API_ASPECT_EXTENDED").unwrap();
-	feature("libavcodec/avcodec.h", Some("avcodec"), "FF_API_THREAD_OPAQUE").unwrap();
-	feature("libavcodec/avcodec.h", Some("avcodec"), "FF_API_CODEC_PKT").unwrap();
-	feature("libavcodec/avcodec.h", Some("avcodec"), "FF_API_ARCH_ALPHA").unwrap();
-	feature("libavcodec/avcodec.h", Some("avcodec"), "FF_API_XVMC").unwrap();
-	feature("libavcodec/avcodec.h", Some("avcodec"), "FF_API_ERROR_RATE").unwrap();
-	feature("libavcodec/avcodec.h", Some("avcodec"), "FF_API_QSCALE_TYPE").unwrap();
-	feature("libavcodec/avcodec.h", Some("avcodec"), "FF_API_MB_TYPE").unwrap();
-	feature("libavcodec/avcodec.h", Some("avcodec"), "FF_API_MAX_BFRAMES").unwrap();
-	feature("libavcodec/avcodec.h", Some("avcodec"), "FF_API_NEG_LINESIZES").unwrap();
-	feature("libavcodec/avcodec.h", Some("avcodec"), "FF_API_EMU_EDGE").unwrap();
-	feature("libavcodec/avcodec.h", Some("avcodec"), "FF_API_ARCH_SH4").unwrap();
-	feature("libavcodec/avcodec.h", Some("avcodec"), "FF_API_ARCH_SPARC").unwrap();
-	feature("libavcodec/avcodec.h", Some("avcodec"), "FF_API_UNUSED_MEMBERS").unwrap();
-	feature("libavcodec/avcodec.h", Some("avcodec"), "FF_API_IDCT_XVIDMMX").unwrap();
-	feature("libavcodec/avcodec.h", Some("avcodec"), "FF_API_INPUT_PRESERVED").unwrap();
-	feature("libavcodec/avcodec.h", Some("avcodec"), "FF_API_NORMALIZE_AQP").unwrap();
-	feature("libavcodec/avcodec.h", Some("avcodec"), "FF_API_GMC").unwrap();
-	feature("libavcodec/avcodec.h", Some("avcodec"), "FF_API_MV0").unwrap();
-	feature("libavcodec/avcodec.h", Some("avcodec"), "FF_API_CODEC_NAME").unwrap();
-	feature("libavcodec/avcodec.h", Some("avcodec"), "FF_API_AFD").unwrap();
-	feature("libavcodec/avcodec.h", Some("avcodec"), "FF_API_VISMV").unwrap();
-	feature("libavcodec/avcodec.h", Some("avcodec"), "FF_API_DV_FRAME_PROFILE").unwrap();
-	feature("libavcodec/avcodec.h", Some("avcodec"), "FF_API_AUDIOENC_DELAY").unwrap();
-	feature("libavcodec/avcodec.h", Some("avcodec"), "FF_API_VAAPI_CONTEXT").unwrap();
-	feature("libavcodec/avcodec.h", Some("avcodec"), "FF_API_AVCTX_TIMEBASE").unwrap();
-	feature("libavcodec/avcodec.h", Some("avcodec"), "FF_API_MPV_OPT").unwrap();
-	feature("libavcodec/avcodec.h", Some("avcodec"), "FF_API_STREAM_CODEC_TAG").unwrap();
-	feature("libavcodec/avcodec.h", Some("avcodec"), "FF_API_QUANT_BIAS").unwrap();
-	feature("libavcodec/avcodec.h", Some("avcodec"), "FF_API_RC_STRATEGY").unwrap();
-	feature("libavcodec/avcodec.h", Some("avcodec"), "FF_API_CODED_FRAME").unwrap();
-	feature("libavcodec/avcodec.h", Some("avcodec"), "FF_API_MOTION_EST").unwrap();
-	feature("libavcodec/avcodec.h", Some("avcodec"), "FF_API_WITHOUT_PREFIX").unwrap();
-	feature("libavcodec/avcodec.h", Some("avcodec"), "FF_API_CONVERGENCE_DURATION").unwrap();
+	check_features(&vec![
+		("libavutil/avutil.h", None, "FF_API_OLD_AVOPTIONS"),
 
-	feature("libavformat/avformat.h", Some("avformat"), "FF_API_LAVF_BITEXACT").unwrap();
-	feature("libavformat/avformat.h", Some("avformat"), "FF_API_LAVF_FRAC").unwrap();
-	feature("libavformat/avformat.h", Some("avformat"), "FF_API_URL_FEOF").unwrap();
-	feature("libavformat/avformat.h", Some("avformat"), "FF_API_PROBESIZE_32").unwrap();
+		("libavutil/avutil.h", None, "FF_API_PIX_FMT"),
+		("libavutil/avutil.h", None, "FF_API_CONTEXT_SIZE"),
+		("libavutil/avutil.h", None, "FF_API_PIX_FMT_DESC"),
+		("libavutil/avutil.h", None, "FF_API_AV_REVERSE"),
+		("libavutil/avutil.h", None, "FF_API_AUDIOCONVERT"),
+		("libavutil/avutil.h", None, "FF_API_CPU_FLAG_MMX2"),
+		("libavutil/avutil.h", None, "FF_API_LLS_PRIVATE"),
+		("libavutil/avutil.h", None, "FF_API_AVFRAME_LAVC"),
+		("libavutil/avutil.h", None, "FF_API_VDPAU"),
+		("libavutil/avutil.h", None, "FF_API_GET_CHANNEL_LAYOUT_COMPAT"),
+		("libavutil/avutil.h", None, "FF_API_XVMC"),
+		("libavutil/avutil.h", None, "FF_API_OPT_TYPE_METADATA"),
+		("libavutil/avutil.h", None, "FF_API_DLOG"),
+		("libavutil/avutil.h", None, "FF_API_HMAC"),
+		("libavutil/avutil.h", None, "FF_API_VAAPI"),
 
-	feature("libavfilter/avfilter.h", Some("avfilter"), "FF_API_AVFILTERPAD_PUBLIC").unwrap();
-	feature("libavfilter/avfilter.h", Some("avfilter"), "FF_API_FOO_COUNT").unwrap();
-	feature("libavfilter/avfilter.h", Some("avfilter"), "FF_API_AVFILTERBUFFER").unwrap();
-	feature("libavfilter/avfilter.h", Some("avfilter"), "FF_API_OLD_FILTER_OPTS").unwrap();
-	feature("libavfilter/avfilter.h", Some("avfilter"), "FF_API_OLD_FILTER_OPTS_ERROR").unwrap();
-	feature("libavfilter/avfilter.h", Some("avfilter"), "FF_API_AVFILTER_OPEN").unwrap();
-	feature("libavfilter/avfilter.h", Some("avfilter"), "FF_API_OLD_FILTER_REGISTER").unwrap();
-	feature("libavfilter/avfilter.h", Some("avfilter"), "FF_API_OLD_GRAPH_PARSE").unwrap();
-	feature("libavfilter/avfilter.h", Some("avfilter"), "FF_API_NOCONST_GET_NAME").unwrap();
+		("libavcodec/avcodec.h", Some("avcodec"), "FF_API_VIMA_DECODER"),
+		("libavcodec/avcodec.h", Some("avcodec"), "FF_API_REQUEST_CHANNELS"),
+		("libavcodec/avcodec.h", Some("avcodec"), "FF_API_OLD_DECODE_AUDIO"),
+		("libavcodec/avcodec.h", Some("avcodec"), "FF_API_OLD_ENCODE_AUDIO"),
+		("libavcodec/avcodec.h", Some("avcodec"), "FF_API_OLD_ENCODE_VIDEO"),
+		("libavcodec/avcodec.h", Some("avcodec"), "FF_API_CODEC_ID"),
+		("libavcodec/avcodec.h", Some("avcodec"), "FF_API_AUDIO_CONVERT"),
+		("libavcodec/avcodec.h", Some("avcodec"), "FF_API_AVCODEC_RESAMPLE"),
+		("libavcodec/avcodec.h", Some("avcodec"), "FF_API_DEINTERLACE"),
+		("libavcodec/avcodec.h", Some("avcodec"), "FF_API_DESTRUCT_PACKET"),
+		("libavcodec/avcodec.h", Some("avcodec"), "FF_API_GET_BUFFER"),
+		("libavcodec/avcodec.h", Some("avcodec"), "FF_API_MISSING_SAMPLE"),
+		("libavcodec/avcodec.h", Some("avcodec"), "FF_API_LOWRES"),
+		("libavcodec/avcodec.h", Some("avcodec"), "FF_API_CAP_VDPAU"),
+		("libavcodec/avcodec.h", Some("avcodec"), "FF_API_BUFS_VDPAU"),
+		("libavcodec/avcodec.h", Some("avcodec"), "FF_API_VOXWARE"),
+		("libavcodec/avcodec.h", Some("avcodec"), "FF_API_SET_DIMENSIONS"),
+		("libavcodec/avcodec.h", Some("avcodec"), "FF_API_DEBUG_MV"),
+		("libavcodec/avcodec.h", Some("avcodec"), "FF_API_AC_VLC"),
+		("libavcodec/avcodec.h", Some("avcodec"), "FF_API_OLD_MSMPEG4"),
+		("libavcodec/avcodec.h", Some("avcodec"), "FF_API_ASPECT_EXTENDED"),
+		("libavcodec/avcodec.h", Some("avcodec"), "FF_API_THREAD_OPAQUE"),
+		("libavcodec/avcodec.h", Some("avcodec"), "FF_API_CODEC_PKT"),
+		("libavcodec/avcodec.h", Some("avcodec"), "FF_API_ARCH_ALPHA"),
+		("libavcodec/avcodec.h", Some("avcodec"), "FF_API_XVMC"),
+		("libavcodec/avcodec.h", Some("avcodec"), "FF_API_ERROR_RATE"),
+		("libavcodec/avcodec.h", Some("avcodec"), "FF_API_QSCALE_TYPE"),
+		("libavcodec/avcodec.h", Some("avcodec"), "FF_API_MB_TYPE"),
+		("libavcodec/avcodec.h", Some("avcodec"), "FF_API_MAX_BFRAMES"),
+		("libavcodec/avcodec.h", Some("avcodec"), "FF_API_NEG_LINESIZES"),
+		("libavcodec/avcodec.h", Some("avcodec"), "FF_API_EMU_EDGE"),
+		("libavcodec/avcodec.h", Some("avcodec"), "FF_API_ARCH_SH4"),
+		("libavcodec/avcodec.h", Some("avcodec"), "FF_API_ARCH_SPARC"),
+		("libavcodec/avcodec.h", Some("avcodec"), "FF_API_UNUSED_MEMBERS"),
+		("libavcodec/avcodec.h", Some("avcodec"), "FF_API_IDCT_XVIDMMX"),
+		("libavcodec/avcodec.h", Some("avcodec"), "FF_API_INPUT_PRESERVED"),
+		("libavcodec/avcodec.h", Some("avcodec"), "FF_API_NORMALIZE_AQP"),
+		("libavcodec/avcodec.h", Some("avcodec"), "FF_API_GMC"),
+		("libavcodec/avcodec.h", Some("avcodec"), "FF_API_MV0"),
+		("libavcodec/avcodec.h", Some("avcodec"), "FF_API_CODEC_NAME"),
+		("libavcodec/avcodec.h", Some("avcodec"), "FF_API_AFD"),
+		("libavcodec/avcodec.h", Some("avcodec"), "FF_API_VISMV"),
+		("libavcodec/avcodec.h", Some("avcodec"), "FF_API_DV_FRAME_PROFILE"),
+		("libavcodec/avcodec.h", Some("avcodec"), "FF_API_AUDIOENC_DELAY"),
+		("libavcodec/avcodec.h", Some("avcodec"), "FF_API_VAAPI_CONTEXT"),
+		("libavcodec/avcodec.h", Some("avcodec"), "FF_API_AVCTX_TIMEBASE"),
+		("libavcodec/avcodec.h", Some("avcodec"), "FF_API_MPV_OPT"),
+		("libavcodec/avcodec.h", Some("avcodec"), "FF_API_STREAM_CODEC_TAG"),
+		("libavcodec/avcodec.h", Some("avcodec"), "FF_API_QUANT_BIAS"),
+		("libavcodec/avcodec.h", Some("avcodec"), "FF_API_RC_STRATEGY"),
+		("libavcodec/avcodec.h", Some("avcodec"), "FF_API_CODED_FRAME"),
+		("libavcodec/avcodec.h", Some("avcodec"), "FF_API_MOTION_EST"),
+		("libavcodec/avcodec.h", Some("avcodec"), "FF_API_WITHOUT_PREFIX"),
+		("libavcodec/avcodec.h", Some("avcodec"), "FF_API_CONVERGENCE_DURATION"),
 
-	feature("libavresample/avresample.h", Some("avresample"), "FF_API_RESAMPLE_CLOSE_OPEN").unwrap();
+		("libavformat/avformat.h", Some("avformat"), "FF_API_LAVF_BITEXACT"),
+		("libavformat/avformat.h", Some("avformat"), "FF_API_LAVF_FRAC"),
+		("libavformat/avformat.h", Some("avformat"), "FF_API_URL_FEOF"),
+		("libavformat/avformat.h", Some("avformat"), "FF_API_PROBESIZE_32"),
 
-	feature("libswscale/swscale.h", Some("swscale"), "FF_API_SWS_CPU_CAPS").unwrap();
-	feature("libswscale/swscale.h", Some("swscale"), "FF_API_ARCH_BFIN").unwrap();
+		("libavfilter/avfilter.h", Some("avfilter"), "FF_API_AVFILTERPAD_PUBLIC"),
+		("libavfilter/avfilter.h", Some("avfilter"), "FF_API_FOO_COUNT"),
+		("libavfilter/avfilter.h", Some("avfilter"), "FF_API_AVFILTERBUFFER"),
+		("libavfilter/avfilter.h", Some("avfilter"), "FF_API_OLD_FILTER_OPTS"),
+		("libavfilter/avfilter.h", Some("avfilter"), "FF_API_OLD_FILTER_OPTS_ERROR"),
+		("libavfilter/avfilter.h", Some("avfilter"), "FF_API_AVFILTER_OPEN"),
+		("libavfilter/avfilter.h", Some("avfilter"), "FF_API_OLD_FILTER_REGISTER"),
+		("libavfilter/avfilter.h", Some("avfilter"), "FF_API_OLD_GRAPH_PARSE"),
+		("libavfilter/avfilter.h", Some("avfilter"), "FF_API_NOCONST_GET_NAME"),
+
+		("libavresample/avresample.h", Some("avresample"), "FF_API_RESAMPLE_CLOSE_OPEN"),
+
+		("libswscale/swscale.h", Some("swscale"), "FF_API_SWS_CPU_CAPS"),
+		("libswscale/swscale.h", Some("swscale"), "FF_API_ARCH_BFIN"),
+	]);
 }
