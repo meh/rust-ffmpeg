@@ -2,10 +2,10 @@ extern crate libc;
 extern crate ffmpeg_sys;
 
 use std::env;
-use std::fs::{create_dir, File};
+use std::fs::{create_dir, File, symlink_metadata};
 use std::io::Write;
 use std::mem;
-use std::path::PathBuf;
+use std::path::{Path, PathBuf};
 use std::process::Command;
 use std::str;
 
@@ -14,8 +14,11 @@ use libc::c_void;
 use ffmpeg_sys::AVCodecContext;
 
 fn output() -> PathBuf {
-	let ret = PathBuf::from("tmp");
-	create_dir(&ret).ok();
+	let mut ret = std::env::current_dir().unwrap();
+	ret.push(&Path::new("tmp"));
+	if symlink_metadata(&ret).is_err() {
+		create_dir(&ret).expect("Failed to create temporary output dir");
+	}
 	ret
 }
 
