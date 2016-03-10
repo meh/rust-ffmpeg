@@ -422,6 +422,7 @@ fn main() {
 		("libavcodec/avcodec.h", Some("avcodec"), "FF_API_MOTION_EST"),
 		("libavcodec/avcodec.h", Some("avcodec"), "FF_API_WITHOUT_PREFIX"),
 		("libavcodec/avcodec.h", Some("avcodec"), "FF_API_CONVERGENCE_DURATION"),
+		("libavcodec/avcodec.h", Some("avcodec"), "FF_API_PRIVATE_OPT"),
 
 		("libavformat/avformat.h", Some("avformat"), "FF_API_LAVF_BITEXACT"),
 		("libavformat/avformat.h", Some("avformat"), "FF_API_LAVF_FRAC"),
