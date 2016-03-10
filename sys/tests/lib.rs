@@ -53,6 +53,8 @@ fn check_struct_byte_offsets() {
 	File::create(out_dir.join("ffmpeg-structs.out")).expect("ffmpeg-structs.out 1").write_all(&stdout_raw[..]).expect("ffmpeg-structs.out 2");
 
 	let stdout = str::from_utf8(stdout_raw.as_slice()).unwrap();
+	let mut matching = vec!();
+	let mut errors = vec!();
 
 	// This should check same fields as ffmpeg-structs.c
 	macro_rules! p {
@@ -70,7 +72,10 @@ fn check_struct_byte_offsets() {
 						break
 					}
 				}
-				panic!("Struct field position as specified in Rust code ({}) is different from C ({})", expected, actual);
+				errors.push(format!("Struct field position as specified in Rust code ({}) is different from C ({})", expected, actual));
+			}
+			else {
+				matching.push(format!("  - {}", expected));
 			}
 		}};
 	}
@@ -89,4 +94,12 @@ fn check_struct_byte_offsets() {
 	p!(AVCodecContext, frame_size);
 	p!(AVCodecContext, frame_number);
 	p!(AVCodecContext, block_align);
+
+	// p!(AVCodecContext, b_frame_strategy); // TODO: make conditional somehow with cfg!(feature="ff_api_private_opt")
+
+	println!("These struct fields have matching position/size in Rust and C code:\n{}", matching.join("\n"));
+
+	if !errors.is_empty() {
+		panic!(errors.join("\n"));
+	}
 }
