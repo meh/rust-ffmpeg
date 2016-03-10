@@ -923,7 +923,7 @@ pub struct AVCodecContext {
 	pub log_level_offset: c_int,
 	pub codec_type: AVMediaType,
 	pub codec: *const AVCodec,
-	#[cfg(feature = "ff_api_codec_name")]
+	#[cfg(any(feature="ff_api_codec_name", not(feature="ff_api_codec_name_is_defined")))]
 	pub codec_name: [c_char; 32],
 	pub codec_id: AVCodecID,
 	pub codec_tag: c_uint,
