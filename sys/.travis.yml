@@ -30,9 +30,9 @@ before_install:
   - make distclean
   - popd
 
-script:
+script: |
   # Current Travis Ubuntu version uses libav which doesn't come with libswresample
-  - cargo build --verbose --no-default-features --features "avcodec avfilter avformat avresample swscale"
-  - cargo test  --verbose --no-default-features --features "avcodec avfilter avformat avresample swscale"
+  cargo build --verbose --no-default-features --features "avcodec avfilter avformat avresample swscale" &&
+  cargo test  --verbose --no-default-features --features "avcodec avfilter avformat avresample swscale"
 after_failure:
   - find /usr -type f 2>/dev/null | grep -E 'lib(avcodec/version|avcodec/avcodec).h$' | xargs -I THEFILE -- sh -c 'echo "=== THEFILE ==="; cat THEFILE'
