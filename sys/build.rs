@@ -247,6 +247,20 @@ fn check_features(infos: &Vec<(&'static str, Option<&'static str>, &'static str)
 		main_code.push_str(&format!(r#"printf("[{var}]%d%d\n", {var}, {var}_is_defined);"#, var=var));
 	}
 
+	let version_check_info = [("avcodec", 56, 60, 0, 80)];
+	for &(lib, begin_version_major, end_version_major, begin_version_minor, end_version_minor) in version_check_info.iter() {
+		for version_major in begin_version_major..end_version_major {
+			for version_minor in begin_version_minor..end_version_minor {
+				main_code.push_str(&format!(r#"printf("[{lib}_version_greater_than_{version_major}_{version_minor}]%d\n", LIB{lib_uppercase}_VERSION_MAJOR > {version_major} || (LIB{lib_uppercase}_VERSION_MAJOR == {version_major} && LIB{lib_uppercase}_VERSION_MINOR > {version_minor}));"#,
+				                            lib=lib,
+				                            lib_uppercase=lib.to_uppercase(),
+				                            version_major=version_major,
+				                            version_minor=version_minor));
+
+			}
+		}
+	}
+
 	let out_dir = output();
 
 	write!(File::create(out_dir.join("check.c")).expect("Failed to create file"), r#"
@@ -301,6 +315,21 @@ fn check_features(infos: &Vec<(&'static str, Option<&'static str>, &'static str)
 		if &stdout[pos+1..pos+2] == "1" {
 			println!(r#"cargo:rustc-cfg=feature="{}_is_defined""#, var.to_lowercase());
 			println!(r#"cargo:{}_is_defined=true"#, var.to_lowercase());
+		}
+	}
+
+	for &(lib, begin_version_major, end_version_major, begin_version_minor, end_version_minor) in version_check_info.iter() {
+		for version_major in begin_version_major..end_version_major {
+			for version_minor in begin_version_minor..end_version_minor {
+				let search_str = format!("[{lib}_version_greater_than_{version_major}_{version_minor}]",
+				                         version_major=version_major,
+				                         version_minor=version_minor,
+				                         lib=lib);
+				let pos = stdout.find(&search_str).expect("Variable not found in output") + search_str.len();
+ 				if &stdout[pos..pos+1] == "1" {
+ 					println!(r#"cargo:rustc-cfg=feature="{}""#, &search_str[1..(search_str.len() - 1)]);
+ 				}
+			}
 		}
 	}
 }
