@@ -24,6 +24,7 @@ int main()
 	p(AVCodecContext, frame_size);
 	p(AVCodecContext, frame_number);
 	p(AVCodecContext, block_align);
+	// p(AVCodecContext, b_frame_strategy);
 
 	return 0;
 }

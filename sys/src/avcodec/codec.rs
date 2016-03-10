@@ -961,6 +961,7 @@ pub struct AVCodecContext {
 	pub b_quant_factor: c_float,
 	#[cfg(feature = "ff_api_rc_strategy")]
 	pub rc_strategy: c_int,
+	#[cfg(feature = "ff_api_private_opt")]
 	pub b_frame_strategy: c_int,
 	pub b_quant_offset: c_float,
 	pub has_b_frames: c_int,
