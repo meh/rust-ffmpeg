@@ -351,7 +351,7 @@ pub enum AVCodecID {
 	AV_CODEC_ID_MLP,
 	AV_CODEC_ID_GSM_MS,
 	AV_CODEC_ID_ATRAC3,
-	#[cfg(feature = "voxware")]
+	#[cfg(feature = "ff_api_voxware")]
 	AV_CODEC_ID_VOXWARE,
 	AV_CODEC_ID_APE,
 	AV_CODEC_ID_NELLYMOSER,
