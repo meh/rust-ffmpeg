@@ -1,3 +1,5 @@
+extern crate num_cpus;
+
 use std::env;
 use std::fs::{self, File};
 use std::io::{self, Write};
@@ -207,7 +209,9 @@ fn build() -> io::Result<()> {
 	}
 
 	// run make
-	if !try!(Command::new("make").current_dir(&source()).status()).success() {
+	if !try!(Command::new("make")
+		.arg("-j").arg(num_cpus::get().to_string())
+		.current_dir(&source()).status()).success() {
 		return Err(io::Error::new(io::ErrorKind::Other, "make failed"));
 	}
 

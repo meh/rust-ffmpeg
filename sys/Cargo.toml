@@ -14,6 +14,9 @@ keywords    = ["audio", "video"]
 [dependencies]
 libc = "0.2"
 
+[build-dependencies]
+num_cpus = "0.2.11"
+
 [features]
 default  = ["avcodec", "avdevice", "avfilter", "avformat", "avresample", "swresample", "swscale"]
 
