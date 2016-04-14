@@ -28,6 +28,10 @@ build-license-gpl      = ["build"]
 build-license-nonfree  = ["build"]
 build-license-version3 = ["build"]
 
+# misc
+build-pic  = ["build"]
+build-zlib = ["build"]
+
 # ssl
 build-lib-gnutls  = ["build"]
 build-lib-openssl = ["build"]
