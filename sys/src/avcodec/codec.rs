@@ -932,10 +932,6 @@ pub struct AVCodecContext {
 	pub priv_data: *mut c_void,
 	pub internal: *mut AVCodecInternal,
 	pub opaque: *mut c_void,
-	// See https://github.com/FFmpeg/FFmpeg/commit/7404f3bdb90e6a5dcb59bc0a091e2c5c038e557d
-	#[cfg(feature="avcodec_version_greater_than_57_1")]
-	pub bit_rate: int64_t,
-	#[cfg(not(feature="avcodec_version_greater_than_57_1"))]
 	pub bit_rate: c_int,
 	pub bit_rate_tolerance: c_int,
 	pub global_quality: c_int,
