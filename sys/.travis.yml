@@ -21,7 +21,7 @@ before_install:
   - pushd ~
   - git clone https://github.com/FFmpeg/FFmpeg.git
   - cd FFmpeg
-  - git checkout release/2.8
+  - git checkout release/3.0
   - mkdir ~/FFmpeg-build
   - cd ~/FFmpeg-build
   - ../FFmpeg/configure --disable-ffprobe --disable-ffserver --disable-doc --enable-avresample
@@ -34,5 +34,6 @@ script: |
   # Current Travis Ubuntu version uses libav which doesn't come with libswresample
   cargo build --verbose --no-default-features --features "avcodec avfilter avformat avresample swscale" &&
   cargo test  --verbose --no-default-features --features "avcodec avfilter avformat avresample swscale"
+
 after_failure:
   - find /usr -type f 2>/dev/null | grep -E 'lib(avcodec/version|avcodec/avcodec).h$' | xargs -I THEFILE -- sh -c 'echo "=== THEFILE ==="; cat THEFILE'
