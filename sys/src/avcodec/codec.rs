@@ -670,7 +670,7 @@ pub struct AVPacket {
 	pub flags: c_int,
 	pub side_data: *mut AVPacketSideData,
 	pub side_data_elems: c_int,
-	pub duration: c_int,
+	pub duration: int64_t,
 	#[cfg(feature = "ff_api_destruct_packet")]
 	pub destruct: Option<extern fn(*mut AVPacket)>,
 	#[cfg(feature = "ff_api_destruct_packet")]
