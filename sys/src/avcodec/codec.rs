@@ -932,7 +932,7 @@ pub struct AVCodecContext {
 	pub priv_data: *mut c_void,
 	pub internal: *mut AVCodecInternal,
 	pub opaque: *mut c_void,
-	pub bit_rate: c_int,
+	pub bit_rate: int64_t,
 	pub bit_rate_tolerance: c_int,
 	pub global_quality: c_int,
 	pub compression_level: c_int,
