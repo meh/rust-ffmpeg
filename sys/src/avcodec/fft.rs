@@ -5,8 +5,8 @@ pub type FFTSample = c_float;
 #[derive(Debug)]
 #[repr(C)]
 pub struct FFTComplex {
-	re: FFTSample,
-	im: FFTSample,
+	pub re: FFTSample,
+	pub im: FFTSample,
 }
 
 pub type FFTContext = c_void;
