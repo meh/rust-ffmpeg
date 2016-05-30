@@ -291,7 +291,7 @@ fn check_features(infos: &Vec<(&'static str, Option<&'static str>, &'static str)
 		};
 
 	if !Command::new(compiler).current_dir(&out_dir)
-		.arg("-I").arg(search().join("dist").join("include").to_string_lossy().into_owned())
+		.arg("-I").arg(search().join("include").to_string_lossy().into_owned())
 		.arg("-o").arg(&executable)
 		.arg("check.c")
 		.status().expect("Command failed").success() {
@@ -358,7 +358,6 @@ fn main() {
 		extract().unwrap();
 		build().unwrap();
 	}
-
 
 	check_features(&vec![
 		("libavutil/avutil.h", None, "FF_API_OLD_AVOPTIONS"),
