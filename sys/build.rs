@@ -2,7 +2,7 @@ extern crate num_cpus;
 
 use std::env;
 use std::fs::{self, File};
-use std::io::{self, Write};
+use std::io::{self, Write, BufRead, BufReader};
 use std::path::PathBuf;
 use std::process::Command;
 use std::str;
@@ -10,14 +10,8 @@ use std::str;
 fn version() -> String {
 	let major: u8 = env::var("CARGO_PKG_VERSION_MAJOR").unwrap().parse().unwrap();
 	let minor: u8 = env::var("CARGO_PKG_VERSION_MINOR").unwrap().parse().unwrap();
-	let patch: u8 = env::var("CARGO_PKG_VERSION_PATCH").unwrap().parse().unwrap();
 
-	if patch == 0 {
-		format!("{}.{}", major, minor)
-	}
-	else {
-		format!("{}.{}.{}", major, minor, patch)
-	}
+	format!("{}.{}", major, minor)
 }
 
 fn output() -> PathBuf {
@@ -37,45 +31,20 @@ fn search() -> PathBuf {
 }
 
 fn fetch() -> io::Result<()> {
-	let url    = format!("http://ffmpeg.org/releases/ffmpeg-{}.tar.bz2", version());
-	let status = try!(if cfg!(target_os = "linux") {
-		Command::new("wget")
-			.current_dir(&output())
-			.arg(url)
-			.arg("-c")
-			.arg("-O")
-			.arg("ffmpeg.tar.bz2")
-			.status()
-	}
-	else {
-		unimplemented!();
-	});
+	let status = try!(Command::new("git")
+		.current_dir(&output())
+		.arg("clone")
+		.arg("-b")
+		.arg(format!("release/{}", version()))
+		.arg("https://github.com/FFmpeg/FFmpeg")
+		.arg(format!("ffmpeg-{}", version()))
+		.status());
 
 	if status.success() {
 		Ok(())
 	}
 	else {
 		Err(io::Error::new(io::ErrorKind::Other, "fetch failed"))
-	}
-}
-
-fn extract() -> io::Result<()> {
-	let status = try!(if cfg!(target_os = "linux") {
-		Command::new("tar")
-			.current_dir(&output())
-			.arg("xf")
-			.arg("ffmpeg.tar.bz2")
-			.status()
-	}
-	else {
-		unimplemented!();
-	});
-
-	if status.success() {
-		Ok(())
-	}
-	else {
-		Err(io::Error::new(io::ErrorKind::Other, "extract failed"))
 	}
 }
 
@@ -349,14 +318,28 @@ fn main() {
 			println!("cargo:rustc-link-lib=z");
 		}
 
-		if fs::metadata(&search().join("lib").join("libavutil.a")).is_ok() {
-			return;
+		if fs::metadata(&search().join("lib").join("libavutil.a")).is_err() {
+			fs::create_dir_all(&output()).ok().expect("failed to create build directory");
+			fetch().unwrap();
+			build().unwrap();
 		}
 
-		fs::create_dir_all(&output()).ok().expect("failed to create build directory");
-		fetch().unwrap();
-		extract().unwrap();
-		build().unwrap();
+		// Check additional required libraries.
+		{
+			let config_mak = source().join("config.mak");
+			let file = File::open(config_mak).unwrap();
+			let reader = BufReader::new(file);
+			let extra_libs = reader.lines()
+				.find(|ref line| line.as_ref().unwrap().starts_with("EXTRALIBS"))
+				.map(|line| line.unwrap()).unwrap();
+
+			let linker_args = extra_libs.split('=').last().unwrap().split(' ');
+			let include_libs = linker_args.filter(|v| v.starts_with("-l")).map(|flag| &flag[2..]);
+
+			for lib in include_libs {
+				println!("cargo:rustc-link-lib={}", lib);
+			}
+		}
 	}
 
 	check_features(&vec![
