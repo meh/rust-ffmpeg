@@ -1,6 +1,6 @@
 use std::ops::{Deref, DerefMut};
 
-use libc::c_int;
+use libc::{c_int, int64_t};
 use codec::Context;
 use ::{Error, Rational, media};
 use super::{video, audio, subtitle};
@@ -70,7 +70,7 @@ impl Encoder {
 
 	pub fn set_bit_rate(&mut self, value: usize) {
 		unsafe {
-			(*self.as_mut_ptr()).bit_rate = value as c_int;
+			(*self.as_mut_ptr()).bit_rate = value as int64_t;
 		}
 	}
 
