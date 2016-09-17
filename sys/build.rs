@@ -168,6 +168,9 @@ fn build() -> io::Result<()> {
 	enable!(configure, "BUILD_LIB_AVS", "libavs");
 	enable!(configure, "BUILD_LIB_XVID", "libxvid");
 
+	// other external libraries
+	enable!(configure, "BUILD_NVENC", "nvenc");
+
 	// configure external protocols
 	enable!(configure, "BUILD_LIB_SMBCLIENT", "libsmbclient");
 	enable!(configure, "BUILD_LIB_SSH", "libssh");
