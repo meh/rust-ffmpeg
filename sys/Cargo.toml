@@ -29,8 +29,9 @@ build-license-nonfree  = ["build"]
 build-license-version3 = ["build"]
 
 # misc
-build-pic  = ["build"]
-build-zlib = ["build"]
+build-nvenc = ["build"]
+build-pic   = ["build"]
+build-zlib  = ["build"]
 
 # ssl
 build-lib-gnutls  = ["build"]
