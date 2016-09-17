@@ -317,7 +317,7 @@ pub struct AVFormatContext {
 	pub start_time: int64_t,
 	pub duration:   int64_t,
 
-	pub bit_rate:    c_int,
+	pub bit_rate:    int64_t,
 	pub packet_size: c_uint,
 	pub max_delay:   c_int,
 	pub flags:       c_int,
@@ -405,7 +405,10 @@ pub struct AVFormatContext {
 	pub dump_separator: *mut uint8_t,
 	pub data_codec_id: AVCodecID,
 
-	pub open_cb: extern fn(*mut AVFormatContext, *mut *mut AVIOContext, *const c_char, c_int, *const AVIOInterruptCB, *mut *mut AVDictionary) -> c_int,
+	pub protocol_whitelist: *mut c_char,
+
+	pub io_open: extern fn(*mut AVFormatContext, *mut *mut AVIOContext, *const c_char, c_int, *const AVIOInterruptCB, *mut *mut AVDictionary) -> c_int,
+	pub io_close: extern fn(*mut AVFormatContext, *mut AVIOContext),
 }
 
 pub const AVFMT_FLAG_GENPTS:          c_int = 0x0001;
