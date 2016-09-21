@@ -1,5 +1,5 @@
 use libc::{c_int, c_uint};
-use ::avfilter::filter::{AVFilterContext, AVFilterBufferRef};
+use ::avfilter::filter::{AVFilterContext};
 use ::avutil::AVFrame;
 
 pub const AV_BUFFERSRC_FLAG_NO_CHECK_FORMAT: c_int = 1;
