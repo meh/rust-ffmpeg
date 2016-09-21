@@ -1,5 +1,5 @@
-use libc::{c_void, c_char, c_short, c_int, int8_t, uint8_t};
-use libc::{int16_t, uint32_t, int64_t, uint64_t};
+use libc::{c_void, c_char, c_int, uint8_t};
+use libc::{int64_t, uint64_t};
 use super::dict::AVDictionary;
 use super::rational::AVRational;
 use super::buffer::AVBufferRef;
