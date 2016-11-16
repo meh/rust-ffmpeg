@@ -1,6 +1,6 @@
 [package]
 name    = "ffmpeg"
-version = "0.2.0-alpha.2"
+version = "0.3.0"
 build   = "build.rs"
 
 authors = ["meh. <meh@schizofreni.co>"]
@@ -22,8 +22,10 @@ build-license-nonfree  = ["ffmpeg-sys/build-license-nonfree"]
 build-license-version3 = ["ffmpeg-sys/build-license-version3"]
 
 # misc
-build-pic  = ["ffmpeg-sys/build-pic"]
-build-zlib = ["ffmpeg-sys/build-zlib"]
+build-nvenc = ["ffmpeg-sys/build-nvenc"]
+build-pic   = ["ffmpeg-sys/build-pic"]
+build-libva = ["ffmpeg-sys/build-libva"]
+build-zlib  = ["ffmpeg-sys/build-zlib"]
 
 # ssl
 build-lib-gnutls  = ["ffmpeg-sys/build-lib-gnutls"]
@@ -95,5 +97,6 @@ version  = "0.4"
 optional = true
 
 [dependencies.ffmpeg-sys]
-version = "2.8"
+version = "3.0.0"
 default-features = false
+path = "/home/john/code/rust-ffmpeg-sys"
