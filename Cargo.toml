@@ -3,11 +3,11 @@ name    = "ffmpeg"
 version = "0.3.0"
 build   = "build.rs"
 
-authors = ["meh. <meh@schizofreni.co>"]
+authors = ["john wells"]
 license = "WTFPL"
 
-description = "Safe FFmpeg wrapper"
-repository  = "https://github.com/meh/rust-ffmpeg"
+description = "Safe FFmpeg wrapper. Clone of meh. <meh@schizofreni.co>"
+repository  = "https://github.com/attackgoat/rust-ffmpeg"
 keywords    = ["audio", "video"]
 
 [features]
@@ -99,4 +99,3 @@ optional = true
 [dependencies.ffmpeg-sys]
 version = "3.0.0"
 default-features = false
-path = "/home/john/code/rust-ffmpeg-sys"
