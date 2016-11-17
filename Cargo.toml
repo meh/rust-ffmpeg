@@ -99,3 +99,4 @@ optional = true
 [dependencies.ffmpeg-sys]
 version = "3.0.0"
 default-features = false
+git = "https://github.com/attackgoat/rust-ffmpeg-sys"
