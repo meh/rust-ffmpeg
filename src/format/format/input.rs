@@ -59,4 +59,10 @@ impl Input {
 			}
 		}
 	}
+
+	pub fn seek_to_pts(&self) -> bool {
+		unsafe {
+			AVFMT_SEEK_TO_PTS == (*self.as_ptr()).flags & AVFMT_SEEK_TO_PTS
+		}
+	}
 }

@@ -128,6 +128,16 @@ impl Input {
 			}
 		}
 	}
+
+	pub fn seek_ts(&mut self, stream_index: usize, ts: i64) -> Result<(), Error> {
+		unsafe {
+			match av_seek_frame(self.as_mut_ptr(), stream_index as i32, ts, AVSEEK_FLAG_ANY)
+			{
+				s if s >= 0 => Ok(()),
+				e => Err(Error::from(e)),
+			}
+		}
+	}
 }
 
 impl Deref for Input {
