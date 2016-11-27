@@ -1,85 +1,10 @@
-use libc::{c_void, c_char, c_int, c_uint, c_double, int8_t, uint8_t, int64_t, uint64_t};
-use ::avutil::{AVClass, AVRational, AVPictureType, AVMediaType, AVDictionary, AVFrame};
+use libc::{c_void, c_char, c_int, c_uint, c_double, int64_t, uint64_t};
+use ::avutil::{AVClass, AVRational, AVMediaType, AVDictionary, AVFrame, AVBufferRef};
 
-#[repr(C)]
-pub struct AVFilterBuffer {
-	pub data: [*mut uint8_t; 8],
-	pub extended_data: *mut *mut uint8_t,
-	pub linesize: [c_int; 8],
-	pub private: *mut c_void,
-	pub free: extern fn(*mut AVFilterBuffer),
-	pub format: c_int,
-	pub w: c_int,
-	pub h: c_int,
-	pub refcount: c_uint,
-}
-
-pub const AV_PERM_READ:          c_int = 0x01;
-pub const AV_PERM_WRITE:         c_int = 0x02;
-pub const AV_PERM_PRESERVE:      c_int = 0x04;
-pub const AV_PERM_REUSE:         c_int = 0x08;
-pub const AV_PERM_REUSE2:        c_int = 0x10;
-pub const AV_PERM_NEG_LINESIZES: c_int = 0x20;
-pub const AV_PERM_ALIGN:         c_int = 0x40;
-
-pub const AVFILTER_ALIGN: c_int = 16;
-
-#[repr(C)]
-pub struct AVFilterBufferRefAudioProps {
-	pub channel_layout: uint64_t,
-	pub nb_samples: c_int,
-	pub sample_rate: c_int,
-	pub channels: c_int,
-}
-
-#[repr(C)]
-pub struct AVFilterBufferRefVideoProps {
-	pub w: c_int,
-	pub h: c_int,
-	pub sample_aspect_ratio: AVRational,
-	pub interlaced: c_int,
-	pub top_field_first: c_int,
-	pub pict_type: AVPictureType,
-	pub key_frame: c_int,
-	pub qp_table_linesize: c_int,
-	pub qp_table_size: c_int,
-	pub qp_table: *mut int8_t,
-}
-
-#[repr(C)]
-pub struct AVFilterBufferRef {
-	pub buf: *mut AVFilterBuffer,
-	pub data: [*mut uint8_t; 8],
-	pub extended_data: *mut *mut uint8_t,
-	pub linesize: [c_int; 8],
-	pub video: *mut AVFilterBufferRefVideoProps,
-	pub audio: *mut AVFilterBufferRefAudioProps,
-	pub pts: int64_t,
-	pub pos: int64_t,
-	pub format: c_int,
-	pub perms: c_int,
-	pub kind: AVMediaType,
-	pub metadata: *mut AVDictionary,
-}
-
-#[repr(C)]
-pub struct AVFilterPad {
-	pub name: *const c_char,
-	pub kind: AVMediaType,
-	pub min_perms: c_int,
-	pub rej_perms: c_int,
-	pub start_frame: Option<extern fn(*mut AVFilterLink, *mut AVFilterBufferRef) -> c_int>,
-	pub get_video_buffer: Option<extern fn(*mut AVFilterLink, c_int, c_int) -> *mut AVFrame>,
-	pub get_audio_buffer: Option<extern fn(*mut AVFilterLink, c_int) -> *mut AVFrame>,
-	pub end_frame: Option<extern fn(*mut AVFilterLink) -> c_int>,
-	pub draw_slice: Option<extern fn(*mut AVFilterLink, c_int, c_int, c_int) -> c_int>,
-	pub filter_frame: extern fn(*mut AVFilterLink, *mut AVFrame) -> c_int,
-	pub poll_frame: extern fn(*mut AVFilterLink) -> c_int,
-	pub request_frame: extern fn(*mut AVFilterLink) -> c_int,
-	pub config_props: extern fn(*mut AVFilterLink) -> c_int,
-	pub needs_fifo: c_int,
-	pub needs_writable: c_int,
-}
+pub type AVFilterPad            = c_void;
+pub type AVFilterCommand        = c_void;
+pub type AVFilterChannelLayouts = c_void;
+pub type AVFilterFormats        = c_void;
 
 pub const AVFILTER_FLAG_DYNAMIC_INPUTS:            c_int = 1 << 0;
 pub const AVFILTER_FLAG_DYNAMIC_OUTPUTS:           c_int = 1 << 1;
@@ -118,11 +43,9 @@ pub struct AVFilterContext {
 	pub name: *mut c_char,
 	pub input_pads: *mut AVFilterPad,
 	pub inputs: *mut *mut AVFilterLink,
-	pub input_count: c_uint,
 	pub nb_inputs: c_uint,
 	pub output_pads: *mut AVFilterPad,
 	pub outputs: *mut *mut AVFilterLink,
-	pub output_count: c_uint,
 	pub nb_outputs: c_uint,
 	pub private: *mut c_void,
 	pub graph: *mut AVFilterGraph,
@@ -133,6 +56,8 @@ pub struct AVFilterContext {
 	pub enable: *mut c_void,
 	pub var_values: *mut c_double,
 	pub is_disabled: c_int,
+	pub hw_device_ctx: AVBufferRef,
+	pub nb_threads: c_int,
 }
 
 pub const AVLINK_UNINIT:    c_int = 0;
@@ -156,26 +81,29 @@ pub struct AVFilterLink {
 
 	pub in_formats: *mut AVFilterFormats,
 	pub out_formats: *mut AVFilterFormats,
+	pub in_samplerates: *mut AVFilterFormats,
+	pub out_samplerates: *mut AVFilterFormats,
 	pub in_channel_layouts: *mut AVFilterChannelLayouts,
 	pub out_channel_layouts: *mut AVFilterChannelLayouts,
 	pub request_samples: c_int,
-	#[cfg(feature = "ff_api_avfilterbuffer")]
-	pub pool: *mut AVFilterPool,
+	pub init_state: c_int,
 	pub graph: *mut AVFilterGraph,
 	pub current_pts: int64_t,
+	pub current_pts_us: int64_t,
 	pub age_index: c_int,
 	pub frame_rate: AVRational,
 	pub partial_buf: *mut AVFrame,
 	pub partial_buf_size: c_int,
 	pub min_samples: c_int,
 	pub max_samples: c_int,
-	#[cfg(feature = "ff_api_avfilterbuffer")]
-	pub cur_buf_copy: *mut AVFilterBufferRef,
-	pub closed: c_int,
+	pub status: c_int,
 	pub channels: c_int,
-	pub frame_requested: c_uint,
 	pub flags: c_uint,
 	pub frame_count: int64_t,
+	pub video_frame_pool: *mut c_void,
+	pub frame_wanted_in: c_int,
+	pub frame_wanted_out: c_int,
+	pub hw_frames_ctx: *mut AVBufferRef,
 }
 
 pub const AVFILTER_CMD_FLAG_ONE:  c_int = 1;
@@ -189,11 +117,10 @@ pub type avfilter_execute_func = extern fn(*mut AVFilterContext, avfilter_action
 #[repr(C)]
 pub struct AVFilterGraph {
 	pub av_class: *const AVClass,
-	pub filter_count_unused: c_uint,
 	pub filters: *mut *mut AVFilterContext,
+	pub nb_filters: c_uint,
 	pub scale_sws_opts: *mut c_char,
 	pub resample_lavr_opts: *mut c_char,
-	pub nb_filters: c_uint,
 	pub thread_type: c_int,
 	pub nb_threads: c_int,
 	pub internal: *mut AVFilterGraphInternal,
@@ -207,11 +134,6 @@ pub struct AVFilterGraph {
 
 pub const AVFILTER_AUTO_CONVERT_ALL:  c_int = 0;
 pub const AVFILTER_AUTO_CONVERT_NONE: c_int = -1;
-
-pub type AVFilterCommand        = c_void;
-pub type AVFilterChannelLayouts = c_void;
-pub type AVFilterPool           = c_void;
-pub type AVFilterFormats        = c_void;
 
 #[repr(C)]
 pub struct AVFilterInOut {

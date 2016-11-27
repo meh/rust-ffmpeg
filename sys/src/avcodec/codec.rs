@@ -145,7 +145,6 @@ pub enum AVCodecID {
 	AV_CODEC_ID_ANM,
 	AV_CODEC_ID_BINKVIDEO,
 	AV_CODEC_ID_IFF_ILBM,
-	AV_CODEC_ID_IFF_BYTERUN1,
 	AV_CODEC_ID_KGV1,
 	AV_CODEC_ID_YOP,
 	AV_CODEC_ID_VP8,
@@ -178,55 +177,52 @@ pub enum AVCodecID {
 	AV_CODEC_ID_MSS2,
 	AV_CODEC_ID_VP9,
 	AV_CODEC_ID_AIC,
-	AV_CODEC_ID_ESCAPE130_DEPRECATED,
-	AV_CODEC_ID_G2M_DEPRECATED,
-	AV_CODEC_ID_WEBP_DEPRECATED,
+	AV_CODEC_ID_ESCAPE130,
+	AV_CODEC_ID_G2M,
+	AV_CODEC_ID_WEBP,
 	AV_CODEC_ID_HNM4_VIDEO,
-	AV_CODEC_ID_HEVC_DEPRECATED,
+	AV_CODEC_ID_HEVC,
 	AV_CODEC_ID_FIC,
 	AV_CODEC_ID_ALIAS_PIX,
-	AV_CODEC_ID_BRENDER_PIX_DEPRECATED,
-	AV_CODEC_ID_PAF_VIDEO_DEPRECATED,
-	AV_CODEC_ID_EXR_DEPRECATED,
-	AV_CODEC_ID_VP7_DEPRECATED,
-	AV_CODEC_ID_SANM_DEPRECATED,
-	AV_CODEC_ID_SGIRLE_DEPRECATED,
-	AV_CODEC_ID_MVC1_DEPRECATED,
-	AV_CODEC_ID_MVC2_DEPRECATED,
+	AV_CODEC_ID_BRENDER_PIX,
+	AV_CODEC_ID_PAF_VIDEO,
+	AV_CODEC_ID_EXR,
+	AV_CODEC_ID_VP7,
+	AV_CODEC_ID_SANM,
+	AV_CODEC_ID_SGIRLE,
+	AV_CODEC_ID_MVC1,
+	AV_CODEC_ID_MVC2,
 	AV_CODEC_ID_HQX,
 	AV_CODEC_ID_TDSC,
 	AV_CODEC_ID_HQ_HQA,
 	AV_CODEC_ID_HAP,
 	AV_CODEC_ID_DDS,
+	AV_CODEC_ID_DXV,
+	AV_CODEC_ID_SCREENPRESSO,
+	AV_CODEC_ID_RSCC,
 
-	AV_CODEC_ID_BRENDER_PIX = MKBETAG!(b'B', b'P', b'I', b'X'),
-	AV_CODEC_ID_Y41P        = MKBETAG!(b'Y', b'4', b'1', b'P'),
-	AV_CODEC_ID_ESCAPE130   = MKBETAG!(b'E', b'1', b'3', b'0'),
-	AV_CODEC_ID_EXR         = MKBETAG!(b'0', b'E', b'X', b'R'),
-	AV_CODEC_ID_AVRP        = MKBETAG!(b'A', b'V', b'R', b'P'),
-
-	AV_CODEC_ID_012V        = MKBETAG!(b'0', b'1', b'2', b'V'),
-	AV_CODEC_ID_G2M         = MKBETAG!(  0 , b'G', b'2', b'M'),
-	AV_CODEC_ID_AVUI        = MKBETAG!(b'A', b'V', b'U', b'I'),
-	AV_CODEC_ID_AYUV        = MKBETAG!(b'A', b'Y', b'U', b'V'),
-	AV_CODEC_ID_TARGA_Y216  = MKBETAG!(b'T', b'2', b'1', b'6'),
-	AV_CODEC_ID_V308        = MKBETAG!(b'V', b'3', b'0', b'8'),
-	AV_CODEC_ID_V408        = MKBETAG!(b'V', b'4', b'0', b'8'),
-	AV_CODEC_ID_YUV4        = MKBETAG!(b'Y', b'U', b'V', b'4'),
-	AV_CODEC_ID_SANM        = MKBETAG!(b'S', b'A', b'N', b'M'),
-	AV_CODEC_ID_PAF_VIDEO   = MKBETAG!(b'P', b'A', b'F', b'V'),
-	AV_CODEC_ID_AVRN        = MKBETAG!(b'A', b'V', b'R', b'n'),
-	AV_CODEC_ID_CPIA        = MKBETAG!(b'C', b'P', b'I', b'A'),
-	AV_CODEC_ID_XFACE       = MKBETAG!(b'X', b'F', b'A', b'C'),
-	AV_CODEC_ID_SGIRLE      = MKBETAG!(b'S', b'G', b'I', b'R'),
-	AV_CODEC_ID_MVC1        = MKBETAG!(b'M', b'V', b'C', b'1'),
-	AV_CODEC_ID_MVC2        = MKBETAG!(b'M', b'V', b'C', b'2'),
-	AV_CODEC_ID_SNOW        = MKBETAG!(b'S', b'N', b'O', b'W'),
-	AV_CODEC_ID_WEBP        = MKBETAG!(b'W', b'E', b'B', b'P'),
-	AV_CODEC_ID_SMVJPEG     = MKBETAG!(b'S', b'M', b'V', b'J'),
-	AV_CODEC_ID_HEVC        = MKBETAG!(b'H', b'2', b'6', b'5'),
-	AV_CODEC_ID_VP7         = MKBETAG!(b'V', b'P', b'7', b'0'),
-	AV_CODEC_ID_APNG        = MKBETAG!(b'A', b'P', b'N', b'G'),
+	AV_CODEC_ID_Y41P = 0x8000,
+	AV_CODEC_ID_AVRP,
+	AV_CODEC_ID_012V,
+	AV_CODEC_ID_AVUI,
+	AV_CODEC_ID_AYUV,
+	AV_CODEC_ID_TARGA_Y216,
+	AV_CODEC_ID_V308,
+	AV_CODEC_ID_V408,
+	AV_CODEC_ID_YUV4,
+	AV_CODEC_ID_AVRN,
+	AV_CODEC_ID_CPIA,
+	AV_CODEC_ID_XFACE,
+	AV_CODEC_ID_SNOW,
+	AV_CODEC_ID_SMVJPEG,
+	AV_CODEC_ID_APNG,
+	AV_CODEC_ID_DAALA,
+	AV_CODEC_ID_CFHD,
+	AV_CODEC_ID_TRUEMOTION2RT,
+	AV_CODEC_ID_M101,
+	AV_CODEC_ID_MAGICYUV,
+	AV_CODEC_ID_SHEERVIDEO,
+	AV_CODEC_ID_YLC,
 
 	/* various PCM "codecs" */
 	AV_CODEC_ID_PCM_S16LE = 0x10000,
@@ -257,12 +253,12 @@ pub enum AVCodecID {
 	AV_CODEC_ID_PCM_LXF,
 	AV_CODEC_ID_S302M,
 	AV_CODEC_ID_PCM_S8_PLANAR,
-	AV_CODEC_ID_PCM_S24LE_PLANAR_DEPRECATED,
-	AV_CODEC_ID_PCM_S32LE_PLANAR_DEPRECATED,
-	AV_CODEC_ID_PCM_S16BE_PLANAR_DEPRECATED,
-	AV_CODEC_ID_PCM_S24LE_PLANAR = MKBETAG!(  24, b'P', b'S', b'P'),
-	AV_CODEC_ID_PCM_S32LE_PLANAR = MKBETAG!(  32, b'P', b'S', b'P'),
-	AV_CODEC_ID_PCM_S16BE_PLANAR = MKBETAG!(b'P', b'S', b'P', 16),
+	AV_CODEC_ID_PCM_S24LE_PLANAR,
+	AV_CODEC_ID_PCM_S32LE_PLANAR,
+	AV_CODEC_ID_PCM_S16BE_PLANAR,
+
+	AV_CODEC_ID_PCM_S64LE = 0x10800,
+	AV_CODEC_ID_PCM_S64BE,
 
 	/* various ADPCM codecs */
 	AV_CODEC_ID_ADPCM_IMA_QT = 0x11000,
@@ -295,14 +291,18 @@ pub enum AVCodecID {
 	AV_CODEC_ID_ADPCM_IMA_ISS,
 	AV_CODEC_ID_ADPCM_G722,
 	AV_CODEC_ID_ADPCM_IMA_APC,
-	AV_CODEC_ID_ADPCM_VIMA_DEPRECATED,
-	AV_CODEC_ID_ADPCM_VIMA    = MKBETAG!(b'V', b'I', b'M', b'A'),
-	AV_CODEC_ID_ADPCM_AFC     = MKBETAG!(b'A', b'F', b'C', b' '),
-	AV_CODEC_ID_ADPCM_IMA_OKI = MKBETAG!(b'O', b'K', b'I', b' '),
-	AV_CODEC_ID_ADPCM_DTK     = MKBETAG!(b'D', b'T', b'K', b' '),
-	AV_CODEC_ID_ADPCM_IMA_RAD = MKBETAG!(b'R', b'A', b'D', b' '),
-	AV_CODEC_ID_ADPCM_G726LE  = MKBETAG!(b'6', b'2', b'7', b'G'),
-	AV_CODEC_ID_ADPCM_THP_LE  = MKBETAG!(b'T', b'H', b'P', b'L'),
+	AV_CODEC_ID_ADPCM_VIMA,
+
+	AV_CODEC_ID_ADPCM_AFC = 0x11800,
+	AV_CODEC_ID_ADPCM_IMA_OKI,
+	AV_CODEC_ID_ADPCM_DTK,
+	AV_CODEC_ID_ADPCM_IMA_RAD,
+	AV_CODEC_ID_ADPCM_G726LE,
+	AV_CODEC_ID_ADPCM_THP_LE,
+	AV_CODEC_ID_ADPCM_PSX,
+	AV_CODEC_ID_ADPCM_AICA,
+	AV_CODEC_ID_ADPCM_IMA_DAT4,
+	AV_CODEC_ID_ADPCM_MTAF,
 
 	/* AMR */
 	AV_CODEC_ID_AMR_NB = 0x12000,
@@ -317,6 +317,8 @@ pub enum AVCodecID {
 	AV_CODEC_ID_INTERPLAY_DPCM,
 	AV_CODEC_ID_XAN_DPCM,
 	AV_CODEC_ID_SOL_DPCM,
+
+	AV_CODEC_ID_SDX2_DPCM = 0x14800,
 
 	/* audio codecs */
 	AV_CODEC_ID_MP2 = 0x15000,
@@ -381,29 +383,31 @@ pub enum AVCodecID {
 	AV_CODEC_ID_RALF,
 	AV_CODEC_ID_IAC,
 	AV_CODEC_ID_ILBC,
-	AV_CODEC_ID_OPUS_DEPRECATED,
+	AV_CODEC_ID_OPUS,
 	AV_CODEC_ID_COMFORT_NOISE,
-	AV_CODEC_ID_TAK_DEPRECATED,
+	AV_CODEC_ID_TAK,
 	AV_CODEC_ID_METASOUND,
-	AV_CODEC_ID_PAF_AUDIO_DEPRECATED,
+	AV_CODEC_ID_PAF_AUDIO,
 	AV_CODEC_ID_ON2AVC,
 	AV_CODEC_ID_DSS_SP,
-	AV_CODEC_ID_FFWAVESYNTH     = MKBETAG!(b'F', b'F', b'W', b'S'),
-	AV_CODEC_ID_SONIC           = MKBETAG!(b'S', b'O', b'N', b'C'),
-	AV_CODEC_ID_SONIC_LS        = MKBETAG!(b'S', b'O', b'N', b'L'),
-	AV_CODEC_ID_PAF_AUDIO       = MKBETAG!(b'P', b'A', b'F', b'A'),
-	AV_CODEC_ID_OPUS            = MKBETAG!(b'O', b'P', b'U', b'S'),
-	AV_CODEC_ID_TAK             = MKBETAG!(b't', b'B', b'a', b'K'),
-	AV_CODEC_ID_EVRC            = MKBETAG!(b's', b'e', b'v', b'c'),
-	AV_CODEC_ID_SMV             = MKBETAG!(b's', b's', b'm', b'v'),
-	AV_CODEC_ID_DSD_LSBF        = MKBETAG!(b'D', b'S', b'D', b'L'),
-	AV_CODEC_ID_DSD_MSBF        = MKBETAG!(b'D', b'S', b'D', b'M'),
-	AV_CODEC_ID_DSD_LSBF_PLANAR = MKBETAG!(b'D', b'S', b'D', b'1'),
-	AV_CODEC_ID_DSD_MSBF_PLANAR = MKBETAG!(b'D', b'S', b'D', b'8'),
-	AV_CODEC_ID_4GV             = MKBETAG!(b's', b'4', b'g', b'v'),
+
+	AV_CODEC_ID_FFWAVESYNTH = 0x15800,
+	AV_CODEC_ID_SONIC,
+	AV_CODEC_ID_SONIC_LS,
+	AV_CODEC_ID_EVRC,
+	AV_CODEC_ID_SMV,
+	AV_CODEC_ID_DSD_LSBF,
+	AV_CODEC_ID_DSD_MSBF,
+	AV_CODEC_ID_DSD_LSBF_PLANAR,
+	AV_CODEC_ID_DSD_MSBF_PLANAR,
+	AV_CODEC_ID_4GV,
+	AV_CODEC_ID_INTERPLAY_ACM,
+	AV_CODEC_ID_XMA1,
+	AV_CODEC_ID_XMA2,
+	AV_CODEC_ID_DST,
 
 	/* subtitle codecs */
-	AV_CODEC_ID_DVD_SUBTITLE   = 0x17000,
+	AV_CODEC_ID_DVD_SUBTITLE = 0x17000,
 	AV_CODEC_ID_DVB_SUBTITLE,
 	AV_CODEC_ID_TEXT,
 	AV_CODEC_ID_XSUB,
@@ -412,44 +416,51 @@ pub enum AVCodecID {
 	AV_CODEC_ID_HDMV_PGS_SUBTITLE,
 	AV_CODEC_ID_DVB_TELETEXT,
 	AV_CODEC_ID_SRT,
-	AV_CODEC_ID_MICRODVD           = MKBETAG!(b'm', b'D', b'V', b'D'),
-	AV_CODEC_ID_EIA_608            = MKBETAG!(b'c', b'6', b'0', b'8'),
-	AV_CODEC_ID_JACOSUB            = MKBETAG!(b'J', b'S', b'U', b'B'),
-	AV_CODEC_ID_SAMI               = MKBETAG!(b'S', b'A', b'M', b'I'),
-	AV_CODEC_ID_REALTEXT           = MKBETAG!(b'R', b'T', b'X', b'T'),
-	AV_CODEC_ID_STL                = MKBETAG!(b'S', b'p', b'T', b'L'),
-	AV_CODEC_ID_SUBVIEWER1         = MKBETAG!(b'S', b'b', b'V', b'1'),
-	AV_CODEC_ID_SUBVIEWER          = MKBETAG!(b'S', b'u', b'b', b'V'),
-	AV_CODEC_ID_SUBRIP             = MKBETAG!(b'S', b'R', b'i', b'p'),
-	AV_CODEC_ID_WEBVTT             = MKBETAG!(b'W', b'V', b'T', b'T'),
-	AV_CODEC_ID_MPL2               = MKBETAG!(b'M', b'P', b'L', b'2'),
-	AV_CODEC_ID_VPLAYER            = MKBETAG!(b'V', b'P', b'l', b'r'),
-	AV_CODEC_ID_PJS                = MKBETAG!(b'P', b'h', b'J', b'S'),
-	AV_CODEC_ID_ASS                = MKBETAG!(b'A', b'S', b'S', b' '),
-	AV_CODEC_ID_HDMV_TEXT_SUBTITLE = MKBETAG!(b'B', b'D', b'T', b'X'),
+
+	AV_CODEC_ID_MICRODVD   = 0x17800,
+	AV_CODEC_ID_EIA_608,
+	AV_CODEC_ID_JACOSUB,
+	AV_CODEC_ID_SAMI,
+	AV_CODEC_ID_REALTEXT,
+	AV_CODEC_ID_STL,
+	AV_CODEC_ID_SUBVIEWER1,
+	AV_CODEC_ID_SUBVIEWER,
+	AV_CODEC_ID_SUBRIP,
+	AV_CODEC_ID_WEBVTT,
+	AV_CODEC_ID_MPL2,
+	AV_CODEC_ID_VPLAYER,
+	AV_CODEC_ID_PJS,
+	AV_CODEC_ID_ASS,
+	AV_CODEC_ID_HDMV_TEXT_SUBTITLE,
 
 	/* other specific kind of codecs (generally used for attachments) */
-	AV_CODEC_ID_TTF           = 0x18000,
-	AV_CODEC_ID_BINTEXT       = MKBETAG!(b'B', b'T', b'X', b'T'),
-	AV_CODEC_ID_XBIN          = MKBETAG!(b'X', b'B', b'I', b'N'),
-	AV_CODEC_ID_IDF           = MKBETAG!(  0 , b'I', b'D', b'F'),
-	AV_CODEC_ID_OTF           = MKBETAG!(  0 , b'O', b'T', b'F'),
-	AV_CODEC_ID_SMPTE_KLV     = MKBETAG!(b'K', b'L', b'V', b'A'),
-	AV_CODEC_ID_DVD_NAV       = MKBETAG!(b'D', b'N', b'A', b'V'),
-	AV_CODEC_ID_TIMED_ID3     = MKBETAG!(b'T', b'I', b'D', b'3'),
-	AV_CODEC_ID_BIN_DATA      = MKBETAG!(b'D', b'A', b'T', b'A'),
+	AV_CODEC_ID_TTF = 0x18000,
+
+	AV_CODEC_ID_SCTE_35, // Contain timestamp estimated through PCR of program stream.
+	AV_CODEC_ID_BINTEXT    = 0x18800,
+	AV_CODEC_ID_XBIN,
+	AV_CODEC_ID_IDF,
+	AV_CODEC_ID_OTF,
+	AV_CODEC_ID_SMPTE_KLV,
+	AV_CODEC_ID_DVD_NAV,
+	AV_CODEC_ID_TIMED_ID3,
+	AV_CODEC_ID_BIN_DATA,
 
 	AV_CODEC_ID_PROBE = 0x19000,
 
-	AV_CODEC_ID_MPEG2TS      = 0x20000,
+	AV_CODEC_ID_MPEG2TS = 0x20000,
 	AV_CODEC_ID_MPEG4SYSTEMS = 0x20001,
-	AV_CODEC_ID_FFMETADATA   = 0x21000,
+	AV_CODEC_ID_FFMETADATA = 0x21000,
+	AV_CODEC_ID_WRAPPED_AVFRAME = 0x21001,
 }
+
+pub const AV_CODEC_ID_IFF_BYTERUN1:   AVCodecID = AVCodecID::AV_CODEC_ID_IFF_ILBM;
+pub const AV_CODEC_ID_H265:           AVCodecID = AVCodecID::AV_CODEC_ID_HEVC;
 
 pub const AV_CODEC_ID_VIMA: AVCodecID = AVCodecID::AV_CODEC_ID_ADPCM_VIMA;
 
-pub const AV_CODEC_ID_FIRST_SUBTITLE: AVCodecID = AVCodecID::AV_CODEC_ID_DVD_SUBTITLE;
 pub const AV_CODEC_ID_FIRST_AUDIO:    AVCodecID = AVCodecID::AV_CODEC_ID_PCM_S16LE;
+pub const AV_CODEC_ID_FIRST_SUBTITLE: AVCodecID = AVCodecID::AV_CODEC_ID_DVD_SUBTITLE;
 pub const AV_CODEC_ID_FIRST_UNKNOWN:  AVCodecID = AVCodecID::AV_CODEC_ID_TTF;
 
 #[derive(Debug)]
@@ -463,6 +474,7 @@ pub struct AVCodecDescriptor {
 
 	props: c_int,
 	mime_types: *const *const c_char,
+	profiles: *const AVProfile,
 }
 
 pub const AV_CODEC_PROP_INTRA_ONLY: c_int = 1 << 0;
@@ -531,22 +543,17 @@ pub const AV_CODEC_FLAG_QSCALE:          c_uint = 0x0002;
 pub const AV_CODEC_FLAG_4MV:             c_uint = 0x0004;
 pub const AV_CODEC_FLAG_OUTPUT_CORRUPT:  c_uint = 0x0008;
 pub const AV_CODEC_FLAG_QPEL:            c_uint = 0x0010;
-pub const AV_CODEC_FLAG_GMC:             c_uint = 0x0020;
-pub const AV_CODEC_FLAG_MV0:             c_uint = 0x0040;
-pub const AV_CODEC_FLAG_INPUT_PRESERVED: c_uint = 0x0100;
 pub const AV_CODEC_FLAG_PASS1:           c_uint = 0x0200;
 pub const AV_CODEC_FLAG_PASS2:           c_uint = 0x0400;
+pub const AV_CODEC_FLAG_LOOP_FILTER:     c_uint = 0x0800;
 pub const AV_CODEC_FLAG_GRAY:            c_uint = 0x2000;
-pub const AV_CODEC_FLAG_EMU_EDGE:        c_uint = 0x4000;
 pub const AV_CODEC_FLAG_PSNR:            c_uint = 0x8000;
 pub const AV_CODEC_FLAG_TRUNCATED:       c_uint = 0x00010000;
-pub const AV_CODEC_FLAG_NORMALIZE_AQP:   c_uint = 0x00020000;
 pub const AV_CODEC_FLAG_INTERLACED_DCT:  c_uint = 0x00040000;
 pub const AV_CODEC_FLAG_LOW_DELAY:       c_uint = 0x00080000;
 pub const AV_CODEC_FLAG_GLOBAL_HEADER:   c_uint = 0x00400000;
 pub const AV_CODEC_FLAG_BITEXACT:        c_uint = 0x00800000;
 pub const AV_CODEC_FLAG_AC_PRED:         c_uint = 0x01000000;
-pub const AV_CODEC_FLAG_LOOP_FILTER:     c_uint = 0x00000800;
 pub const AV_CODEC_FLAG_INTERLACED_ME:   c_uint = 0x20000000;
 pub const AV_CODEC_FLAG_CLOSED_GOP:      c_uint = 0x80000000;
 
@@ -554,28 +561,28 @@ pub const AV_CODEC_FLAG2_FAST:                c_uint = 0x00000001;
 pub const AV_CODEC_FLAG2_NO_OUTPUT:           c_uint = 0x00000004;
 pub const AV_CODEC_FLAG2_LOCAL_HEADER:        c_uint = 0x00000008;
 pub const AV_CODEC_FLAG2_DROP_FRAME_TIMECODE: c_uint = 0x00002000;
-pub const AV_CODEC_FLAG2_IGNORE_CROP:         c_uint = 0x00010000;
 pub const AV_CODEC_FLAG2_CHUNKS:              c_uint = 0x00008000;
+pub const AV_CODEC_FLAG2_IGNORE_CROP:         c_uint = 0x00010000;
 pub const AV_CODEC_FLAG2_SHOW_ALL:            c_uint = 0x00400000;
 pub const AV_CODEC_FLAG2_EXPORT_MVS:          c_uint = 0x10000000;
 pub const AV_CODEC_FLAG2_SKIP_MANUAL:         c_uint = 0x20000000;
+pub const AV_CODEC_FLAG2_NO_FLUSH_NOOP:       c_uint = 0x40000000;
 
 pub const AV_CODEC_CAP_DRAW_HORIZ_BAND:     c_uint = 0x0001;
 pub const AV_CODEC_CAP_DR1:                 c_uint = 0x0002;
 pub const AV_CODEC_CAP_TRUNCATED:           c_uint = 0x0008;
-pub const AV_CODEC_CAP_HWACCEL:             c_uint = 0x0010;
 pub const AV_CODEC_CAP_DELAY:               c_uint = 0x0020;
 pub const AV_CODEC_CAP_SMALL_LAST_FRAME:    c_uint = 0x0040;
 pub const AV_CODEC_CAP_HWACCEL_VDPAU:       c_uint = 0x0080;
 pub const AV_CODEC_CAP_SUBFRAMES:           c_uint = 0x0100;
 pub const AV_CODEC_CAP_EXPERIMENTAL:        c_uint = 0x0200;
 pub const AV_CODEC_CAP_CHANNEL_CONF:        c_uint = 0x0400;
-pub const AV_CODEC_CAP_NEG_LINESIZES:       c_uint = 0x0800;
 pub const AV_CODEC_CAP_FRAME_THREADS:       c_uint = 0x1000;
 pub const AV_CODEC_CAP_SLICE_THREADS:       c_uint = 0x2000;
 pub const AV_CODEC_CAP_PARAM_CHANGE:        c_uint = 0x4000;
 pub const AV_CODEC_CAP_AUTO_THREADS:        c_uint = 0x8000;
 pub const AV_CODEC_CAP_VARIABLE_FRAME_SIZE: c_uint = 0x10000;
+pub const AV_CODEC_CAP_AVOID_PROBING:       c_uint = 0x20000;
 pub const AV_CODEC_CAP_INTRA_ONLY:          c_uint = 0x40000000;
 pub const AV_CODEC_CAP_LOSSLESS:            c_uint = 0x80000000;
 
@@ -612,20 +619,20 @@ pub struct AVPanScan {
 	position: [[int16_t; 2]; 3],
 }
 
+#[derive(Debug)]
+#[repr(C)]
+pub struct AVCPBProperties {
+	max_bitrate: c_int,
+	min_bitrate: c_int,
+	avg_bitrate: c_int,
+	buffer_size: c_int,
+	vbv_delay: uint64_t,
+}
+
 pub const FF_QSCALE_TYPE_MPEG1: c_int = 0;
 pub const FF_QSCALE_TYPE_MPEG2: c_int = 1;
 pub const FF_QSCALE_TYPE_H264:  c_int = 2;
 pub const FF_QSCALE_TYPE_VP56:  c_int = 3;
-
-pub const FF_BUFFER_TYPE_INTERNAL: c_int = 1;
-pub const FF_BUFFER_TYPE_USER:     c_int = 2;
-pub const FF_BUFFER_TYPE_SHARED:   c_int = 4;
-pub const FF_BUFFER_TYPE_COPY:     c_int = 8;
-
-pub const FF_BUFFER_HINTS_VALID:    c_int = 0x01;
-pub const FF_BUFFER_HINTS_READABLE: c_int = 0x02;
-pub const FF_BUFFER_HINTS_PRESERVE: c_int = 0x04;
-pub const FF_BUFFER_HINTS_REUSABLE: c_int = 0x08;
 
 pub const AV_GET_BUFFER_FLAG_REF: c_int = 1 << 0;
 
@@ -641,6 +648,8 @@ pub enum AVPacketSideDataType {
 	AV_PKT_DATA_STEREO3D,
 	AV_PKT_DATA_AUDIO_SERVICE_TYPE,
 	AV_PKT_DATA_QUALITY_STATS,
+	AV_PKT_DATA_FALLBACK_TRACK,
+	AV_PKT_DATA_CPB_PROPERTIES,
 	AV_PKT_DATA_SKIP_SAMPLES = 70,
 	AV_PKT_DATA_JP_DUALMONO,
 	AV_PKT_DATA_STRINGS_METADATA,
@@ -649,7 +658,12 @@ pub enum AVPacketSideDataType {
 	AV_PKT_DATA_WEBVTT_IDENTIFIER,
 	AV_PKT_DATA_WEBVTT_SETTINGS,
 	AV_PKT_DATA_METADATA_UPDATE,
+	AV_PKT_DATA_MPEGTS_STREAM_ID,
+	AV_PKT_DATA_MASTERING_DISPLAY_METADATA,
 }
+
+pub const AV_PKT_DATA_QUALITY_FACTOR: AVPacketSideDataType =
+	AVPacketSideDataType::AV_PKT_DATA_QUALITY_STATS;
 
 #[derive(Debug)]
 #[repr(C)]
@@ -671,21 +685,21 @@ pub struct AVPacket {
 	pub side_data: *mut AVPacketSideData,
 	pub side_data_elems: c_int,
 	pub duration: int64_t,
-	#[cfg(feature = "ff_api_destruct_packet")]
-	pub destruct: Option<extern fn(*mut AVPacket)>,
-	#[cfg(feature = "ff_api_destruct_packet")]
-	pub private: *mut c_void,
 	pub pos: int64_t,
+	#[cfg(feature = "ff_api_convergence_duration")]
 	pub convergence_duration: int64_t,
 }
 
 pub const AV_PKT_FLAG_KEY:     c_int = 0x0001;
 pub const AV_PKT_FLAG_CORRUPT: c_int = 0x0002;
+pub const AV_PKT_FLAG_DISCARD: c_int = 0x0004;
 
-pub const AV_SIDE_DATA_PARAM_CHANGE_CHANNEL_COUNT:  c_int = 0x0001;
-pub const AV_SIDE_DATA_PARAM_CHANGE_CHANNEL_LAYOUT: c_int = 0x0002;
-pub const AV_SIDE_DATA_PARAM_CHANGE_SAMPLE_RATE:    c_int = 0x0004;
-pub const AV_SIDE_DATA_PARAM_CHANGE_DIMENSIONS:     c_int = 0x0008;
+pub enum AVSideDataParamChangeFlags {
+	AV_SIDE_DATA_PARAM_CHANGE_CHANNEL_COUNT  = 0x0001,
+	AV_SIDE_DATA_PARAM_CHANGE_CHANNEL_LAYOUT = 0x0002,
+	AV_SIDE_DATA_PARAM_CHANGE_SAMPLE_RATE    = 0x0004,
+	AV_SIDE_DATA_PARAM_CHANGE_DIMENSIONS     = 0x0008,
+}
 
 pub type AVCodecInternal = c_void;
 
@@ -839,6 +853,13 @@ pub const FF_PROFILE_AAC_ELD:       c_int = 38;
 pub const FF_PROFILE_MPEG2_AAC_LOW: c_int = 128;
 pub const FF_PROFILE_MPEG2_AAC_HE:  c_int = 131;
 
+pub const FF_PROFILE_DNXHD:     c_int = 0;
+pub const FF_PROFILE_DNXHR_LB:  c_int = 1;
+pub const FF_PROFILE_DNXHR_SQ:  c_int = 2;
+pub const FF_PROFILE_DNXHR_HQ:  c_int = 3;
+pub const FF_PROFILE_DNXHR_HQX: c_int = 4;
+pub const FF_PROFILE_DNXHR_444: c_int = 5;
+
 pub const FF_PROFILE_DTS:         c_int = 20;
 pub const FF_PROFILE_DTS_ES:      c_int = 30;
 pub const FF_PROFILE_DTS_96_24:   c_int = 40;
@@ -863,8 +884,10 @@ pub const FF_PROFILE_H264_EXTENDED:             c_int = 88;
 pub const FF_PROFILE_H264_HIGH:                 c_int = 100;
 pub const FF_PROFILE_H264_HIGH_10:              c_int = 110;
 pub const FF_PROFILE_H264_HIGH_10_INTRA:        c_int = 110 | FF_PROFILE_H264_INTRA;
+pub const FF_PROFILE_H264_MULTIVIEW_HIGH:       c_int = 118;
 pub const FF_PROFILE_H264_HIGH_422:             c_int = 122;
 pub const FF_PROFILE_H264_HIGH_422_INTRA:       c_int = 122 | FF_PROFILE_H264_INTRA;
+pub const FF_PROFILE_H264_STEREO_HIGH:          c_int = 128;
 pub const FF_PROFILE_H264_HIGH_444:             c_int = 144;
 pub const FF_PROFILE_H264_HIGH_444_PREDICTIVE:  c_int = 244;
 pub const FF_PROFILE_H264_HIGH_444_INTRA:       c_int = 244 | FF_PROFILE_H264_INTRA;
@@ -898,15 +921,15 @@ pub const FF_PROFILE_JPEG2000_CSTREAM_NO_RESTRICTION: c_int = 2;
 pub const FF_PROFILE_JPEG2000_DCINEMA_2K:             c_int = 3;
 pub const FF_PROFILE_JPEG2000_DCINEMA_4K:             c_int = 4;
 
-pub const FF_PROFILE_HEVC_MAIN:               c_int = 1;
-pub const FF_PROFILE_HEVC_MAIN_10:            c_int = 2;
-pub const FF_PROFILE_HEVC_MAIN_STILL_PICTURE: c_int = 3;
-pub const FF_PROFILE_HEVC_REXT:               c_int = 4;
-
 pub const FF_PROFILE_VP9_0: c_int = 0;
 pub const FF_PROFILE_VP9_1: c_int = 1;
 pub const FF_PROFILE_VP9_2: c_int = 2;
 pub const FF_PROFILE_VP9_3: c_int = 3;
+
+pub const FF_PROFILE_HEVC_MAIN:               c_int = 1;
+pub const FF_PROFILE_HEVC_MAIN_10:            c_int = 2;
+pub const FF_PROFILE_HEVC_MAIN_STILL_PICTURE: c_int = 3;
+pub const FF_PROFILE_HEVC_REXT:               c_int = 4;
 
 pub const FF_LEVEL_UNKNOWN: c_int = -99;
 
@@ -961,6 +984,7 @@ pub struct AVCodecContext {
 	pub b_frame_strategy: c_int,
 	pub b_quant_offset: c_float,
 	pub has_b_frames: c_int,
+	#[cfg(feature = "ff_api_private_opt")]
 	pub mpeg_quant: c_int,
 	pub i_quant_factor: c_float,
 	pub i_quant_offset: c_float,
@@ -970,6 +994,7 @@ pub struct AVCodecContext {
 	pub p_masking: c_float,
 	pub dark_masking: c_float,
 	pub slice_count: c_int,
+	#[cfg(feature = "ff_api_private_opt")]
 	pub prediction_method: c_int,
 	pub slice_offset: *mut c_int,
 	pub sample_aspect_ratio: AVRational,
@@ -979,6 +1004,7 @@ pub struct AVCodecContext {
 	pub ildct_cmp: c_int,
 	pub dia_size: c_int,
 	pub last_predictor_count: c_int,
+	#[cfg(feature = "ff_api_private_opt")]
 	pub pre_me: c_int,
 	pub me_pre_cmp: c_int,
 	pub pre_dia_size: c_int,
@@ -996,7 +1022,9 @@ pub struct AVCodecContext {
 	pub mb_decision: c_int,
 	pub intra_matrix: *mut uint16_t,
 	pub inter_matrix: *mut uint16_t,
+	#[cfg(feature = "ff_api_private_opt")]
 	pub scenechange_threshold: c_int,
+	#[cfg(feature = "ff_api_private_opt")]
 	pub noise_reduction: c_int,
 	#[cfg(feature = "ff_api_mpv_opt")]
 	pub me_threshold: c_int,
@@ -1009,15 +1037,19 @@ pub struct AVCodecContext {
 	pub border_masking: c_float,
 	pub mb_lmin: c_int,
 	pub mb_lmax: c_int,
+	#[cfg(feature = "ff_api_private_opt")]
 	pub me_penalty_compensation: c_int,
 	pub bidir_refine: c_int,
+	#[cfg(feature = "ff_api_private_opt")]
 	pub brd_scale: c_int,
 	pub keyint_min: c_int,
 	pub refs: c_int,
+	#[cfg(feature = "ff_api_private_opt")]
 	pub chromaoffset: c_int,
 	#[cfg(feature = "ff_api_unused_members")]
 	pub scenechange_factor: c_int,
 	pub mv0_threshold: c_int,
+	#[cfg(feature = "ff_api_private_opt")]
 	pub b_sensitivity: c_int,
 	pub color_primaries: AVColorPrimaries,
 	pub color_trc: AVColorTransferCharacteristic,
@@ -1033,18 +1065,10 @@ pub struct AVCodecContext {
 	pub frame_number: c_int,
 	pub block_align: c_int,
 	pub cutoff: c_int,
-	#[cfg(feature = "ff_api_request_channels")]
-	pub request_channels: c_int,
 	pub channel_layout: uint64_t,
 	pub request_channel_layout: uint64_t,
 	pub audio_service_type: AVAudioServiceType,
 	pub request_sample_fmt: AVSampleFormat,
-	#[cfg(feature = "ff_api_get_buffer")]
-	pub get_buffer: Option<extern fn(*mut AVCodecContext, *mut AVFrame) -> c_int>,
-	#[cfg(feature = "ff_api_get_buffer")]
-	pub release_buffer: Option<extern fn(*mut AVCodecContext, *mut AVFrame)>,
-	#[cfg(feature = "ff_api_get_buffer")]
-	pub reget_buffer: Option<extern fn(*mut AVCodecContext, *mut AVFrame) -> c_int>,
 	pub get_buffer2: Option<extern fn(*mut AVCodecContext, *mut AVFrame, c_int) -> c_int>,
 	pub refcounted_frames: c_int,
 	pub qcompress: c_float,
@@ -1063,8 +1087,8 @@ pub struct AVCodecContext {
 	pub rc_override: *mut RcOverride,
 	#[cfg(feature = "ff_api_mpv_opt")]
 	pub rc_eq: *const c_char,
-	pub rc_max_rate: c_int,
-	pub rc_min_rate: c_int,
+	pub rc_max_rate: int64_t,
+	pub rc_min_rate: int64_t,
 	#[cfg(feature = "ff_api_mpv_opt")]
 	pub rc_buffer_aggressivity: c_float,
 	#[cfg(feature = "ff_api_mpv_opt")]
@@ -1072,30 +1096,50 @@ pub struct AVCodecContext {
 	pub rc_max_available_vbv_use: c_float,
 	pub rc_min_vbvb_overflow_use: c_float,
 	pub rc_initial_buffer_occupancy: c_int,
+	#[cfg(feature = "ff_api_coder_type")]
 	pub coder_type: c_int,
+	#[cfg(feature = "ff_api_private_opt")]
 	pub context_model: c_int,
 	#[cfg(feature = "ff_api_mpv_opt")]
 	pub lmin: c_int, 
 	#[cfg(feature = "ff_api_mpv_opt")]
 	pub lmax: c_int, 
+	#[cfg(feature = "ff_api_private_opt")]
 	pub frame_skip_threshold: c_int,
+	#[cfg(feature = "ff_api_private_opt")]
 	pub frame_skip_factor: c_int,
+	#[cfg(feature = "ff_api_private_opt")]
 	pub frame_skip_exp: c_int,
+	#[cfg(feature = "ff_api_private_opt")]
 	pub frame_skip_cmp: c_int,
 	pub trellis: c_int,
+	#[cfg(feature = "ff_api_private_opt")]
 	pub min_prediction_order: c_int,
+	#[cfg(feature = "ff_api_private_opt")]
 	pub max_prediction_order: c_int,
+	#[cfg(feature = "ff_api_private_opt")]
 	pub timecode_frame_start: int64_t,
+	#[cfg(feature = "ff_api_rtp_callback")]
 	pub rtp_callback: Option<extern fn(*mut AVCodecContext, *mut c_void, c_int, c_int)>,
+	#[cfg(feature = "ff_api_private_opt")]
 	pub rtp_payload_size: c_int,
+	#[cfg(feature = "ff_api_stat_bits")]
 	pub mv_bits: c_int,
+	#[cfg(feature = "ff_api_stat_bits")]
 	pub header_bits: c_int,
+	#[cfg(feature = "ff_api_stat_bits")]
 	pub i_tex_bits: c_int,
+	#[cfg(feature = "ff_api_stat_bits")]
 	pub p_tex_bits: c_int,
+	#[cfg(feature = "ff_api_stat_bits")]
 	pub i_count: c_int,
+	#[cfg(feature = "ff_api_stat_bits")]
 	pub p_count: c_int,
+	#[cfg(feature = "ff_api_stat_bits")]
 	pub skip_count: c_int,
+	#[cfg(feature = "ff_api_stat_bits")]
 	pub misc_bits: c_int,
+	#[cfg(feature = "ff_api_stat_bits")]
 	pub frame_bits: c_int,
 	pub stats_out: *mut c_char,
 	pub stats_in: *mut c_char,
@@ -1103,6 +1147,8 @@ pub struct AVCodecContext {
 	pub strict_std_compliance: c_int,
 	pub error_concealment: c_int,
 	pub debug: c_int,
+	#[cfg(feature = "ff_api_debug_mv")]
+	pub debug_mv: c_int,
 	pub err_recognition: c_int,
 	pub reordered_opaque: int64_t,
 	pub hwaccel: *mut AVHWAccel,
@@ -1122,8 +1168,6 @@ pub struct AVCodecContext {
 	pub thread_safe_callbacks: c_int,
 	pub execute: extern fn(*mut AVCodecContext, extern fn(*mut AVCodecContext, *mut c_void) -> c_int, *mut c_void, *mut c_int, c_int, c_int) -> c_int,
 	pub execute2: extern fn(*mut AVCodecContext, extern fn(*mut AVCodecContext, *mut c_void, c_int, c_int) -> c_int, *mut c_void, *mut c_int, c_int) -> c_int,
-	#[cfg(feature = "ff_api_thread_opaque")]
-	pub thread_opaque: *mut c_void,
 	pub nsse_weight: c_int,
 	pub profile: c_int,
 	pub level: c_int,
@@ -1134,9 +1178,9 @@ pub struct AVCodecContext {
 	pub subtitle_header_size: c_int,
 	#[cfg(feature = "ff_api_error_rate")]
 	pub error_rate: c_int,
-	#[cfg(feature = "ff_api_codec_pkt")]
-	pub pkt: *mut AVPacket,
+	#[cfg(feature = "ff_api_vbv_delay")]
 	pub vbv_delay: uint64_t,
+	#[cfg(feature = "ff_api_sidedata_only_pkt")]
 	pub side_data_only_packets: c_int,
 	pub initial_padding: c_int,
 	pub framerate: AVRational,
@@ -1159,6 +1203,11 @@ pub struct AVCodecContext {
 	pub dump_separator: *mut uint8_t,
 	pub codec_whitelist: *mut c_char,
 	pub properties: c_uint,
+	pub coded_size_data: *mut AVPacketSideData,
+	pub nb_coded_size_fata: c_int,
+	pub hw_frames_ctx: *mut AVBufferRef,
+	pub sub_text_format: c_int,
+	pub trailing_padding: c_int,
 }
 
 #[derive(Debug)]
@@ -1182,8 +1231,8 @@ pub struct AVCodec {
 	pub supported_samplerates: *const c_int,
 	pub sample_fmts: *const AVSampleFormat,
 	pub channel_layouts: *const uint64_t,
-	pub priv_class: *const AVClass,
 	pub max_lowres: uint8_t,
+	pub priv_class: *const AVClass,
 	pub profiles: *const AVProfile,
 
 	pub priv_data_size: c_int,
@@ -1197,12 +1246,13 @@ pub struct AVCodec {
 	pub encode2: extern fn(*mut AVCodecContext, *mut AVPacket, *const AVFrame, *mut c_int) -> c_int,
 	pub decode: extern fn(*mut AVCodecContext, *mut c_void, *mut c_int, *mut AVPacket) -> c_int,
 	pub close: extern fn(*mut AVCodecContext) -> c_int,
+	pub send_frame: extern fn(*mut AVCodecContext, *const AVFrame) -> c_int,
+	pub send_packet: extern fn(*mut AVCodecContext, *const AVPacket) -> c_int,
+	pub receive_frame: extern fn(*mut AVCodecContext, *mut AVFrame) -> c_int,
+	pub receive_packet: extern fn(*mut AVCodecContext, *mut AVPacket) -> c_int,
 	pub flush: extern fn(*mut AVCodecContext),
 	pub caps_internal: c_int,
 }
-
-pub const AV_HWACCEL_FLAG_IGNORE_LEVEL:     c_int = 1 << 0;
-pub const AV_HWACCEL_FLAG_ALLOW_HIGH_DEPTH: c_int = 1 << 1;
 
 pub type MpegEncContext = c_void;
 
@@ -1225,6 +1275,9 @@ pub struct AVHWAccel {
 	pub uninit: extern fn(*mut AVCodecContext) -> c_int,
 	pub priv_data_size: c_int,
 }
+
+pub const AV_HWACCEL_FLAG_IGNORE_LEVEL:     c_int = 1 << 0;
+pub const AV_HWACCEL_FLAG_ALLOW_HIGH_DEPTH: c_int = 1 << 1;
 
 #[derive(Debug)]
 #[repr(C)]
@@ -1252,7 +1305,10 @@ pub struct AVSubtitleRect {
 	pub w: c_int,
 	pub h: c_int,
 	pub nb_colors: c_int,
+	#[cfg(feature = "ff_api_avpicture")]
 	pub pict: AVPicture,
+	pub data: [*mut uint8_t; 4],
+	pub linesize: [c_int; 4],
 	pub kind: AVSubtitleType,
 	pub text: *mut c_char,
 	pub ass: *mut c_char,
@@ -1268,6 +1324,40 @@ pub struct AVSubtitle {
 	pub num_rects: c_uint,
 	pub rects: *mut *mut AVSubtitleRect,
 	pub pts: int64_t,
+}
+
+#[derive(Debug)]
+#[repr(C)]
+pub struct AVCodecParameters {
+	pub codec_type: AVMediaType,
+	pub codec_id: AVCodecID,
+	pub codec_tag: uint32_t,
+	pub extradata: *mut uint8_t,
+	pub extradata_size: c_int,
+	pub format: c_int,
+	pub bit_rate: int64_t,
+	pub bits_per_coded_sample: c_int,
+	pub bits_per_raw_sample: c_int,
+	pub profile: c_int,
+	pub level: c_int,
+	pub width: c_int,
+	pub height: c_int,
+	pub sample_aspect_ratio: AVRational,
+	pub field_order: AVFieldOrder,
+	pub color_range: AVColorRange,	
+	pub color_primaries: AVColorPrimaries,	
+	pub color_trc: AVColorTransferCharacteristic,	
+	pub color_space: AVColorSpace,	
+	pub chroma_location: AVChromaLocation,	
+	pub video_delay: c_int,
+	pub channel_layout: uint64_t,
+	pub channels: c_int,
+	pub sample_rate: c_int,
+	pub block_align: c_int,
+	pub frame_size: c_int,
+	pub initial_padding: c_int,
+	pub trailing_padding: c_int,
+	pub seek_preroll: c_int,
 }
 
 #[derive(Eq, PartialEq, Copy, Clone, Debug)]
@@ -1310,6 +1400,7 @@ pub struct AVCodecParserContext {
 	pub offset: int64_t,
 	pub cur_frame_end: [int64_t; AV_PARSER_PTS_NB],
 	pub key_frame: c_int,
+	#[cfg(feature = "ff_api_convergence_duration")]
 	pub convergence_duration: int64_t,
 	pub dts_sync_point: c_int,
 	pub dts_ref_dts_delta: c_int,
@@ -1346,16 +1437,36 @@ pub struct AVBitStreamFilterContext {
 	pub filter: *mut AVBitStreamFilter,
 	pub parser: *mut AVCodecParserContext,
 	pub next: *mut AVBitStreamFilterContext,
+	pub args: *mut c_char,
+}
+
+pub type AVBSFInternal = c_void;
+
+#[derive(Debug)]
+#[repr(C)]
+pub struct AVBSFContext {
+	pub av_class: *const AVClass,
+	pub filter: *const AVBitStreamFilter,
+	pub internal: *mut AVBSFInternal,
+	pub priv_data: *mut c_void,
+	pub par_in: *mut AVCodecParameters,
+	pub par_out: *mut AVCodecParameters,
+	pub time_base_in: AVRational,
+	pub time_base_out: AVRational,
 }
 
 #[repr(C)]
 pub struct AVBitStreamFilter {
 	pub name: *const c_char,
+	pub codec_ids: *const AVCodecID,
+	pub priv_class: *const AVClass,
 	pub priv_data_size: c_int,
-	pub filter: extern fn(*mut AVBitStreamFilterContext, *mut AVCodecContext, *const c_char, *mut *mut uint8_t, *mut c_int, *const uint8_t, c_int, c_int) -> c_int,
-	pub close: extern fn(*mut AVBitStreamFilterContext),
-	pub next: *mut AVBitStreamFilter,
+	pub init: extern fn(*mut AVBSFContext) -> c_int,
+	pub filter: extern fn(*mut AVBSFContext, *mut AVPacket) -> c_int,
+	pub close: extern fn(*mut AVBSFContext),
 }
+
+pub type AVBSFList = c_void;
 
 #[derive(Eq, PartialEq, Copy, Clone, Debug)]
 #[repr(C)]
@@ -1381,6 +1492,9 @@ extern {
 	pub fn av_codec_get_seek_preroll(avctx: *const AVCodecContext) -> c_int;
 	pub fn av_codec_set_seek_preroll(avctx: *mut AVCodecContext, val: c_int);
 
+	pub fn av_codec_get_chroma_intra_matrix(avctx: *const AVCodecContext) -> *mut uint16_t;
+	pub fn av_codec_set_chroma_intra_matrix(avctx: *mut AVCodecContext, val: *mut uint16_t);
+
 	pub fn av_codec_get_max_lowres(codec: *const AVCodec) -> c_int;
 
 	pub fn av_codec_next(c: *const AVCodec) -> *mut AVCodec;
@@ -1402,15 +1516,22 @@ extern {
 
 	pub fn avcodec_copy_context(dest: *mut AVCodecContext, src: *const AVCodecContext) -> c_int;
 
-	pub fn avcodec_alloc_frame() -> *mut AVFrame;
-	pub fn avcodec_get_frame_defaults(frame: *mut AVFrame);
-	pub fn avcodec_free_frame(frame: *mut *mut AVFrame);
+	pub fn avcodec_parameters_alloc() -> *mut AVCodecParameters;
+	pub fn avcodec_parameters_free(par: *mut *mut AVCodecParameters);
+	pub fn avcodec_parameters_copy(dst: *mut AVCodecParameters, src: *const AVCodecParameters) -> c_int;
+	pub fn avcodec_parameters_from_context(par: *mut AVCodecParameters,
+										   codec: *const AVCodecContext) -> c_int;
+	pub fn avcodec_parameters_to_context(codec: *mut AVCodecContext,
+									     par: *const AVCodecParameters) -> c_int;
 
 	pub fn avcodec_open2(avctx: *mut AVCodecContext, codec: *const AVCodec, options: *mut *mut AVDictionary) -> c_int;
 	pub fn avcodec_close(avctx: *mut AVCodecContext) -> c_int;
 
 	pub fn avsubtitle_free(sub: *mut AVSubtitle);
 
+	pub fn av_packet_alloc() -> *mut AVPacket;
+	pub fn av_packet_clone(src: *mut AVPacket) -> *mut AVPacket;
+	pub fn av_packet_free(pkt: *mut *mut AVPacket);
 	pub fn av_init_packet(pkt: *mut AVPacket);
 	pub fn av_new_packet(pkt: *mut AVPacket, size: c_int) -> c_int;
 	pub fn av_shrink_packet(pkt: *mut AVPacket, size: c_int);
@@ -1421,6 +1542,8 @@ extern {
 	pub fn av_copy_packet_side_data(dst: *mut AVPacket, src: *const AVPacket) -> c_int;
 	pub fn av_free_packet(pkt: *mut AVPacket);
 	pub fn av_packet_new_side_data(pkt: *mut AVPacket, kind: AVPacketSideDataType, size: c_int) -> *mut uint8_t;
+	pub fn av_packet_add_side_data(pkt: *mut AVPacket, kind: AVPacketSideDataType,
+	                               data: *mut uint8_t, size: size_t) -> c_int;
 	pub fn av_packet_shrink_side_data(pkt: *mut AVPacket, kind: AVPacketSideDataType, size: c_int) -> c_int;
 	pub fn av_packet_get_side_data(pkt: *mut AVPacket, kind: AVPacketSideDataType, size: *mut c_int) -> *mut uint8_t;
 	pub fn av_packet_merge_side_data(pkt: *mut AVPacket) -> c_int;
@@ -1431,14 +1554,14 @@ extern {
 	pub fn av_packet_free_side_data(pkt: *mut AVPacket);
 	pub fn av_packet_ref(dst: *mut AVPacket, src: *const AVPacket) -> c_int;
 	pub fn av_packet_unref(pkt: *mut AVPacket);
-	pub fn av_packet_move_Ref(dst: *mut AVPacket, src: *mut AVPacket);
+	pub fn av_packet_move_ref(dst: *mut AVPacket, src: *mut AVPacket);
 	pub fn av_packet_copy_props(dst: *mut AVPacket, src: *const AVPacket) -> c_int;
 	pub fn av_packet_rescale_ts(pkt: *mut AVPacket, tb_src: AVRational, tb_dst: AVRational);
 
 	pub fn avcodec_find_decoder(id: AVCodecID) -> *mut AVCodec;
 	pub fn avcodec_find_decoder_by_name(name: *const c_char) -> *mut AVCodec;
 
-	pub fn avcodec_default_get_buffer(s: *mut AVCodecContext, frame: *mut AVFrame, flags: c_int) -> c_int;
+	pub fn avcodec_default_get_buffer2(s: *mut AVCodecContext, frame: *mut AVFrame, flags: c_int) -> c_int;
 
 	pub fn avcodec_align_dimensions(s: *mut AVCodecContext, width: *mut c_int, height: *mut c_int);
 	pub fn avcodec_align_dimensions2(s: *mut AVCodecContext, width: *mut c_int, height: *mut c_int, linesize_align: *mut c_int);
@@ -1449,6 +1572,11 @@ extern {
 	pub fn avcodec_decode_audio4(avctx: *mut AVCodecContext, frame: *mut AVFrame, got_frame_ptr: *mut c_int, avpkt: *const AVPacket) -> c_int;
 	pub fn avcodec_decode_video2(avctx: *mut AVCodecContext, picture: *mut AVFrame, got_picture_ptr: *mut c_int, avpkt: *const AVPacket) -> c_int;
 	pub fn avcodec_decode_subtitle2(avctx: *mut AVCodecContext, sub: *mut AVSubtitle, got_sub_ptr: *mut c_int, avpkt: *const AVPacket) -> c_int;
+
+	pub fn avcodec_send_packet(avctx: *mut AVCodecContext, avpkt: *const AVPacket) -> c_int;
+	pub fn avcodec_receive_frame(avctx: *mut AVCodecContext, frame: *mut AVFrame) -> c_int;
+	pub fn avcodec_send_frame(avctx: *mut AVCodecContext, frame: *const AVFrame) -> c_int;
+	pub fn avcodec_receive_packet(avctx: *mut AVCodecContext, packet: *mut AVPacket) -> c_int;
 
 	pub fn av_parser_next(c: *const AVCodecParser) -> *mut AVCodecParser;
 	pub fn av_register_codec_parser(parser: *mut AVCodecParser);
@@ -1484,6 +1612,7 @@ extern {
 	pub fn av_get_codec_tag_string(buf: *mut c_char, buf_size: size_t, codec_tag: c_uint) -> size_t;
 	pub fn avcodec_string(buf: *mut c_char, buf_size: c_int, enc: *mut AVCodecContext, encode: c_int);
 	pub fn av_get_profile_name(codec: *const AVCodec, profile: c_int) -> *const c_char;
+	pub fn avcodec_profile_name(codec_id: AVCodecID, profile: c_int) -> *const c_char;
 	pub fn avcodec_default_execute(c: *mut AVCodecContext, func: extern fn(*mut AVCodecContext, *mut c_void) -> c_int, arg: *mut c_void, ret: *mut c_int, count: c_int, size: c_int) -> c_int;
 	pub fn avcodec_default_execute2(c: *mut AVCodecContext, func: extern fn(*mut AVCodecContext, *mut c_void, c_int, c_int) -> c_int, arg: *mut c_void, ret: *mut c_int, count: c_int) -> c_int;
 	pub fn avcodec_fill_audio_frame(frame: *mut AVFrame, nb_channels: c_int, sample_fmt: AVSampleFormat, buf: *const uint8_t, buf_size: c_int, align: c_int) -> c_int;
@@ -1492,12 +1621,23 @@ extern {
 	pub fn av_get_pcm_codec(fmt: AVSampleFormat, be: c_int) -> AVCodecID;
 	pub fn av_get_exact_bits_per_sample(codec_id: AVCodecID) -> c_int;
 	pub fn av_get_audio_frame_duration(avctx: *mut AVCodecContext, frame_bytes: c_int) -> c_int;
+	pub fn av_get_audio_frame_duration2(par: *mut AVCodecParameters, frame_bytes: c_int) -> c_int;
 
-	pub fn av_register_bitstream_filter(bsf: *mut AVBitStreamFilter);
-	pub fn av_bitstream_filter_init(name: *const c_char) -> *mut AVBitStreamFilterContext;
-	pub fn av_bitstream_filter_filter(bsfc: *mut AVBitStreamFilterContext, avctx: *mut AVCodecContext, args: *const c_char, poutbuf: *mut *mut uint8_t, poutbuf_size: *mut c_int, buf: *const uint8_t, buf_size: c_int, keyframe: c_int) -> c_int;
-	pub fn av_bitstream_filter_close(bsf: *mut AVBitStreamFilterContext);
-	pub fn av_bitstream_filter_next(f: *const AVBitStreamFilter) -> *mut AVBitStreamFilter;
+	pub fn av_bsf_get_by_name(name: *const c_char) -> *const AVBitStreamFilter;
+	pub fn av_bsf_next(opaque: *mut *mut c_void) -> *const AVBitStreamFilter;
+	pub fn av_bsf_alloc(filter: *const AVBitStreamFilter, ctx: *mut *mut AVBSFContext) -> c_int;
+	pub fn av_bsf_init(ctx: *mut AVBSFContext) -> c_int;
+	pub fn av_bsf_send_packet(ctx: *mut AVBSFContext, pkt: *mut AVPacket) -> c_int;
+	pub fn av_bsf_receive_packet(ctx: *mut AVBSFContext, pkt: *mut AVPacket) -> c_int;
+	pub fn av_bsf_free(ctx: *mut *mut AVBSFContext);
+	pub fn av_bsf_get_class() -> *const AVClass;
+	pub fn av_bsf_list_alloc() -> *mut AVBSFList;
+	pub fn av_bsf_list_free(lst: *mut *mut AVBSFList);
+	pub fn av_bsf_list_append(lst: *mut AVBSFList, bsf: *mut AVBSFContext) -> c_int;
+	pub fn av_bsf_list_append2(lst: *mut AVBSFList, bsf_name: *const c_char, options: *mut *mut AVDictionary) -> c_int;
+	pub fn av_bsf_list_finalize(lst: *mut *mut AVBSFList, bsf: *mut *mut AVBSFContext) -> c_int;
+	pub fn av_bsf_list_parse_str(str: *const c_char, bsf: *mut *mut AVBSFContext) -> c_int;
+	pub fn av_bsf_get_null_filter(bsf: *mut *mut AVBSFContext) -> c_int;
 
 	pub fn av_fast_padded_malloc(ptr: *mut c_void, size: *mut c_uint, min_size: size_t);
 	pub fn av_fast_padded_mallocz(ptr: *mut c_void, size: *mut c_uint, min_size: size_t);
@@ -1517,4 +1657,6 @@ extern {
 	pub fn avcodec_descriptor_get(id: AVCodecID) -> *const AVCodecDescriptor;
 	pub fn avcodec_descriptor_next(prev: *const AVCodecDescriptor) -> *const AVCodecDescriptor;
 	pub fn avcodec_descriptor_get_by_name(name: *const c_char) -> *const AVCodecDescriptor;
+
+	pub fn av_cpb_properties_alloc(size: *mut size_t) -> *mut AVCPBProperties;
 }
