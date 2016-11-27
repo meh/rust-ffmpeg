@@ -1,7 +1,7 @@
 use libc::{c_void, c_char, c_uchar, c_int, c_uint, c_double, uint8_t, int64_t, size_t, FILE};
 use super::io::{AVIOContext, AVIOInterruptCB};
 use super::super::avutil::{AVClass, AVRational, AVDictionary, AVFrame, AVMediaType};
-use super::super::avcodec::{AVCodec, AVCodecID, AVCodecContext, AVPacket, AVPacketSideData, AVCodecParserContext, AVDiscard};
+use super::super::avcodec::{AVCodec, AVCodecID, AVCodecContext, AVCodecParameters, AVPacket, AVPacketSideData, AVCodecParserContext, AVDiscard};
 
 #[derive(Eq, PartialEq, Copy, Clone, Debug)]
 #[repr(C)]
@@ -82,6 +82,10 @@ pub struct AVOutputFormat {
 	pub free_device_capabilities: extern fn(ctx: *mut AVFormatContext, caps: *mut c_void) -> c_int,
 
 	pub data_codec: AVCodecID,
+
+	pub init: extern fn(ctx: *mut AVFormatContext) -> c_int,
+	pub deinit: extern fn(ctx: *mut AVFormatContext),
+	pub check_bitstream: extern fn(ctx: *mut AVFormatContext, pkt: *const AVPacket) -> c_int,
 }
 
 #[repr(C)]
@@ -143,7 +147,8 @@ impl AVIndexEntry {
 	}
 }
 
-pub const AVINDEX_KEYFRAME: c_int = 0x0001;
+pub const AVINDEX_KEYFRAME:      c_int = 0x0001;
+pub const AVINDEX_DISCARD_FRAME: c_int = 0x0002;
 
 pub const AV_DISPOSITION_DEFAULT:          c_int = 0x0001;
 pub const AV_DISPOSITION_DUB:              c_int = 0x0002;
@@ -156,9 +161,12 @@ pub const AV_DISPOSITION_HEARING_IMPAIRED: c_int = 0x0080;
 pub const AV_DISPOSITION_VISUAL_IMPAIRED:  c_int = 0x0100;
 pub const AV_DISPOSITION_CLEAN_EFFECTS:    c_int = 0x0200;
 pub const AV_DISPOSITION_ATTACHED_PIC:     c_int = 0x0400;
+pub const AV_DISPOSITION_TIMED_THUMBNAILS: c_int = 0x0800;
 pub const AV_DISPOSITION_CAPTIONS:         c_int = 0x10000;
 pub const AV_DISPOSITION_DESCRIPTIONS:     c_int = 0x20000;
 pub const AV_DISPOSITION_METADATA:         c_int = 0x40000;
+
+pub type AVStreamInternal = c_void;
 
 pub const AV_PTS_WRAP_IGNORE:     c_int = 0;
 pub const AV_PTS_WRAP_ADD_OFFSET: c_int = 1;
@@ -176,7 +184,7 @@ pub struct AVStreamInfo {
 	pub duration_gcd: int64_t,
 	pub duration_count: c_int,
 	pub rfps_duration_sum: int64_t,
-	pub duration_error: [[*mut c_double; MAX_STD_TIMEBASES]; 2],
+	pub duration_error: [[extern fn() -> c_double; MAX_STD_TIMEBASES]; 2],
 	pub codec_info_duration: int64_t,
 	pub codec_info_duration_fields: int64_t,
 	pub found_decoder: c_int,
@@ -191,6 +199,7 @@ pub struct AVStreamInfo {
 pub struct AVStream {
 	pub index: c_int,
 	pub id: c_int,
+	#[cfg(feature = "ff_api_lavf_avctx")]
 	pub codec: *mut AVCodecContext,
 	pub priv_data: *mut c_void,
 	#[cfg(feature = "ff_api_lavf_frac")]
@@ -248,6 +257,8 @@ pub struct AVStream {
 	pub recommended_encoder_configuration: *mut c_char,
 	pub display_aspect_ratio: AVRational,
 	pub priv_pts: *mut c_void,
+	pub internal: *mut AVStreamInternal,
+	pub codecpar: *mut AVCodecParameters,
 }
 
 pub const AV_PROGRAM_RUNNING: c_int = 1;
@@ -322,10 +333,8 @@ pub struct AVFormatContext {
 	pub max_delay:   c_int,
 	pub flags:       c_int,
 
-	#[cfg(feature = "ff_api_probesize_32")]
-	pub probesize: c_uint,
-	#[cfg(feature = "ff_api_probesize_32")]
-	pub max_analyze_duration: c_int,
+	pub probesize: int64_t,
+	pub max_analyze_duration: int64_t,
 
 	pub key:    *const uint8_t,
 	pub keylen: c_int,
@@ -392,23 +401,19 @@ pub struct AVFormatContext {
 	pub control_message_cb: av_format_control_message,
 
 	pub output_ts_offset: int64_t,
-	#[cfg(feature = "ff_api_probesize_32")]
-	pub max_analyze_duration2: int64_t,
-	#[cfg(feature = "ff_api_probesize_32")]
-	pub probesize2: int64_t,
-
-	#[cfg(not(feature = "ff_api_probesize_32"))]
-	pub max_analyze_duration: int64_t,
-	#[cfg(not(feature = "ff_api_probesize_32"))]
-	pub probesize: int64_t,
 
 	pub dump_separator: *mut uint8_t,
 	pub data_codec_id: AVCodecID,
+
+	#[cfg(feature = "ff_api_old_open_callbacks")]
+	pub open_cb: extern fn(*mut AVFormatContext, *mut *mut AVIOContext, *const c_char, c_int, *const AVIOInterruptCB, *mut *mut AVDictionary) -> c_int,
 
 	pub protocol_whitelist: *mut c_char,
 
 	pub io_open: extern fn(*mut AVFormatContext, *mut *mut AVIOContext, *const c_char, c_int, *const AVIOInterruptCB, *mut *mut AVDictionary) -> c_int,
 	pub io_close: extern fn(*mut AVFormatContext, *mut AVIOContext),
+
+	pub protocol_blacklist: *mut c_char,
 }
 
 pub const AVFMT_FLAG_GENPTS:          c_int = 0x0001;
@@ -427,6 +432,8 @@ pub const AVFMT_FLAG_SORT_DTS:        c_int = 0x10000;
 pub const AVFMT_FLAG_PRIV_OPT:        c_int = 0x20000;
 pub const AVFMT_FLAG_KEEP_SIDE_DATA:  c_int = 0x40000;
 pub const AVFMT_FLAG_FAST_SEEK:       c_int = 0x80000;
+pub const AVFMT_FLAG_SHORTEST:        c_int = 0x100000;
+pub const AVFMT_FLAG_AUTO_BSF:        c_int = 0x200000;
 
 pub const FF_FDEBUG_TS: c_int = 0x0001;
 
@@ -446,6 +453,19 @@ pub const AVSEEK_FLAG_BACKWARD: c_int = 1;
 pub const AVSEEK_FLAG_BYTE:     c_int = 2;
 pub const AVSEEK_FLAG_ANY:      c_int = 4;
 pub const AVSEEK_FLAG_FRAME:    c_int = 8;
+
+pub const AVSTREAM_INIT_IN_WRITE_HEADER: c_int = 0;
+pub const AVSTREAM_INIT_IN_INIT_OUTPUT:  c_int = 1;
+
+pub const AV_FRAME_FILENAME_FLAGS_MULTIPLE: c_int = 1;
+
+#[repr(C)]
+pub enum AVTimebaseSource {
+	AVFMT_TBCF_AUTO = -1,
+	AVFMT_TBCF_DECODER,
+	AVFMT_TBCF_DEMUXER,
+	AVFMT_TBCF_R_FRAMERATE,
+}
 
 extern {
 	pub fn av_get_packet(s: *mut AVIOContext, pkt: *mut AVPacket, size: c_int) -> c_int;
@@ -526,6 +546,7 @@ extern {
 	pub fn avformat_open_input(ps: *mut *mut AVFormatContext, filename: *const c_char, fmt: *const AVInputFormat, options: *mut *mut AVDictionary) -> c_int;
 	pub fn avformat_find_stream_info(ic: *mut AVFormatContext, options: *mut *mut AVDictionary) -> c_int;
 	pub fn av_find_program_from_stream(ic: *const AVFormatContext, last: *mut AVProgram, s: c_int) -> *mut AVProgram;
+	pub fn av_program_add_stream_index(ac: *mut AVFormatContext, progid: c_int, idx: c_uint);
 	pub fn av_find_best_stream(ic: *const AVFormatContext, kind: AVMediaType, wanted_stream_nb: c_int, related_stream: c_int, decoder_ret: *mut *mut AVCodec, flags: c_int) -> c_int;
 
 	pub fn av_read_frame(s: *mut AVFormatContext, pkt: *mut AVPacket) -> c_int;
@@ -537,6 +558,7 @@ extern {
 	pub fn avformat_close_input(s: *mut *mut AVFormatContext);
 
 	pub fn avformat_write_header(s: *mut AVFormatContext, options: *mut *mut AVDictionary) -> c_int;
+	pub fn avformat_init_output(s: *mut AVFormatContext, options: *mut *mut AVDictionary) -> c_int;
 	pub fn av_write_frame(s: *mut AVFormatContext, pkt: *const AVPacket) -> c_int;
 	pub fn av_interleaved_write_frame(s: *mut AVFormatContext, pkt: *const AVPacket) -> c_int;
 	pub fn av_write_uncoded_frame(s: *mut AVFormatContext, stream_index: c_int, frame: *mut AVFrame) -> c_int;
@@ -557,6 +579,7 @@ extern {
 	pub fn av_codec_get_id(tags: *const *const AVCodecTag, tag: c_uint) -> AVCodecID;
 	pub fn av_codec_get_tag(tags: *const *const AVCodecTag, id: AVCodecID) -> c_uint;
 	pub fn av_codec_get_tag2(tags: *const *const AVCodecTag, id: AVCodecID, tag: *mut c_uint) -> c_int;
+	pub fn av_find_default_stream_index(s: *mut AVFormatContext) -> c_int;
 
 	pub fn av_index_search_timestamp(st: *mut AVStream, timestamp: int64_t, flags: c_int) -> c_int;
 	pub fn av_add_index_entry(st: *mut AVStream, pos: int64_t, timestamp: int64_t, size: c_int, distance: c_int, flags: c_int) -> c_int;
@@ -564,6 +587,8 @@ extern {
 
 	pub fn av_dump_format(ic: *const AVFormatContext, index: c_int, url: *const c_char, is_output: c_int);
 
+	pub fn av_get_frame_filename2(buf: *mut c_char, buf_size: c_int,
+								  path: *const c_char, number: c_int, flags: c_int) -> c_int;
 	pub fn av_get_frame_filename(buf: *mut c_char, buf_size: c_int, path: *const c_char, number: c_int) -> c_int;
 	pub fn av_filename_number_test(filename: *const c_char) -> c_int;
 	pub fn av_sdp_create(ac: *mut *mut AVFormatContext, n_files: c_int, buf: *mut c_char, size: c_int) -> c_int;
@@ -580,4 +605,7 @@ extern {
 
 	pub fn avformat_match_stream_specifier(s: *mut AVFormatContext, st: *mut AVStream, spec: *const c_char) -> c_int;
 	pub fn avformat_queue_attached_pictures(s: *mut AVFormatContext) -> c_int;
+
+	pub fn avformat_transfer_internal_stream_timing_info(ofmt: *const AVOutputFormat, ost: *mut AVStream, ist: *const AVStream, copy_tb: AVTimebaseSource) -> c_int;
+	pub fn av_stream_get_codec_timebase(st: *const AVStream) -> AVRational;
 }

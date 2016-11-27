@@ -305,9 +305,10 @@ fn check_features(infos: &Vec<(&'static str, Option<&'static str>, &'static str)
 				                         version_minor=version_minor,
 				                         lib=lib);
 				let pos = stdout.find(&search_str).expect("Variable not found in output") + search_str.len();
- 				if &stdout[pos..pos+1] == "1" {
- 					println!(r#"cargo:rustc-cfg=feature="{}""#, &search_str[1..(search_str.len() - 1)]);
- 				}
+
+				if &stdout[pos .. pos + 1] == "1" {
+					println!(r#"cargo:rustc-cfg=feature="{}""#, &search_str[1..(search_str.len() - 1)]);
+				}
 			}
 		}
 	}
@@ -363,6 +364,9 @@ fn main() {
 		("libavutil/avutil.h", None, "FF_API_DLOG"),
 		("libavutil/avutil.h", None, "FF_API_HMAC"),
 		("libavutil/avutil.h", None, "FF_API_VAAPI"),
+		("libavutil/avutil.h", None, "FF_API_PKT_PTS"),
+		("libavutil/avutil.h", None, "FF_API_ERROR_FRAME"),
+		("libavutil/avutil.h", None, "FF_API_FRAME_QP"),
 
 		("libavcodec/avcodec.h", Some("avcodec"), "FF_API_VIMA_DECODER"),
 		("libavcodec/avcodec.h", Some("avcodec"), "FF_API_REQUEST_CHANNELS"),
@@ -419,15 +423,22 @@ fn main() {
 		("libavcodec/avcodec.h", Some("avcodec"), "FF_API_WITHOUT_PREFIX"),
 		("libavcodec/avcodec.h", Some("avcodec"), "FF_API_CONVERGENCE_DURATION"),
 		("libavcodec/avcodec.h", Some("avcodec"), "FF_API_PRIVATE_OPT"),
+		("libavcodec/avcodec.h", Some("avcodec"), "FF_API_CODER_TYPE"),
+		("libavcodec/avcodec.h", Some("avcodec"), "FF_API_RTP_CALLBACK"),
+		("libavcodec/avcodec.h", Some("avcodec"), "FF_API_STAT_BITS"),
+		("libavcodec/avcodec.h", Some("avcodec"), "FF_API_VBV_DELAY"),
+		("libavcodec/avcodec.h", Some("avcodec"), "FF_API_SIDEDATA_ONLY_PKT"),
+		("libavcodec/avcodec.h", Some("avcodec"), "FF_API_AVPICTURE"),
 
 		("libavformat/avformat.h", Some("avformat"), "FF_API_LAVF_BITEXACT"),
 		("libavformat/avformat.h", Some("avformat"), "FF_API_LAVF_FRAC"),
 		("libavformat/avformat.h", Some("avformat"), "FF_API_URL_FEOF"),
 		("libavformat/avformat.h", Some("avformat"), "FF_API_PROBESIZE_32"),
+		("libavformat/avformat.h", Some("avformat"), "FF_API_LAVF_AVCTX"),
+		("libavformat/avformat.h", Some("avformat"), "FF_API_OLD_OPEN_CALLBACKS"),
 
 		("libavfilter/avfilter.h", Some("avfilter"), "FF_API_AVFILTERPAD_PUBLIC"),
 		("libavfilter/avfilter.h", Some("avfilter"), "FF_API_FOO_COUNT"),
-		("libavfilter/avfilter.h", Some("avfilter"), "FF_API_AVFILTERBUFFER"),
 		("libavfilter/avfilter.h", Some("avfilter"), "FF_API_OLD_FILTER_OPTS"),
 		("libavfilter/avfilter.h", Some("avfilter"), "FF_API_OLD_FILTER_OPTS_ERROR"),
 		("libavfilter/avfilter.h", Some("avfilter"), "FF_API_AVFILTER_OPEN"),

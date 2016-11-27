@@ -1,14 +1,10 @@
-use libc::{c_void, c_char, c_int, uint8_t};
+use libc::{c_void, c_char, c_int, int8_t, uint8_t};
 use libc::{int64_t, uint64_t};
 use super::dict::AVDictionary;
 use super::rational::AVRational;
 use super::buffer::AVBufferRef;
 use super::pixfmt::{AVColorPrimaries, AVColorRange, AVColorSpace, AVColorTransferCharacteristic, AVChromaLocation};
 use super::util::AVPictureType;
-
-pub const AV_NUM_DATA_POINTERS: usize = 8;
-
-pub const AV_FRAME_FLAG_CORRUPT: c_int = 1 << 0;
 
 #[derive(Eq, PartialEq, Copy, Clone, Debug)]
 #[repr(C)]
@@ -24,6 +20,20 @@ pub enum AVFrameSideDataType {
 	AV_FRAME_DATA_MOTION_VECTORS,
 	AV_FRAME_DATA_SKIP_SAMPLES,
 	AV_FRAME_DATA_AUDIO_SERVICE_TYPE,
+	AV_FRAME_DATA_MASTERING_DISPLAY_METADATA,
+	AV_FRAME_DATA_GOP_TIMECODE,
+}
+
+#[derive(Eq, PartialEq, Copy, Clone, Debug)]
+#[repr(C)]
+pub enum AVActiveFormatDescription {
+	AV_AFD_SAME         = 8,
+	AV_AFD_4_3          = 9,
+	AV_AFD_16_9         = 10,
+	AV_AFD_14_9         = 11,
+	AV_AFD_4_3_SP_14_9  = 13,
+	AV_AFD_16_9_SP_14_9 = 14,
+	AV_AFD_SP_4_3       = 15,
 }
 
 #[derive(Debug)]
@@ -35,6 +45,14 @@ pub struct AVFrameSideData {
 	pub metadata: *mut AVDictionary,
 	pub buf: *mut AVBufferRef,
 }
+
+pub const AV_NUM_DATA_POINTERS: usize = 8;
+
+pub const AV_FRAME_FLAG_CORRUPT: c_int = 1 << 0;
+pub const AV_FRAME_FLAG_DISCARD: c_int = 1 << 2;
+
+pub const FF_DECODE_ERROR_INVALID_BITSTREAM: c_int = 1;
+pub const FF_DECODE_ERROR_MISSING_REFERENCE: c_int = 2;
 
 #[derive(Debug)]
 #[repr(C)]
@@ -51,11 +69,9 @@ pub struct AVFrame {
 	pub key_frame: c_int,
 	pub pict_type: AVPictureType,
 
-	#[cfg(feature = "ff_api_avframe_lavc")]
-	pub base: [*mut uint8_t; AV_NUM_DATA_POINTERS],
-
 	pub sample_aspect_ratio: AVRational,
 	pub pts: int64_t,
+	#[cfg(feature = "ff_api_pkt_pts")]
 	pub pkt_pts: int64_t,
 	pub pkt_dts: int64_t,
 
@@ -64,30 +80,9 @@ pub struct AVFrame {
 
 	pub quality: c_int,
 
-	#[cfg(feature = "ff_api_avframe_lavc")]
-	pub reference: c_int,
-	#[cfg(feature = "ff_api_avframe_lavc")]
-	pub qscale_table: *mut int8_t,
-	#[cfg(feature = "ff_api_avframe_lavc")]
-	pub qstride: c_int,
-	#[cfg(feature = "ff_api_avframe_lavc")]
-	pub qscale_type: c_int,
-	#[cfg(feature = "ff_api_avframe_lavc")]
-	pub mbskip_table: *mut uint8_t,
-	#[cfg(feature = "ff_api_avframe_lavc")]
-	pub motion_val: [*mut [int16_t; 2]; 2],
-	#[cfg(feature = "ff_api_avframe_lavc")]
-	pub mb_type: *mut uint32_t,
-	#[cfg(feature = "ff_api_avframe_lavc")]
-	pub dct_coeff: *mut c_short,
-	#[cfg(feature = "ff_api_avframe_lavc")]
-	pub ref_index: [*mut int8_t; 2],
-
 	pub opaque: *mut c_void,
+	#[cfg(feature = "ff_api_error_frame")]
 	pub error: [uint64_t; AV_NUM_DATA_POINTERS],
-
-	#[cfg(feature = "ff_api_avframe_lavc")]
-	pub type_: c_int,
 
 	pub repeat_pict: c_int,
 	pub interlaced_frame: c_int,
@@ -95,21 +90,7 @@ pub struct AVFrame {
 
 	pub palette_has_changed: c_int,
 
-	#[cfg(feature = "ff_api_avframe_lavc")]
-	pub buffer_hints: c_int,
-	#[cfg(feature = "ff_api_avframe_lavc")]
-	pub pan_scan: *mut c_void,
-
 	pub reordered_opaque: int64_t,
-
-	#[cfg(feature = "ff_api_avframe_lavc")]
-	pub hwaccel_picture_private: *mut c_void,
-	#[cfg(feature = "ff_api_avframe_lavc")]
-	pub owner: *mut c_void,
-	#[cfg(feature = "ff_api_avframe_lavc")]
-	pub thread_opaque: *mut c_void,
-	#[cfg(feature = "ff_api_avframe_lavc")]
-	pub motion_subsample_log2: uint8_t,
 
 	pub sample_rate: c_int,
 	pub channel_layout: uint64_t,
@@ -139,7 +120,16 @@ pub struct AVFrame {
 	pub channels: c_int,
 	pub pkt_size: c_int,
 
+	#[cfg(feature = "ff_api_frame_qp")]
+	pub qscale_table: *mut int8_t,
+	#[cfg(feature = "ff_api_frame_qp")]
+	pub qstride: c_int,
+	#[cfg(feature = "ff_api_frame_qp")]
+	pub qscale_type: c_int,
+	#[cfg(feature = "ff_api_frame_qp")]
 	pub qp_table_buf: *mut AVBufferRef,
+
+	pub hw_frames_ctx: *mut AVBufferRef,
 }
 
 extern {

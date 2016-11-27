@@ -1,16 +1,9 @@
 use libc::{c_void, c_char, c_uchar, c_int, c_uint, c_ulong, uint8_t, int64_t, uint64_t, size_t, SEEK_CUR};
 use super::super::avutil::{AVClass, AVBPrint, AVDictionary};
 
+pub type URLContext = c_void;
+
 pub const AVIO_SEEKABLE_NORMAL: c_int = 0x0001;
-
-pub const AVSEEK_SIZE:  c_int = 0x10000;
-pub const AVSEEK_FORCE: c_int = 0x20000;
-
-pub const AVIO_FLAG_READ:       c_int = 1;
-pub const AVIO_FLAG_WRITE:      c_int = 2;
-pub const AVIO_FLAG_READ_WRITE: c_int = AVIO_FLAG_READ | AVIO_FLAG_WRITE;
-pub const AVIO_FLAG_NONBLOCK:   c_int = 8;
-pub const AVIO_FLAG_DIRECT:     c_int = 0x8000;
 
 #[repr(C)]
 pub struct AVIOInterruptCB {
@@ -54,7 +47,16 @@ pub struct AVIODirEntry {
 
 #[repr(C)]
 pub struct AVIODirContext {
-	url_context: *mut c_void,
+	url_context: *mut URLContext,
+}
+
+#[repr(C)]
+pub enum AVIODataMarkerType {
+	AVIO_DATA_MARKER_HEADER,
+	AVIO_DATA_MARKER_SYNC_POINT,
+	AVIO_DATA_MARKER_BOUNDARY_POINT,
+	AVIO_DATA_MARKER_UNKNOWN,
+	AVIO_DATA_MARKER_TRAILER,
 }
 
 #[repr(C)]
@@ -87,24 +89,44 @@ pub struct AVIOContext {
 	pub writeout_count: c_int,
 	pub orig_buffer_size: c_int,
 	pub short_seek_threshold: c_int,
+	pub protocol_whitelist: *const c_char,
+	pub protocol_blacklist: *const c_char,
+	pub write_data_type: extern fn(opaque: *mut c_void, buf: *mut uint8_t, buf_size: c_int,
+	                               kind: AVIODataMarkerType, time: int64_t) -> c_int,
+	pub ignore_boundary_point: c_int,
+	pub current_type: AVIODataMarkerType,
+	pub last_time: int64_t,
 }
+
+pub const AVSEEK_SIZE:  c_int = 0x10000;
+pub const AVSEEK_FORCE: c_int = 0x20000;
 
 #[inline(always)]
 pub unsafe fn avio_tell(s: *mut AVIOContext) -> int64_t {
 	avio_seek(s, 0, SEEK_CUR)
 }
 
+pub const AVIO_FLAG_READ:       c_int = 1;
+pub const AVIO_FLAG_WRITE:      c_int = 2;
+pub const AVIO_FLAG_READ_WRITE: c_int = AVIO_FLAG_READ | AVIO_FLAG_WRITE;
+pub const AVIO_FLAG_NONBLOCK:   c_int = 8;
+pub const AVIO_FLAG_DIRECT:     c_int = 0x8000;
+
 extern {
 	pub fn avio_find_protocol_name(url: *const c_char) -> *const c_char;
 	pub fn avio_check(url: *const c_char, flags: c_int) -> c_int;
+
+	pub fn avpriv_io_move(url_src: *const c_char, url_dst: *const c_char) -> c_int;
+	pub fn avpriv_io_delete(url: *const c_char) -> c_int;
+
 	pub fn avio_open_dir(s: *mut *mut AVIODirContext, url: *const c_char, options: *mut *mut AVDictionary) -> c_int;
 	pub fn avio_read_dir(s: *mut AVIODirContext, next: *mut *mut AVIODirEntry) -> c_int;
 	pub fn avio_close_dir(s: *mut *mut AVIODirContext) -> c_int;
 	pub fn avio_free_directory_entry(entry: *mut *mut AVIODirEntry);
 	pub fn avio_alloc_context(buffer: *mut c_uchar, buffer_size: c_int, write_flag: c_int, opaque: *mut c_void, read_packet: extern fn(*mut c_void, *mut uint8_t, c_int) -> c_int, write_packet: extern fn(*mut c_void, *mut uint8_t, c_int) -> c_int, seek: extern fn(*mut c_void, int64_t, c_int) -> int64_t) -> *mut AVIOContext;
 
-	pub fn avio_write(s: *mut AVIOContext, buf: *const c_uchar, size: c_int);
 	pub fn avio_w8(s: *mut AVIOContext, b: c_int);
+	pub fn avio_write(s: *mut AVIOContext, buf: *const c_uchar, size: c_int);
 	pub fn avio_wl64(s: *mut AVIOContext, val: uint64_t);
 	pub fn avio_wb64(s: *mut AVIOContext, val: uint64_t);
 	pub fn avio_wl32(s: *mut AVIOContext, val: c_uint);
@@ -117,6 +139,8 @@ extern {
 	pub fn avio_put_str(s: *mut AVIOContext, string: *const c_char) -> c_int;
 	pub fn avio_put_str16le(s: *mut AVIOContext, string: *const c_char) -> c_int;
 	pub fn avio_put_str16be(s: *mut AVIOContext, string: *const c_char) -> c_int;
+
+	pub fn avio_write_marker(s: *mut AVIOContext, time: int64_t, kind: AVIODataMarkerType);
 
 	pub fn avio_seek(s: *mut AVIOContext, offset: int64_t, whence: c_int) -> int64_t;
 	pub fn avio_skip(s: *mut AVIOContext, offset: int64_t) -> int64_t;
@@ -157,7 +181,4 @@ extern {
 
 	pub fn avio_accept(s: *mut AVIOContext, c: *mut *mut AVIOContext) -> c_int;
 	pub fn avio_handshake(c: *mut AVIOContext) -> c_int;
-
-	pub fn avpriv_io_move(url_src: *const c_char, url_dst: *const c_char) -> c_int;
-	pub fn avpriv_io_delete(url: *const c_char) -> c_int;
 }
