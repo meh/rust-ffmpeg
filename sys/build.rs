@@ -71,6 +71,8 @@ fn build() -> io::Result<()> {
 	configure.arg("--enable-static");
 	configure.arg("--disable-shared");
 
+	configure.arg("--enable-pic");
+
 	// do not build programs since we don't need them
 	configure.arg("--disable-programs");
 
