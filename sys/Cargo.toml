@@ -16,6 +16,7 @@ libc = "0.2"
 
 [build-dependencies]
 num_cpus = "0.2.11"
+gcc = "0.3"
 
 [features]
 default  = ["avcodec", "avdevice", "avfilter", "avformat", "avresample", "swresample", "swscale"]
