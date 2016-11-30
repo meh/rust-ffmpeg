@@ -1,4 +1,5 @@
 extern crate num_cpus;
+extern crate gcc;
 
 use std::env;
 use std::fs::{self, File};
@@ -256,15 +257,9 @@ fn check_features(infos: &Vec<(&'static str, Option<&'static str>, &'static str)
 	"#, includes_code=includes_code, main_code=main_code).expect("Write failed");
 
 	let executable = out_dir.join(if cfg!(windows) { "check.exe" } else { "check" });
-	let compiler =
-		if cfg!(windows) || env::var("MSYSTEM").unwrap_or("".to_string()).starts_with("MINGW32") {
-			"gcc"
-		}
-		else {
-			"cc"
-		};
+	let mut compiler = gcc::Config::new().get_compiler().to_command();
 
-	if !Command::new(compiler).current_dir(&out_dir)
+	if !compiler.current_dir(&out_dir)
 		.arg("-I").arg(search().join("include").to_string_lossy().into_owned())
 		.arg("-o").arg(&executable)
 		.arg("check.c")
