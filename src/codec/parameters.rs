@@ -1,6 +1,8 @@
 use std::rc::Rc;
 
 use ffi::*;
+use media;
+use super::Id;
 
 pub struct Parameters {
 	ptr: *mut AVCodecParameters,
@@ -30,6 +32,17 @@ impl Parameters {
 		}
 	}
 
+	pub fn medium(&self) -> media::Type {
+		unsafe {
+			media::Type::from((*self.as_ptr()).codec_type)
+		}
+	}
+
+	pub fn id(&self) -> Id {
+		unsafe {
+			Id::from((*self.as_ptr()).codec_id)
+		}
+	}
 }
 
 impl Drop for Parameters {
