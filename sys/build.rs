@@ -343,6 +343,8 @@ fn check_features(ffmpeg: Library,
 }
 
 fn main() {
+	let statik = env::var("CARGO_FEATURE_STATIC").is_ok();
+
 	let ffmpeg: Library = if env::var("CARGO_FEATURE_BUILD").is_ok() {
 		println!("cargo:rustc-link-search=native={}", search().join("lib").to_string_lossy());
 
@@ -383,7 +385,7 @@ fn main() {
 		}
 	} else {
 		pkg_config::Config::new()
-			// .statik(true)
+			.statik(statik)
 			.probe("libavcodec").unwrap().into()
 	};
 
