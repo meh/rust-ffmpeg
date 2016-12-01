@@ -383,7 +383,25 @@ fn main() {
 			include_paths: vec![search().join("include")],
 			version: String::new(),
 		}
-	} else {
+	}
+	// Use prebuilt library
+	else if let Ok(ffmpeg_dir) = env::var("FFMPEG_DIR") {
+		let ffmpeg_dir = PathBuf::from(ffmpeg_dir);
+
+		println!("cargo:rustc-link-search=native={}",
+			ffmpeg_dir.join("lib").to_string_lossy());
+
+		Library {
+			libs: vec![],
+			link_paths: vec![],
+			frameworks: vec![],
+			framework_paths: vec![],
+			include_paths: vec![ffmpeg_dir.join("include")],
+			version: String::new(),
+		}
+	}
+	// Fallback to pkg-config
+	else {
 		pkg_config::Config::new()
 			.statik(statik)
 			.probe("libavcodec").unwrap().into()
