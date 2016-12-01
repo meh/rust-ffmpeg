@@ -389,6 +389,23 @@ fn main() {
 			.probe("libavcodec").unwrap().into()
 	};
 
+	if statik && cfg!(target_os = "macos") {
+		println!("cargo:rustc-link-lib=framework=AppKit");
+		println!("cargo:rustc-link-lib=framework=AudioToolbox");
+		println!("cargo:rustc-link-lib=framework=AVFoundation");
+		println!("cargo:rustc-link-lib=framework=CoreFoundation");
+		println!("cargo:rustc-link-lib=framework=CoreGraphics");
+		println!("cargo:rustc-link-lib=framework=CoreMedia");
+		println!("cargo:rustc-link-lib=framework=CoreServices");
+		println!("cargo:rustc-link-lib=framework=CoreVideo");
+		println!("cargo:rustc-link-lib=framework=Foundation");
+		println!("cargo:rustc-link-lib=framework=OpenGL");
+		println!("cargo:rustc-link-lib=framework=QTKit");
+		println!("cargo:rustc-link-lib=framework=QuartzCore");
+		println!("cargo:rustc-link-lib=framework=VideoDecodeAcceleration");
+		println!("cargo:rustc-link-lib=framework=VideoToolbox");
+	}
+
 	check_features(ffmpeg, &vec![
 		("libavutil/avutil.h", None, "FF_API_OLD_AVOPTIONS"),
 
