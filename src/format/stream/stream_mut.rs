@@ -2,7 +2,7 @@ use std::ops::Deref;
 use std::mem;
 
 use ffi::*;
-use ::Rational;
+use ::{Rational, codec};
 use super::Stream;
 use format::context::common::Context;
 
@@ -40,6 +40,13 @@ impl<'a> StreamMut<'a> {
 			av_stream_set_r_frame_rate(self.as_mut_ptr(), value.into().into());
 		}
 	}
+
+    pub fn set_parameters<P: Into<codec::Parameters>>(&mut self, parameters: P) {
+		let parameters = parameters.into();
+        unsafe {
+			avcodec_parameters_copy((*self.as_mut_ptr()).codecpar, parameters.as_ptr());
+        }
+    }
 }
 
 impl<'a> Deref for StreamMut<'a> {

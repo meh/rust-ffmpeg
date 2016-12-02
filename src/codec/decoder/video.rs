@@ -9,6 +9,7 @@ use ::frame;
 use ::util::format;
 use ::util::chroma;
 use ::color;
+use ::codec::Context;
 
 pub struct Video(pub Opened);
 
@@ -150,3 +151,14 @@ impl DerefMut for Video {
 	}
 }
 
+impl AsRef<Context> for Video {
+	fn as_ref(&self) -> &Context {
+		&self
+	}
+}
+
+impl AsMut<Context> for Video {
+	fn as_mut(&mut self) -> &mut Context {
+		&mut self.0
+	}
+}

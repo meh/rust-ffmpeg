@@ -7,6 +7,7 @@ use super::Opened;
 use ::{packet, Error, AudioService, ChannelLayout};
 use ::frame;
 use ::util::format;
+use ::codec::Context;
 
 pub struct Audio(pub Opened);
 
@@ -114,6 +115,18 @@ impl Deref for Audio {
 
 impl DerefMut for Audio {
 	fn deref_mut(&mut self) -> &mut<Self as Deref>::Target {
+		&mut self.0
+	}
+}
+
+impl AsRef<Context> for Audio {
+	fn as_ref(&self) -> &Context {
+		&self
+	}
+}
+
+impl AsMut<Context> for Audio {
+	fn as_mut(&mut self) -> &mut Context {
 		&mut self.0
 	}
 }

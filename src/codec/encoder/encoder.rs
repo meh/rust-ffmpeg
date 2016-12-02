@@ -135,3 +135,15 @@ impl DerefMut for Encoder {
 		&mut self.0
 	}
 }
+
+impl AsRef<Context> for Encoder {
+	fn as_ref(&self) -> &Context {
+		&self
+	}
+}
+
+impl AsMut<Context> for Encoder {
+	fn as_mut(&mut self) -> &mut Context {
+		&mut *self
+	}
+}
