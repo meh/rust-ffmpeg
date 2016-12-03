@@ -9,30 +9,6 @@ use std::path::PathBuf;
 use std::process::Command;
 use std::str;
 
-// Define own library type because `pkg_config::Library` cannot be instantiated.
-#[derive(Debug)]
-pub struct Library {
-	pub libs: Vec<String>,
-	pub link_paths: Vec<PathBuf>,
-	pub frameworks: Vec<String>,
-	pub framework_paths: Vec<PathBuf>,
-	pub include_paths: Vec<PathBuf>,
-	pub version: String,
-}
-
-impl From<pkg_config::Library> for Library {
-	fn from(l: pkg_config::Library) -> Library {
-		Library {
-			libs: l.libs,
-			link_paths: l.link_paths,
-			frameworks: l.frameworks,
-			framework_paths: l.framework_paths,
-			include_paths: l.include_paths,
-			version: l.version,
-		}
-	}
-}
-
 fn version() -> String {
 	let major: u8 = env::var("CARGO_PKG_VERSION_MAJOR").unwrap().parse().unwrap();
 	let minor: u8 = env::var("CARGO_PKG_VERSION_MINOR").unwrap().parse().unwrap();
@@ -226,8 +202,7 @@ fn build() -> io::Result<()> {
 	Ok(())
 }
 
-fn check_features(ffmpeg: Library,
-				  infos: &Vec<(&'static str, Option<&'static str>, &'static str)>) {
+fn check_features(include_paths: Vec<PathBuf>, infos: &Vec<(&'static str, Option<&'static str>, &'static str)>) {
 	let mut includes_code = String::new();
 	let mut main_code = String::new();
 
@@ -285,13 +260,11 @@ fn check_features(ffmpeg: Library,
 	let executable = out_dir.join(if cfg!(windows) { "check.exe" } else { "check" });
 	let mut compiler = gcc::Config::new().get_compiler().to_command();
 
-	let mut incdirs = Vec::new();
-	for dir in ffmpeg.include_paths {
-		incdirs.push("-I".to_string());
-		incdirs.push(dir.to_string_lossy().into_owned());
+	for dir in include_paths {
+		compiler.arg("-I");
+		compiler.arg(dir.to_string_lossy().into_owned());
 	}
 	if !compiler.current_dir(&out_dir)
-		.args(&incdirs)
 		.arg("-o").arg(&executable)
 		.arg("check.c")
 		.status().expect("Command failed").success() {
@@ -345,7 +318,7 @@ fn check_features(ffmpeg: Library,
 fn main() {
 	let statik = env::var("CARGO_FEATURE_STATIC").is_ok();
 
-	let ffmpeg: Library = if env::var("CARGO_FEATURE_BUILD").is_ok() {
+	let include_paths: Vec<PathBuf> = if env::var("CARGO_FEATURE_BUILD").is_ok() {
 		println!("cargo:rustc-link-search=native={}", search().join("lib").to_string_lossy());
 
 		if env::var("CARGO_FEATURE_BUILD_ZLIB").is_ok() && cfg!(target_os = "linux") {
@@ -375,36 +348,22 @@ fn main() {
 			}
 		}
 
-		Library {
-			libs: vec![],
-			link_paths: vec![],
-			frameworks: vec![],
-			framework_paths: vec![],
-			include_paths: vec![search().join("include")],
-			version: String::new(),
-		}
+		vec![search().join("include")]
 	}
 	// Use prebuilt library
 	else if let Ok(ffmpeg_dir) = env::var("FFMPEG_DIR") {
 		let ffmpeg_dir = PathBuf::from(ffmpeg_dir);
 
 		println!("cargo:rustc-link-search=native={}",
-			ffmpeg_dir.join("lib").to_string_lossy());
+				 ffmpeg_dir.join("lib").to_string_lossy());
 
-		Library {
-			libs: vec![],
-			link_paths: vec![],
-			frameworks: vec![],
-			framework_paths: vec![],
-			include_paths: vec![ffmpeg_dir.join("include")],
-			version: String::new(),
-		}
+		vec![ffmpeg_dir.join("include")]
 	}
 	// Fallback to pkg-config
 	else {
 		pkg_config::Config::new()
 			.statik(statik)
-			.probe("libavcodec").unwrap().into()
+			.probe("libavcodec").unwrap().include_paths
 	};
 
 	if statik && cfg!(target_os = "macos") {
@@ -424,7 +383,7 @@ fn main() {
 		println!("cargo:rustc-link-lib=framework=VideoToolbox");
 	}
 
-	check_features(ffmpeg, &vec![
+	check_features(include_paths, &vec![
 		("libavutil/avutil.h", None, "FF_API_OLD_AVOPTIONS"),
 
 		("libavutil/avutil.h", None, "FF_API_PIX_FMT"),
