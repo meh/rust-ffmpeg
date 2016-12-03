@@ -1,15 +1,12 @@
 extern crate libc;
 extern crate ffmpeg_sys;
 
-use std::env;
 use std::fs::{create_dir, File, symlink_metadata};
-use std::io::Write;
+use std::io::{Write, BufRead, BufReader};
 use std::mem;
 use std::path::{Path, PathBuf};
 use std::process::Command;
 use std::str;
-
-use libc::c_void;
 
 use ffmpeg_sys::AVCodecContext;
 
@@ -27,17 +24,18 @@ fn output() -> PathBuf {
 fn check_struct_byte_offsets() {
 	let out_dir = output();
 	let executable = out_dir.join(if cfg!(windows) { "ffmpeg-structs.exe" } else { "ffmpeg-structs" });
-	let compiler =
-		if cfg!(windows) || env::var("MSYSTEM").unwrap_or("".to_string()).starts_with("MINGW32") {
-			"gcc"
-		}
-		else {
-			"cc"
-		};
+
+    let curr_dir = std::env::current_dir().unwrap();
+	let f = File::open(curr_dir.join("tmp/.build"))
+		.expect("Filed to open .build");
+	let f = BufReader::new(f);
+	let args: Vec<String> = f.lines().nth(0).unwrap().unwrap()
+		.split(' ').map(String::from).collect();
 
 	println!("Compiling ffmpeg-structs.c");
 
-	if !Command::new(compiler)
+	if !Command::new(&args[0])
+		.args(&args[1..])
 		.arg("-o").arg(&executable)
 		.arg("tests/data/ffmpeg-structs.c")
 		.status()
