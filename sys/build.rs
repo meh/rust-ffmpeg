@@ -371,20 +371,15 @@ fn main() {
 	};
 
 	if statik && cfg!(target_os = "macos") {
-		println!("cargo:rustc-link-lib=framework=AppKit");
-		println!("cargo:rustc-link-lib=framework=AudioToolbox");
-		println!("cargo:rustc-link-lib=framework=AVFoundation");
-		println!("cargo:rustc-link-lib=framework=CoreFoundation");
-		println!("cargo:rustc-link-lib=framework=CoreGraphics");
-		println!("cargo:rustc-link-lib=framework=CoreMedia");
-		println!("cargo:rustc-link-lib=framework=CoreServices");
-		println!("cargo:rustc-link-lib=framework=CoreVideo");
-		println!("cargo:rustc-link-lib=framework=Foundation");
-		println!("cargo:rustc-link-lib=framework=OpenGL");
-		println!("cargo:rustc-link-lib=framework=QTKit");
-		println!("cargo:rustc-link-lib=framework=QuartzCore");
-		println!("cargo:rustc-link-lib=framework=VideoDecodeAcceleration");
-		println!("cargo:rustc-link-lib=framework=VideoToolbox");
+		let frameworks = vec![
+			"AppKit", "AudioToolbox", "AVFoundation", "CoreFoundation",
+			"CoreGraphics", "CoreMedia", "CoreServices", "CoreVideo",
+			"Foundation", "OpenCL", "OpenGL", "QTKit", "QuartzCore",
+			"Security", "VideoDecodeAcceleration", "VideoToolbox"
+		];
+		for f in frameworks {
+			println!("cargo:rustc-link-lib=framework={}", f);
+		}
 	}
 
 	check_features(include_paths, &vec![
