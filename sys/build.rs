@@ -3,7 +3,7 @@ extern crate gcc;
 extern crate pkg_config;
 
 use std::env;
-use std::fs::{self, File};
+use std::fs::{self, create_dir, File, symlink_metadata};
 use std::io::{self, Write, BufRead, BufReader};
 use std::path::PathBuf;
 use std::process::Command;
@@ -382,7 +382,7 @@ fn main() {
 		}
 	}
 
-	check_features(include_paths, &vec![
+	check_features(include_paths.clone(), &vec![
 		("libavutil/avutil.h", None, "FF_API_OLD_AVOPTIONS"),
 
 		("libavutil/avutil.h", None, "FF_API_PIX_FMT"),
@@ -487,4 +487,21 @@ fn main() {
 		("libswscale/swscale.h", Some("swscale"), "FF_API_SWS_CPU_CAPS"),
 		("libswscale/swscale.h", Some("swscale"), "FF_API_ARCH_BFIN"),
 	]);
+
+	let tmp = std::env::current_dir().unwrap().join("tmp");
+	if symlink_metadata(&tmp).is_err() {
+		create_dir(&tmp).expect("Failed to create temporary output dir");
+	}
+	let mut f = File::create(tmp.join(".build"))
+		.expect("Filed to create .build");
+	let tool = gcc::Config::new().get_compiler();
+	write!(f, "{}", tool.path().to_string_lossy().into_owned())
+		.expect("failed to write cmd");
+	for arg in tool.args() {
+		write!(f, " {}", arg.to_str().unwrap()).expect("failed to write arg");
+	}
+	for dir in include_paths {
+		write!(f, " -I {}", dir.to_string_lossy().into_owned())
+			.expect("failed to write incdir");
+	}
 }
