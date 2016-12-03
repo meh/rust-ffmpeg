@@ -183,8 +183,12 @@ fn build() -> io::Result<()> {
 	enable!(configure, "BUILD_PIC", "pic");
 
 	// run ./configure
-	if !try!(configure.status()).success() {
-		return Err(io::Error::new(io::ErrorKind::Other, "configure failed"));
+	let output = configure.output().expect(&format!("{:?} failed", configure));
+	if !output.status.success() {
+		println!("configure: {}", String::from_utf8_lossy(&output.stdout));
+
+		return Err(io::Error::new(io::ErrorKind::Other,
+			format!("configure failed {}", String::from_utf8_lossy(&output.stderr))));
 	}
 
 	// run make
