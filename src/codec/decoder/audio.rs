@@ -28,6 +28,7 @@ impl Audio {
 		AudioFrameIter {
 			audio: self,
 			packet: packet,
+			frame: frame::Audio::empty(),
 		}
 	}
 
@@ -142,34 +143,35 @@ impl AsMut<Context> for Audio {
 pub struct AudioFrameIter<'a, 'b> {
 	audio: &'a mut Audio,
 	packet: &'b mut packet::Packet,
+	frame: frame::Audio,
 }
 
 impl<'a, 'b> Iterator for AudioFrameIter<'a, 'b> {
     type Item = Result<Option<frame::Audio>, Error>;
 
-    fn next(&mut self) -> Option<Result<Option<frame::Audio>, Error>> {
-		unsafe {
-			if !self.packet.is_empty() {
-				let mut out = frame::Audio::empty();
-				let mut got: c_int = 0;
+    fn next(&mut self) -> Option<Self::Item> {
+		if !unsafe { self.packet.is_empty() } {
+			let mut got: c_int = 0;
+
+			unsafe {
 				let packet = self.packet.as_mut_ptr();
 
-				match avcodec_decode_audio4(self.audio.as_mut_ptr(), out.as_mut_ptr(), &mut got, packet) {
+				match avcodec_decode_audio4(self.audio.as_mut_ptr(), self.frame.as_mut_ptr(), &mut got, packet) {
 					e if e < 0 => Some(Err(Error::from(e))),
 					n => {
 						(*packet).data = (*packet).data.offset(n as isize);
 						(*packet).size -= n;
 
 						if got != 0 {
-							Some(Ok(Some(out)))
+							Some(Ok(Some(frame::Audio::wrap(self.frame.as_mut_ptr()))))
 						} else {
 							Some(Ok(None))
 						}
 					}
 				}
-			} else {
-				None
 			}
+		} else {
+			None
 		}
 	}
 }
