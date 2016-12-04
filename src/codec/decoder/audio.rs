@@ -1,3 +1,4 @@
+use std::{mem, ptr};
 use std::ops::{Deref, DerefMut};
 
 use libc::c_int;
@@ -5,7 +6,7 @@ use ffi::*;
 
 use super::Opened;
 use ::{Error, AudioService, ChannelLayout};
-use ::packet::{self, Mut};
+use ::packet::{self, Ref};
 use ::frame;
 use ::util::format;
 use ::codec::Context;
@@ -24,12 +25,8 @@ impl Audio {
 		}
 	}
 
-	pub fn decode_iter<'a, 'b>(&'a mut self, packet: &'b mut packet::Packet) -> AudioFrameIter<'a, 'b> {
-		AudioFrameIter {
-			audio: self,
-			packet: packet,
-			frame: frame::Audio::empty(),
-		}
+	pub fn decode_iter<'a, 'b>(&'a mut self, packet: &'b packet::Packet) -> AudioFrameIter<'a, 'b> {
+		AudioFrameIter::new(self, packet)
 	}
 
 	pub fn rate(&self) -> u32 {
@@ -142,25 +139,43 @@ impl AsMut<Context> for Audio {
 
 pub struct AudioFrameIter<'a, 'b> {
 	audio: &'a mut Audio,
-	packet: &'b mut packet::Packet,
+	_packet: &'b packet::Packet,
+	avpkt: AVPacket,
 	frame: frame::Audio,
+}
+
+impl<'a, 'b> AudioFrameIter<'a, 'b> {
+	fn new(audio: &'a mut Audio, packet: &'b packet::Packet) -> AudioFrameIter<'a, 'b> {
+		let avpkt = unsafe {
+			let mut avpkt: AVPacket = mem::zeroed();
+			ptr::copy(packet.as_ptr(), (&mut avpkt) as *mut AVPacket, 1);
+			avpkt
+		};
+
+		AudioFrameIter {
+			audio: audio,
+			_packet: packet,
+			avpkt: avpkt,
+			frame: frame::Audio::empty(),
+		}
+	}
 }
 
 impl<'a, 'b> Iterator for AudioFrameIter<'a, 'b> {
     type Item = Result<Option<frame::Audio>, Error>;
 
     fn next(&mut self) -> Option<Self::Item> {
-		if !unsafe { self.packet.is_empty() } {
+		let avpkt = &mut self.avpkt;
+
+		if avpkt.size != 0 {
 			let mut got: c_int = 0;
 
 			unsafe {
-				let packet = self.packet.as_mut_ptr();
-
-				match avcodec_decode_audio4(self.audio.as_mut_ptr(), self.frame.as_mut_ptr(), &mut got, packet) {
+				match avcodec_decode_audio4(self.audio.as_mut_ptr(), self.frame.as_mut_ptr(), &mut got, avpkt as *const AVPacket) {
 					e if e < 0 => Some(Err(Error::from(e))),
 					n => {
-						(*packet).data = (*packet).data.offset(n as isize);
-						(*packet).size -= n;
+						avpkt.data = avpkt.data.offset(n as isize);
+						avpkt.size -= n;
 
 						if got != 0 {
 							Some(Ok(Some(frame::Audio::wrap(self.frame.as_mut_ptr()))))
