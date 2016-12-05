@@ -141,7 +141,6 @@ pub struct AudioFrameIter<'a, 'b> {
 	audio: &'a mut Audio,
 	_packet: &'b packet::Packet,
 	avpkt: AVPacket,
-	frame: frame::Audio,
 }
 
 impl<'a, 'b> AudioFrameIter<'a, 'b> {
@@ -156,7 +155,6 @@ impl<'a, 'b> AudioFrameIter<'a, 'b> {
 			audio: audio,
 			_packet: packet,
 			avpkt: avpkt,
-			frame: frame::Audio::empty(),
 		}
 	}
 }
@@ -168,17 +166,18 @@ impl<'a, 'b> Iterator for AudioFrameIter<'a, 'b> {
 		let avpkt = &mut self.avpkt;
 
 		if avpkt.size != 0 {
+			let mut frame = frame::Audio::empty();
 			let mut got: c_int = 0;
 
 			unsafe {
-				match avcodec_decode_audio4(self.audio.as_mut_ptr(), self.frame.as_mut_ptr(), &mut got, avpkt as *const AVPacket) {
+				match avcodec_decode_audio4(self.audio.as_mut_ptr(), frame.as_mut_ptr(), &mut got, avpkt as *const AVPacket) {
 					e if e < 0 => Some(Err(Error::from(e))),
 					n => {
 						avpkt.data = avpkt.data.offset(n as isize);
 						avpkt.size -= n;
 
 						if got != 0 {
-							Some(Ok(Some(frame::Audio::wrap(self.frame.as_mut_ptr()))))
+							Some(Ok(Some(frame)))
 						} else {
 							Some(Ok(None))
 						}
