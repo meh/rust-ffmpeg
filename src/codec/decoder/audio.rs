@@ -1,4 +1,3 @@
-use std::{mem, ptr};
 use std::ops::{Deref, DerefMut};
 
 use libc::c_int;
@@ -6,7 +5,7 @@ use ffi::*;
 
 use super::Opened;
 use ::{Error, AudioService, ChannelLayout};
-use ::packet::{self, Ref};
+use ::packet::{self, Mut, Packet};
 use ::frame;
 use ::util::format;
 use ::codec::Context;
@@ -25,7 +24,7 @@ impl Audio {
 		}
 	}
 
-	pub fn decode_iter<'a, 'b>(&'a mut self, packet: &'b packet::Packet) -> AudioFrameIter<'a, 'b> {
+	pub fn decode_iter<'a, 'b>(&'a mut self, packet: &'b Packet) -> AudioFrameIter<'a, 'b> {
 		AudioFrameIter::new(self, packet)
 	}
 
@@ -139,22 +138,19 @@ impl AsMut<Context> for Audio {
 
 pub struct AudioFrameIter<'a, 'b> {
 	audio: &'a mut Audio,
-	_packet: &'b packet::Packet,
-	avpkt: AVPacket,
+	_packet: &'b Packet,
+	packet: Packet,
 }
 
 impl<'a, 'b> AudioFrameIter<'a, 'b> {
-	fn new(audio: &'a mut Audio, packet: &'b packet::Packet) -> AudioFrameIter<'a, 'b> {
-		let avpkt = unsafe {
-			let mut avpkt: AVPacket = mem::zeroed();
-			ptr::copy(packet.as_ptr(), (&mut avpkt) as *mut AVPacket, 1);
-			avpkt
-		};
+	fn new(audio: &'a mut Audio, packet: &'b Packet) -> AudioFrameIter<'a, 'b> {
+		let mut copied = Packet::empty();
+		copied.clone_from(packet);
 
 		AudioFrameIter {
 			audio: audio,
 			_packet: packet,
-			avpkt: avpkt,
+			packet: copied,
 		}
 	}
 }
@@ -163,18 +159,18 @@ impl<'a, 'b> Iterator for AudioFrameIter<'a, 'b> {
     type Item = Result<Option<frame::Audio>, Error>;
 
     fn next(&mut self) -> Option<Self::Item> {
-		let avpkt = &mut self.avpkt;
-
-		if avpkt.size != 0 {
+		if self.packet.size() != 0 {
 			let mut frame = frame::Audio::empty();
 			let mut got: c_int = 0;
 
 			unsafe {
-				match avcodec_decode_audio4(self.audio.as_mut_ptr(), frame.as_mut_ptr(), &mut got, avpkt as *const AVPacket) {
+				let avpkt = self.packet.as_mut_ptr();
+
+				match avcodec_decode_audio4(self.audio.as_mut_ptr(), frame.as_mut_ptr(), &mut got, avpkt) {
 					e if e < 0 => Some(Err(Error::from(e))),
 					n => {
-						avpkt.data = avpkt.data.offset(n as isize);
-						avpkt.size -= n;
+						(*avpkt).data = (*avpkt).data.offset(n as isize);
+						(*avpkt).size -= n;
 
 						if got != 0 {
 							Some(Ok(Some(frame)))
