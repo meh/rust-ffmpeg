@@ -8,7 +8,20 @@ rust:
 addons:
   apt:
     packages:
+      - libcurl14-openssl-dev
+      - libdw-dev
+      - libelf-dev
       - yasm
 
+before_script:
+  - |
+      pip install 'travis-cargo<0.2' --user &&
+      export PATH=$HOME/.local/bin:$PATH
+
 script:
-  - travis_wait cargo test --verbose --features build
+  - |
+      travis_wait cargo test --verbose --features build &&
+      travis-cargo --only stable doc
+
+after_success:
+  - travis-cargo --only stable doc-upload
