@@ -8,7 +8,7 @@ rust:
 addons:
   apt:
     packages:
-      - libcurl14-openssl-dev
+      - libcurl4-openssl-dev
       - libdw-dev
       - libelf-dev
       - yasm
@@ -24,4 +24,5 @@ script:
       travis-cargo --only stable doc
 
 after_success:
+  # upload the documentation from the build with stable on master branch
   - travis-cargo --only stable doc-upload
