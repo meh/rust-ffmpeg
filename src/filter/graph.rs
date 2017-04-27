@@ -7,6 +7,9 @@ use libc::c_int;
 use ::Error;
 use super::{Context, Filter};
 
+unsafe impl Send for Graph { }
+unsafe impl Sync for Graph { }
+
 pub struct Graph {
 	ptr: *mut AVFilterGraph,
 }
