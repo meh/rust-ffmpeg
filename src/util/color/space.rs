@@ -1,7 +1,9 @@
+#![allow(non_upper_case_globals)]
 use std::ffi::CStr;
 use std::str::from_utf8_unchecked;
 
 use ffi::*;
+use ffi::AVColorSpace::*;
 
 #[derive(Eq, PartialEq, Clone, Copy, Debug)]
 pub enum Space {
@@ -17,6 +19,7 @@ pub enum Space {
 	YCGCO,
 	BT2020NCL,
 	BT2020CL,
+    SMPTE2085,
 }
 
 impl Space {
@@ -38,10 +41,11 @@ impl From<AVColorSpace> for Space {
 			AVCOL_SPC_BT470BG     => Space::BT470BG,
 			AVCOL_SPC_SMPTE170M   => Space::SMPTE170M,
 			AVCOL_SPC_SMPTE240M   => Space::SMPTE240M,
-			AVCOL_SPC_YCOCG       => Space::YCOCG,
+			AVColorSpace_AVCOL_SPC_YCOCG       => Space::YCOCG,
 			AVCOL_SPC_BT2020_NCL  => Space::BT2020NCL,
 			AVCOL_SPC_BT2020_CL   => Space::BT2020CL,
-			AVCOL_SPC_NB          => Space::Unspecified
+            AVCOL_SPC_SMPTE2085   => Space::SMPTE2085,
+			AVCOL_SPC_NB          => Space::Unspecified,
 		}
 	}
 }
@@ -57,10 +61,11 @@ impl Into<AVColorSpace> for Space {
 			Space::BT470BG     => AVCOL_SPC_BT470BG,
 			Space::SMPTE170M   => AVCOL_SPC_SMPTE170M,
 			Space::SMPTE240M   => AVCOL_SPC_SMPTE240M,
-			Space::YCOCG       => AVCOL_SPC_YCOCG,
+			Space::YCOCG       => AVColorSpace_AVCOL_SPC_YCOCG,
 			Space::YCGCO       => AVCOL_SPC_YCGCO,
 			Space::BT2020NCL   => AVCOL_SPC_BT2020_NCL,
-			Space::BT2020CL    => AVCOL_SPC_BT2020_CL
+			Space::BT2020CL    => AVCOL_SPC_BT2020_CL,
+            Space::SMPTE2085   => AVCOL_SPC_SMPTE2085,
 		}
 	}
 }
