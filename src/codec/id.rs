@@ -15,6 +15,7 @@ pub enum Id {
 	// video codecs
 	MPEG1VIDEO,
 	MPEG2VIDEO,
+	#[cfg(feature = "ff_api_xvmc")]
 	MPEG2VIDEO_XVMC,
 	H261,
 	H263,
@@ -361,6 +362,7 @@ pub enum Id {
 	MLP,
 	GSM_MS,
 	ATRAC3,
+	#[cfg(feature = "ff_api_voxware")]
 	VOXWARE,
 	APE,
 	NELLYMOSER,
@@ -496,6 +498,7 @@ impl From<AVCodecID> for Id {
 			/* video codecs */
 			AV_CODEC_ID_MPEG1VIDEO             => Id::MPEG1VIDEO,
 			AV_CODEC_ID_MPEG2VIDEO             => Id::MPEG2VIDEO,
+			#[cfg(feature = "ff_api_xvmc")]
 			AV_CODEC_ID_MPEG2VIDEO_XVMC        => Id::MPEG2VIDEO_XVMC,
 			AV_CODEC_ID_H261                   => Id::H261,
 			AV_CODEC_ID_H263                   => Id::H263,
@@ -839,6 +842,7 @@ impl From<AVCodecID> for Id {
 			AV_CODEC_ID_MLP                  => Id::MLP,
 			AV_CODEC_ID_GSM_MS               => Id::GSM_MS,
 			AV_CODEC_ID_ATRAC3               => Id::ATRAC3,
+			#[cfg(feature = "ff_api_voxware")]
 			AV_CODEC_ID_VOXWARE              => Id::VOXWARE,
 			AV_CODEC_ID_APE                  => Id::APE,
 			AV_CODEC_ID_NELLYMOSER           => Id::NELLYMOSER,
@@ -961,6 +965,7 @@ impl Into<AVCodecID> for Id {
 			/* video codecs */
 			Id::MPEG1VIDEO             => AV_CODEC_ID_MPEG1VIDEO,
 			Id::MPEG2VIDEO             => AV_CODEC_ID_MPEG2VIDEO,
+			#[cfg(feature = "ff_api_xvmc")]
 			Id::MPEG2VIDEO_XVMC        => AV_CODEC_ID_MPEG2VIDEO_XVMC,
 			Id::H261                   => AV_CODEC_ID_H261,
 			Id::H263                   => AV_CODEC_ID_H263,
@@ -1307,6 +1312,7 @@ impl Into<AVCodecID> for Id {
 			Id::MLP                  => AV_CODEC_ID_MLP,
 			Id::GSM_MS               => AV_CODEC_ID_GSM_MS,
 			Id::ATRAC3               => AV_CODEC_ID_ATRAC3,
+			#[cfg(feature = "ff_api_voxware")]
 			Id::VOXWARE              => AV_CODEC_ID_VOXWARE,
 			Id::APE                  => AV_CODEC_ID_APE,
 			Id::NELLYMOSER           => AV_CODEC_ID_NELLYMOSER,
