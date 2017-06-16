@@ -23,7 +23,7 @@ pub enum Type {
 	AudioServiceType,
 	MasteringDisplayMetadata,
 	GOPTimecode,
-    Spherical,
+	Spherical,
 }
 
 impl Type {
@@ -52,7 +52,7 @@ impl From<AVFrameSideDataType> for Type {
 			AV_FRAME_DATA_AUDIO_SERVICE_TYPE => Type::AudioServiceType,
 			AV_FRAME_DATA_MASTERING_DISPLAY_METADATA => Type::MasteringDisplayMetadata,
 			AV_FRAME_DATA_GOP_TIMECODE       => Type::GOPTimecode,
-            AV_FRAME_DATA_SPHERICAL          => Type::Spherical,
+			AV_FRAME_DATA_SPHERICAL          => Type::Spherical,
 		}
 	}
 }
@@ -74,7 +74,7 @@ impl Into<AVFrameSideDataType> for Type {
 			Type::AudioServiceType => AV_FRAME_DATA_AUDIO_SERVICE_TYPE,
 			Type::MasteringDisplayMetadata => AV_FRAME_DATA_MASTERING_DISPLAY_METADATA,
 			Type::GOPTimecode      => AV_FRAME_DATA_GOP_TIMECODE,
-            Type::Spherical        => AV_FRAME_DATA_SPHERICAL,
+			Type::Spherical        => AV_FRAME_DATA_SPHERICAL,
 		}
 	}
 }

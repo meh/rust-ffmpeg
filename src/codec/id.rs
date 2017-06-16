@@ -462,18 +462,18 @@ pub enum Id {
 	FFMETADATA,
 	WRAPPED_AVFRAME,
 
-    PSD,
-    PIXLET,
-    SPEEDHQ,
-    CLEARVIDEO,
-    FMVC,
-    SCPR,
-    XPM,
-    AV1,
-    PCM_F16LE,
-    PCM_F24LE,
-    ATRAC3AL,
-    ATRAC3PAL,
+	PSD,
+	PIXLET,
+	SPEEDHQ,
+	CLEARVIDEO,
+	FMVC,
+	SCPR,
+	XPM,
+	AV1,
+	PCM_F16LE,
+	PCM_F24LE,
+	ATRAC3AL,
+	ATRAC3PAL,
 }
 
 impl Id {
@@ -493,7 +493,7 @@ impl Id {
 impl From<AVCodecID> for Id {
 	fn from(value: AVCodecID) -> Self {
 		match value {
-		    AV_CODEC_ID_NONE => Id::None,
+			AV_CODEC_ID_NONE => Id::None,
 
 			/* video codecs */
 			AV_CODEC_ID_MPEG1VIDEO             => Id::MPEG1VIDEO,
@@ -941,18 +941,18 @@ impl From<AVCodecID> for Id {
 			AV_CODEC_ID_MPEG4SYSTEMS    => Id::MPEG4SYSTEMS,
 			AV_CODEC_ID_FFMETADATA      => Id::FFMETADATA,
 			AV_CODEC_ID_WRAPPED_AVFRAME => Id::WRAPPED_AVFRAME,
-            AV_CODEC_ID_PSD => Id::PSD,
-            AV_CODEC_ID_PIXLET => Id::PIXLET,
-            AV_CODEC_ID_SPEEDHQ => Id::SPEEDHQ,
-            AV_CODEC_ID_CLEARVIDEO  => Id::CLEARVIDEO,
-            AV_CODEC_ID_FMVC => Id::FMVC,
-            AV_CODEC_ID_SCPR => Id::SCPR,
-            AV_CODEC_ID_XPM => Id::XPM,
-            AV_CODEC_ID_AV1 => Id::AV1,
-            AV_CODEC_ID_PCM_F16LE => Id::PCM_F16LE,
-            AV_CODEC_ID_PCM_F24LE => Id::PCM_F24LE,
-            AV_CODEC_ID_ATRAC3AL => Id::ATRAC3AL,
-            AV_CODEC_ID_ATRAC3PAL => Id::ATRAC3PAL,
+			AV_CODEC_ID_PSD => Id::PSD,
+			AV_CODEC_ID_PIXLET => Id::PIXLET,
+			AV_CODEC_ID_SPEEDHQ => Id::SPEEDHQ,
+			AV_CODEC_ID_CLEARVIDEO  => Id::CLEARVIDEO,
+			AV_CODEC_ID_FMVC => Id::FMVC,
+			AV_CODEC_ID_SCPR => Id::SCPR,
+			AV_CODEC_ID_XPM => Id::XPM,
+			AV_CODEC_ID_AV1 => Id::AV1,
+			AV_CODEC_ID_PCM_F16LE => Id::PCM_F16LE,
+			AV_CODEC_ID_PCM_F24LE => Id::PCM_F24LE,
+			AV_CODEC_ID_ATRAC3AL => Id::ATRAC3AL,
+			AV_CODEC_ID_ATRAC3PAL => Id::ATRAC3PAL,
 		}
 	}
 }
@@ -1412,18 +1412,18 @@ impl Into<AVCodecID> for Id {
 			Id::FFMETADATA      => AV_CODEC_ID_FFMETADATA,
 			Id::WRAPPED_AVFRAME => AV_CODEC_ID_WRAPPED_AVFRAME,
 
-            Id::PSD => AV_CODEC_ID_PSD,
-            Id::PIXLET => AV_CODEC_ID_PIXLET,
-            Id::SPEEDHQ => AV_CODEC_ID_SPEEDHQ,
-            Id::FMVC => AV_CODEC_ID_FMVC,
-            Id::CLEARVIDEO => AV_CODEC_ID_CLEARVIDEO,
-            Id::SCPR => AV_CODEC_ID_SCPR,
-            Id::XPM => AV_CODEC_ID_XPM,
-            Id::AV1 => AV_CODEC_ID_AV1,
-            Id::PCM_F16LE => AV_CODEC_ID_PCM_F16LE,
-            Id::PCM_F24LE => AV_CODEC_ID_PCM_F24LE,
-            Id::ATRAC3AL => AV_CODEC_ID_ATRAC3AL,
-            Id::ATRAC3PAL => AV_CODEC_ID_ATRAC3PAL,
+			Id::PSD => AV_CODEC_ID_PSD,
+			Id::PIXLET => AV_CODEC_ID_PIXLET,
+			Id::SPEEDHQ => AV_CODEC_ID_SPEEDHQ,
+			Id::FMVC => AV_CODEC_ID_FMVC,
+			Id::CLEARVIDEO => AV_CODEC_ID_CLEARVIDEO,
+			Id::SCPR => AV_CODEC_ID_SCPR,
+			Id::XPM => AV_CODEC_ID_XPM,
+			Id::AV1 => AV_CODEC_ID_AV1,
+			Id::PCM_F16LE => AV_CODEC_ID_PCM_F16LE,
+			Id::PCM_F24LE => AV_CODEC_ID_PCM_F24LE,
+			Id::ATRAC3AL => AV_CODEC_ID_ATRAC3AL,
+			Id::ATRAC3PAL => AV_CODEC_ID_ATRAC3PAL,
 		}
 	}
 }

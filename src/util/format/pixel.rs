@@ -150,11 +150,10 @@ pub enum Pixel {
 	NV20LE,
 	NV20BE,
 
-    RGBA64BE,
-    RGBA64LE,
-    BGRA64BE,
-    BGRA64LE,
-
+	RGBA64BE,
+	RGBA64LE,
+	BGRA64BE,
+	BGRA64LE,
 
 	YVYU422,
 
@@ -290,18 +289,18 @@ pub enum Pixel {
 	AYUV64,
 
     P010LE,
-    P010BE,
-    GBRAP12BE,
-    GBRAP12LE,
-    GBRAP10LE,
-    GBRAP10BE,
-    MEDIACODEC,
-    GRAY12BE,
-    GRAY12LE,
-    GRAY10BE,
-    GRAY10LE,
-    P016LE,
-    P016BE,
+	P010BE,
+	GBRAP12BE,
+	GBRAP12LE,
+	GBRAP10LE,
+	GBRAP10BE,
+	MEDIACODEC,
+	GRAY12BE,
+	GRAY12LE,
+	GRAY10BE,
+	GRAY10LE,
+	P016LE,
+	P016BE,
 }
 
 #[derive(Clone, Copy, PartialEq, Eq)]
@@ -496,10 +495,10 @@ impl From<AVPixelFormat> for Pixel {
 			AV_PIX_FMT_NV20LE  => Pixel::NV20LE,
 			AV_PIX_FMT_NV20BE  => Pixel::NV20BE,
 
-            AV_PIX_FMT_RGBA64BE => Pixel::RGBA64BE,
-            AV_PIX_FMT_RGBA64LE => Pixel::RGBA64LE,
-            AV_PIX_FMT_BGRA64BE => Pixel::BGRA64BE,
-            AV_PIX_FMT_BGRA64LE => Pixel::BGRA64LE,
+			AV_PIX_FMT_RGBA64BE => Pixel::RGBA64BE,
+			AV_PIX_FMT_RGBA64LE => Pixel::RGBA64LE,
+			AV_PIX_FMT_BGRA64BE => Pixel::BGRA64BE,
+			AV_PIX_FMT_BGRA64LE => Pixel::BGRA64LE,
 
 			AV_PIX_FMT_YVYU422 => Pixel::YVYU422,
 
@@ -565,19 +564,19 @@ impl From<AVPixelFormat> for Pixel {
 
 			AV_PIX_FMT_VIDEOTOOLBOX => Pixel::VIDEOTOOLBOX,
 
-            AV_PIX_FMT_P010LE => Pixel::P010LE,
-            AV_PIX_FMT_P010BE => Pixel::P010BE,
-            AV_PIX_FMT_GBRAP12BE => Pixel::GBRAP12BE,
-            AV_PIX_FMT_GBRAP12LE => Pixel::GBRAP12LE,
-            AV_PIX_FMT_GBRAP10LE => Pixel::GBRAP10LE,
-            AV_PIX_FMT_GBRAP10BE => Pixel::GBRAP10BE,
-            AV_PIX_FMT_MEDIACODEC => Pixel::MEDIACODEC,
-            AV_PIX_FMT_GRAY12BE => Pixel::GRAY12BE,
-            AV_PIX_FMT_GRAY12LE => Pixel::GRAY12LE,
-            AV_PIX_FMT_GRAY10BE => Pixel::GRAY10BE,
-            AV_PIX_FMT_GRAY10LE => Pixel::GRAY10LE,
-            AV_PIX_FMT_P016LE => Pixel::P016LE,
-            AV_PIX_FMT_P016BE => Pixel::P016BE,
+			AV_PIX_FMT_P010LE => Pixel::P010LE,
+			AV_PIX_FMT_P010BE => Pixel::P010BE,
+			AV_PIX_FMT_GBRAP12BE => Pixel::GBRAP12BE,
+			AV_PIX_FMT_GBRAP12LE => Pixel::GBRAP12LE,
+			AV_PIX_FMT_GBRAP10LE => Pixel::GBRAP10LE,
+			AV_PIX_FMT_GBRAP10BE => Pixel::GBRAP10BE,
+			AV_PIX_FMT_MEDIACODEC => Pixel::MEDIACODEC,
+			AV_PIX_FMT_GRAY12BE => Pixel::GRAY12BE,
+			AV_PIX_FMT_GRAY12LE => Pixel::GRAY12LE,
+			AV_PIX_FMT_GRAY10BE => Pixel::GRAY10BE,
+			AV_PIX_FMT_GRAY10LE => Pixel::GRAY10LE,
+			AV_PIX_FMT_P016LE => Pixel::P016LE,
+			AV_PIX_FMT_P016BE => Pixel::P016BE,
 
 			AV_PIX_FMT_NB => Pixel::None,
 		}
@@ -730,10 +729,10 @@ impl Into<AVPixelFormat> for Pixel {
 			Pixel::NV20LE  => AV_PIX_FMT_NV20LE,
 			Pixel::NV20BE  => AV_PIX_FMT_NV20BE,
 
-            Pixel::RGBA64BE => AV_PIX_FMT_RGBA64BE,
-            Pixel::RGBA64LE => AV_PIX_FMT_RGBA64LE,
-            Pixel::BGRA64BE => AV_PIX_FMT_BGRA64BE,
-            Pixel::BGRA64LE => AV_PIX_FMT_BGRA64LE,
+			Pixel::RGBA64BE => AV_PIX_FMT_RGBA64BE,
+			Pixel::RGBA64LE => AV_PIX_FMT_RGBA64LE,
+			Pixel::BGRA64BE => AV_PIX_FMT_BGRA64BE,
+			Pixel::BGRA64LE => AV_PIX_FMT_BGRA64LE,
 
 			Pixel::YVYU422 => AV_PIX_FMT_YVYU422,
 
@@ -867,19 +866,19 @@ impl Into<AVPixelFormat> for Pixel {
 			Pixel::NV20   => AV_PIX_FMT_NV20,
 			Pixel::AYUV64 => AV_PIX_FMT_AYUV64,
 
-            Pixel::P010LE => AV_PIX_FMT_P010LE,
-            Pixel::P010BE => AV_PIX_FMT_P010BE,
-            Pixel::GBRAP12BE => AV_PIX_FMT_GBRAP12BE,
-            Pixel::GBRAP12LE => AV_PIX_FMT_GBRAP12LE,
-            Pixel::GBRAP10LE => AV_PIX_FMT_GBRAP10LE,
-            Pixel::GBRAP10BE => AV_PIX_FMT_GBRAP10BE,
-            Pixel::MEDIACODEC => AV_PIX_FMT_MEDIACODEC,
-            Pixel::GRAY12BE => AV_PIX_FMT_GRAY12BE,
-            Pixel::GRAY12LE => AV_PIX_FMT_GRAY12LE,
-            Pixel::GRAY10BE => AV_PIX_FMT_GRAY10BE,
-            Pixel::GRAY10LE => AV_PIX_FMT_GRAY10LE,
-            Pixel::P016LE => AV_PIX_FMT_P016LE,
-            Pixel::P016BE => AV_PIX_FMT_P016BE,
+			Pixel::P010LE => AV_PIX_FMT_P010LE,
+			Pixel::P010BE => AV_PIX_FMT_P010BE,
+			Pixel::GBRAP12BE => AV_PIX_FMT_GBRAP12BE,
+			Pixel::GBRAP12LE => AV_PIX_FMT_GBRAP12LE,
+			Pixel::GBRAP10LE => AV_PIX_FMT_GBRAP10LE,
+			Pixel::GBRAP10BE => AV_PIX_FMT_GBRAP10BE,
+			Pixel::MEDIACODEC => AV_PIX_FMT_MEDIACODEC,
+			Pixel::GRAY12BE => AV_PIX_FMT_GRAY12BE,
+			Pixel::GRAY12LE => AV_PIX_FMT_GRAY12LE,
+			Pixel::GRAY10BE => AV_PIX_FMT_GRAY10BE,
+			Pixel::GRAY10LE => AV_PIX_FMT_GRAY10LE,
+			Pixel::P016LE => AV_PIX_FMT_P016LE,
+			Pixel::P016BE => AV_PIX_FMT_P016BE,
 		}
 	}
 }

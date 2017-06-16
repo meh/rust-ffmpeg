@@ -28,8 +28,8 @@ pub enum Type {
 	MetadataUpdate,
 	MPEGTSStreamID,
 	MasteringDisplayMetadata,
-    DataSpherical,
-    DataNb,
+	DataSpherical,
+	DataNb,
 }
 
 impl From<AVPacketSideDataType> for Type {
@@ -56,8 +56,8 @@ impl From<AVPacketSideDataType> for Type {
 			AV_PKT_DATA_METADATA_UPDATE            => Type::MetadataUpdate,
 			AV_PKT_DATA_MPEGTS_STREAM_ID           => Type::MPEGTSStreamID,
 			AV_PKT_DATA_MASTERING_DISPLAY_METADATA => Type::MasteringDisplayMetadata,
-            AV_PKT_DATA_SPHERICAL                  => Type::DataSpherical,
-            AV_PKT_DATA_NB                         => Type::DataNb,
+			AV_PKT_DATA_SPHERICAL                  => Type::DataSpherical,
+			AV_PKT_DATA_NB                         => Type::DataNb,
 		}
 	}
 }
@@ -86,8 +86,8 @@ impl Into<AVPacketSideDataType> for Type {
 			Type::MetadataUpdate           => AV_PKT_DATA_METADATA_UPDATE,
 			Type::MPEGTSStreamID           => AV_PKT_DATA_MPEGTS_STREAM_ID,
 			Type::MasteringDisplayMetadata => AV_PKT_DATA_MASTERING_DISPLAY_METADATA,
-            Type::DataSpherical            => AV_PKT_DATA_SPHERICAL,
-            Type::DataNb                   => AV_PKT_DATA_NB,
+			Type::DataSpherical            => AV_PKT_DATA_SPHERICAL,
+			Type::DataNb                   => AV_PKT_DATA_NB,
 		}
 	}
 }
