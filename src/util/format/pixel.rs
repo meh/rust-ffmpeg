@@ -288,7 +288,7 @@ pub enum Pixel {
 	NV20,
 	AYUV64,
 
-    P010LE,
+	P010LE,
 	P010BE,
 	GBRAP12BE,
 	GBRAP12LE,
@@ -659,7 +659,7 @@ impl Into<AVPixelFormat> for Pixel {
 			#[cfg(feature = "ff_api_vaapi")]
 			Pixel::VAAPI_VLD  => AV_PIX_FMT_VAAPI_VLD,
 			#[cfg(not(feature = "ff_api_vaapi"))]
-			Pixel::VAAPI      => AVPixelFormat_AV_PIX_FMT_VAAPI,
+			Pixel::VAAPI      => AV_PIX_FMT_VAAPI,
 
 			Pixel::YUV420P16LE => AV_PIX_FMT_YUV420P16LE,
 			Pixel::YUV420P16BE => AV_PIX_FMT_YUV420P16BE,
@@ -799,10 +799,10 @@ impl Into<AVPixelFormat> for Pixel {
 			Pixel::VIDEOTOOLBOX => AV_PIX_FMT_VIDEOTOOLBOX,
 
 			// --- defaults
-			Pixel::XVMC   => AVPixelFormat_AV_PIX_FMT_XVMC,
-			Pixel::Y400A  => AVPixelFormat_AV_PIX_FMT_Y400A,
-			Pixel::GRAY8A => AVPixelFormat_AV_PIX_FMT_GRAY8A,
-			Pixel::GBR24P => AVPixelFormat_AV_PIX_FMT_GBR24P,
+			Pixel::XVMC   => AV_PIX_FMT_XVMC,
+			Pixel::Y400A  => AV_PIX_FMT_Y400A,
+			Pixel::GRAY8A => AV_PIX_FMT_GRAY8A,
+			Pixel::GBR24P => AV_PIX_FMT_GBR24P,
 
 			Pixel::RGB32   => AV_PIX_FMT_RGB32,
 			Pixel::RGB32_1 => AV_PIX_FMT_RGB32_1,
