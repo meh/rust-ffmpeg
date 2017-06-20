@@ -1,47 +1,11 @@
-#![allow(non_camel_case_types, non_snake_case, non_upper_case_globals)]
+#![allow(non_upper_case_globals)]
+#![allow(non_camel_case_types)]
+#![allow(non_snake_case)]
 
 extern crate libc;
+
+include!(concat!(env!("OUT_DIR"), "/bindings.rs"));
 
 #[macro_use]
 mod avutil;
 pub use avutil::*;
-
-#[cfg(feature = "avcodec")]
-mod avcodec;
-#[cfg(feature = "avcodec")]
-pub use avcodec::*;
-
-#[cfg(feature = "avdevice")]
-mod avdevice;
-#[cfg(feature = "avdevice")]
-pub use avdevice::*;
-
-#[cfg(feature = "avformat")]
-mod avformat;
-#[cfg(feature = "avformat")]
-pub use avformat::*;
-
-#[cfg(feature = "avfilter")]
-mod avfilter;
-#[cfg(feature = "avfilter")]
-pub use avfilter::*;
-
-#[cfg(feature = "avresample")]
-mod avresample;
-#[cfg(feature = "avresample")]
-pub use avresample::*;
-
-#[cfg(feature = "postproc")]
-mod postproc;
-#[cfg(feature = "postproc")]
-pub use postproc::*;
-
-#[cfg(feature = "swresample")]
-mod swresample;
-#[cfg(feature = "swresample")]
-pub use swresample::*;
-
-#[cfg(feature = "swscale")]
-mod swscale;
-#[cfg(feature = "swscale")]
-pub use swscale::*;
