@@ -15,9 +15,11 @@ keywords    = ["audio", "video"]
 libc = "0.2"
 
 [build-dependencies]
-num_cpus   = "1"
-gcc        = "0.3"
+num_cpus = "1"
+gcc = "0.3"
 pkg-config = "0.3"
+bindgen    = { git = "https://github.com/servo/rust-bindgen.git" }
+regex      = "0.2"
 
 [features]
 default  = ["avcodec", "avdevice", "avfilter", "avformat", "avresample", "swresample", "swscale"]
