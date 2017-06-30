@@ -1,5 +1,3 @@
-#![allow(non_upper_case_globals)]
-
 use std::ffi::CStr;
 use std::str::from_utf8_unchecked;
 
