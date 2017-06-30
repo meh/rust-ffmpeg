@@ -427,7 +427,7 @@ fn search_include(include_paths: &Vec<PathBuf>, header: &str) -> String {
             return format!("{}", include.as_path().to_str().unwrap());
         }
     }
-    String::new()
+    format!("/usr/include/{}", header)
 }
 
 fn main() {
