@@ -882,6 +882,7 @@ fn main() {
         .header(search_include(&include_paths, "libavutil/avutil.h"))
         .header(search_include(&include_paths, "libavutil/pixfmt.h"))
         .header(search_include(&include_paths, "libavutil/time.h"))
+        .header(search_include(&include_paths, "libavutil/pixdesc.h"))
 
         .header(search_include(&include_paths, "libavfilter/buffersrc.h"))
         .header(search_include(&include_paths, "libavfilter/avfilter.h"))
