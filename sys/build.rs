@@ -494,6 +494,11 @@ fn main() {
 
         pkg_config::Config::new()
             .statik(statik)
+            .probe("libavfilter")
+            .unwrap();
+
+        pkg_config::Config::new()
+            .statik(statik)
             .probe("libavdevice")
             .unwrap();
 
