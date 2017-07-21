@@ -504,6 +504,21 @@ fn main() {
 
         pkg_config::Config::new()
             .statik(statik)
+            .probe("libavutil")
+            .unwrap();
+
+        pkg_config::Config::new()
+            .statik(statik)
+            .probe("libswscale")
+            .unwrap();
+
+        pkg_config::Config::new()
+            .statik(statik)
+            .probe("libswresample")
+            .unwrap();
+
+        pkg_config::Config::new()
+            .statik(statik)
             .probe("libavcodec")
             .unwrap()
             .include_paths
