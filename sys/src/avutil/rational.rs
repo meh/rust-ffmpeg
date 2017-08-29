@@ -1,11 +1,5 @@
-use libc::{c_int, int64_t, c_double};
-
-#[derive(Eq, PartialEq, Copy, Clone, Debug)]
-#[repr(C)]
-pub struct AVRational {
-    pub num: c_int,
-    pub den: c_int,
-}
+use AVRational;
+use libc::{c_double, c_int, int64_t};
 
 #[inline(always)]
 pub unsafe fn av_make_q(num: c_int, den: c_int) -> AVRational {
