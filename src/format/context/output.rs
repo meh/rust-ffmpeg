@@ -1,9 +1,12 @@
 use std::ops::{Deref, DerefMut};
 use std::ptr;
+use std::mem::size_of;
 use std::ffi::CString;
 
+use libc;
+
 use ffi::*;
-use ::{Error, StreamMut, Dictionary, format};
+use ::{Error, StreamMut, ChapterMut, Rational, Dictionary, format};
 use super::common::Context;
 use super::destructor;
 use codec::traits;
@@ -79,6 +82,69 @@ impl Output {
 
 			Ok(StreamMut::wrap(&mut self.ctx, index as usize))
 		}
+	}
+
+	pub fn add_chapter<R: Into<Rational>>(&mut self,
+		id: i32,
+		time_base: R,
+		start: i64,
+		end: i64,
+		title: &str
+    ) -> Result<ChapterMut, Error>
+	{
+		// avpriv_new_chapter is private (libavformat/internal.h)
+
+		if start > end {
+			return Err(Error::InvalidData);
+		}
+
+		let mut existing_index = None;
+		for chapter in self.chapters_mut() {
+			if chapter.id() == id {
+				existing_index = Some(chapter.index());
+				break;
+			}
+		}
+
+		let index = match existing_index {
+			Some(index) => index,
+			None => unsafe {
+				let ptr = av_mallocz(size_of::<AVChapter>());
+
+				if ptr.is_null() {
+					panic!("out of memory");
+				}
+
+				let mut nb_chapters = (*self.as_ptr()).nb_chapters as i32;
+
+				// chapters array will be freed by `avformat_free_context`
+				av_dynarray_add(
+					&mut (*self.as_mut_ptr()).chapters as *mut _ as *mut libc::c_void,
+					&mut nb_chapters,
+					ptr
+				);
+
+				if nb_chapters > 0 {
+					(*self.as_mut_ptr()).nb_chapters = nb_chapters as u32;
+					let index = (*self.ctx.as_ptr()).nb_chapters - 1;
+					index as usize
+				} else {
+					// failed to add the chapter
+					av_freep(ptr);
+					return Err(Error::Bug);
+				}
+			},
+		};
+
+		let mut new_chapter = self.chapter_mut(index).expect("An error occured adding a chapter");
+
+		new_chapter.set_id(id);
+		new_chapter.set_time_base(time_base);
+		new_chapter.set_start(start);
+		new_chapter.set_end(end);
+		new_chapter.set_metadata("title", title);
+
+		Ok(new_chapter)
 	}
 
 	pub fn set_metadata(&mut self, dictionary: Dictionary) {
