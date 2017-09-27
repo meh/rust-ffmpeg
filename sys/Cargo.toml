@@ -16,7 +16,7 @@ libc = "0.2"
 
 [build-dependencies]
 num_cpus = "1"
-gcc = "0.3"
+cc = "1"
 pkg-config = "0.3"
 bindgen    = "0.30"
 regex      = "0.2"

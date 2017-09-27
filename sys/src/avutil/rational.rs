@@ -8,14 +8,14 @@ pub unsafe fn av_make_q(num: c_int, den: c_int) -> AVRational {
 
 #[inline(always)]
 pub unsafe fn av_cmp_q(a: AVRational, b: AVRational) -> c_int {
-    let tmp: int64_t = a.num as int64_t * b.den as int64_t - b.num as int64_t * a.den as int64_t;
+    let tmp: int64_t = i64::from(a.num) * i64::from(b.den) -i64::from(b.num) * i64::from(a.den);
 
     if tmp != 0 {
-        (((tmp ^ a.den as int64_t ^ b.den as int64_t) >> 63) | 1) as c_int
+        (((tmp ^ i64::from(a.den) ^ i64::from(b.den)) >> 63) | 1) as c_int
     } else if b.den != 0 && a.den != 0 {
         0
     } else if a.num != 0 && b.num != 0 {
-        ((a.num as int64_t >> 31) - (b.num as int64_t >> 31)) as c_int
+        ((i64::from(a.num) >> 31) - (i64::from(b.num) >> 31)) as c_int
     } else {
         c_int::min_value()
     }
@@ -23,7 +23,7 @@ pub unsafe fn av_cmp_q(a: AVRational, b: AVRational) -> c_int {
 
 #[inline(always)]
 pub unsafe fn av_q2d(a: AVRational) -> c_double {
-    a.num as c_double / a.den as c_double
+    f64::from(a.num) / f64::from(a.den)
 }
 
 #[inline(always)]

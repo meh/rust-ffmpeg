@@ -1,5 +1,5 @@
 extern crate bindgen;
-extern crate gcc;
+extern crate cc;
 extern crate num_cpus;
 extern crate pkg_config;
 extern crate regex;
@@ -24,12 +24,12 @@ impl ParseCallbacks for IntCallbacks {
         let codec_flag = Regex::new(r"^AV_CODEC_FLAG").unwrap();
         let error_max_size = Regex::new(r"^AV_ERROR_MAX_STRING_SIZE").unwrap();
 
-        if value >= i64::min_value() as i64 && value <= i64::max_value() as i64 &&
-            ch_layout.is_match(_name)
+        if value >= i64::min_value() as i64 && value <= i64::max_value() as i64
+            && ch_layout.is_match(_name)
         {
             Some(IntKind::ULongLong)
-        } else if value >= i32::min_value() as i64 && value <= i32::max_value() as i64 &&
-            (codec_cap.is_match(_name) || codec_flag.is_match(_name))
+        } else if value >= i32::min_value() as i64 && value <= i32::max_value() as i64
+            && (codec_cap.is_match(_name) || codec_flag.is_match(_name))
         {
             Some(IntKind::UInt)
         } else if error_max_size.is_match(_name) {
@@ -341,7 +341,7 @@ version_minor=version_minor));
     ).expect("Write failed");
 
     let executable = out_dir.join(if cfg!(windows) { "check.exe" } else { "check" });
-    let mut compiler = gcc::Build::new().get_compiler().to_command();
+    let mut compiler = cc::Build::new().get_compiler().to_command();
 
     for dir in include_paths {
         compiler.arg("-I");
@@ -406,8 +406,8 @@ version_minor=version_minor));
                 );
                 let pos = stdout
                     .find(&search_str)
-                    .expect("Variable not found in output") +
-                    search_str.len();
+                    .expect("Variable not found in output")
+                    + search_str.len();
 
                 if &stdout[pos..pos + 1] == "1" {
                     println!(
@@ -856,7 +856,7 @@ fn main() {
         create_dir(&tmp).expect("Failed to create temporary output dir");
     }
     let mut f = File::create(tmp.join(".build")).expect("Filed to create .build");
-    let tool = gcc::Build::new().get_compiler();
+    let tool = cc::Build::new().get_compiler();
     write!(f, "{}", tool.path().to_string_lossy().into_owned()).expect("failed to write cmd");
     for arg in tool.args() {
         write!(f, " {}", arg.to_str().unwrap()).expect("failed to write arg");
