@@ -439,6 +439,33 @@ fn main() {
             search().join("lib").to_string_lossy()
         );
 
+        let ffmpeg_ty = if statik {
+            "static"
+        } else {
+            "dylib"
+        };
+
+        // Make sure to link with the ffmpeg libs we built
+        println!("cargo:rustc-link-lib={}=avutil", ffmpeg_ty);
+        if env::var("CARGO_FEATURE_AVCODEC").is_ok() {
+            println!("cargo:rustc-link-lib={}=avcodec", ffmpeg_ty);
+        }
+        if env::var("CARGO_FEATURE_AVFORMAT").is_ok() {
+            println!("cargo:rustc-link-lib={}=avformat", ffmpeg_ty);
+        }
+        if env::var("CARGO_FEATURE_AVFILTER").is_ok() {
+            println!("cargo:rustc-link-lib={}=avfilter", ffmpeg_ty);
+        }
+        if env::var("CARGO_FEATURE_AVDEVICE").is_ok() {
+            println!("cargo:rustc-link-lib={}=avdevice", ffmpeg_ty);
+        }
+        if env::var("CARGO_FEATURE_SWSCALE").is_ok() {
+            println!("cargo:rustc-link-lib={}=swscale", ffmpeg_ty);
+        }
+        if env::var("CARGO_FEATURE_SWRESAMPLE").is_ok() {
+            println!("cargo:rustc-link-lib={}=swresample", ffmpeg_ty);
+        }
+
         if env::var("CARGO_FEATURE_BUILD_ZLIB").is_ok() && cfg!(target_os = "linux") {
             println!("cargo:rustc-link-lib=z");
         }
