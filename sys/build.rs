@@ -480,7 +480,7 @@ fn main() {
 
         // Check additional required libraries.
         {
-            let config_mak = source().join("config.mak");
+            let config_mak = source().join("ffbuild/config.mak");
             let file = File::open(config_mak).unwrap();
             let reader = BufReader::new(file);
             let extra_libs = reader
