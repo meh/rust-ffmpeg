@@ -1,6 +1,6 @@
 use std::ffi::CStr;
 use std::str::from_utf8_unchecked;
-
+use std::fmt;
 use ffi::*;
 
 pub struct Input {
@@ -58,5 +58,11 @@ impl Input {
 				from_utf8_unchecked(CStr::from_ptr(ptr).to_bytes()).split(',').collect()
 			}
 		}
+	}
+}
+
+impl fmt::Debug for Input {
+	fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+		write!(f, "AVInputFormat({})", self.description())
 	}
 }

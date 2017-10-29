@@ -1,6 +1,7 @@
 use std::ops::{Deref, DerefMut};
 use std::ptr;
 use std::mem;
+use std::fmt;
 use std::ffi::CString;
 
 use ffi::*;
@@ -141,6 +142,12 @@ impl Deref for Input {
 impl DerefMut for Input {
 	fn deref_mut(&mut self) -> &mut Self::Target {
 		&mut self.ctx
+	}
+}
+
+impl fmt::Debug for Input {
+	fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+		write!(f, "AVFormatContext({})", self.format().description())
 	}
 }
 
