@@ -15,10 +15,10 @@ keywords    = ["audio", "video"]
 libc = "0.2"
 
 [build-dependencies]
-num_cpus = "1"
-cc = "1"
+num_cpus = "1.0"
+cc = "1.0"
 pkg-config = "0.3"
-bindgen    = "0.30"
+bindgen    = "0.31"
 regex      = "0.2"
 
 [features]
