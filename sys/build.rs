@@ -313,11 +313,13 @@ fn check_features(
     {
         for version_major in begin_version_major..end_version_major {
             for version_minor in begin_version_minor..end_version_minor {
-                main_code.push_str(&format!(r#"printf("[{lib}_version_greater_than_{version_major}_{version_minor}]%d\n", LIB{lib_uppercase}_VERSION_MAJOR > {version_major} || (LIB{lib_uppercase}_VERSION_MAJOR == {version_major} && LIB{lib_uppercase}_VERSION_MINOR > {version_minor}));"#,
-lib=lib,
-lib_uppercase=lib.to_uppercase(),
-version_major=version_major,
-version_minor=version_minor));
+                main_code.push_str(&format!(
+                    r#"printf("[{lib}_version_greater_than_{version_major}_{version_minor}]%d\n", LIB{lib_uppercase}_VERSION_MAJOR > {version_major} || (LIB{lib_uppercase}_VERSION_MAJOR == {version_major} && LIB{lib_uppercase}_VERSION_MINOR > {version_minor}));"#,
+                    lib = lib,
+                    lib_uppercase = lib.to_uppercase(),
+                    version_major = version_major,
+                    version_minor = version_minor
+                ));
             }
         }
     }
@@ -439,11 +441,7 @@ fn main() {
             search().join("lib").to_string_lossy()
         );
 
-        let ffmpeg_ty = if statik {
-            "static"
-        } else {
-            "dylib"
-        };
+        let ffmpeg_ty = if statik { "static" } else { "dylib" };
 
         // Make sure to link with the ffmpeg libs we built
         println!("cargo:rustc-link-lib={}=avutil", ffmpeg_ty);
@@ -901,15 +899,15 @@ fn main() {
     let mut builder = bindgen::Builder::default()
         .clang_args(clang_includes)
         .ctypes_prefix("libc")
-        .hide_type("AV_CH_LAYOUT_NATIVE")
         // https://github.com/servo/rust-bindgen/issues/687
-        .hide_type("FP_NAN")
-        .hide_type("FP_INFINITE")
-        .hide_type("FP_ZERO")
-        .hide_type("FP_SUBNORMAL")
-        .hide_type("FP_NORMAL")
+        .blacklist_type("FP_NAN")
+        .blacklist_type("FP_INFINITE")
+        .blacklist_type("FP_ZERO")
+        .blacklist_type("FP_SUBNORMAL")
+        .blacklist_type("FP_NORMAL")
         // https://github.com/servo/rust-bindgen/issues/550
-        .hide_type("max_align_t")
+        .blacklist_type("max_align_t")
+        .rustified_enum("*")
         .prepend_enum_name(false)
         .derive_eq(true)
         .parse_callbacks(Box::new(IntCallbacks));
@@ -918,102 +916,97 @@ fn main() {
     // bindings for.
     if env::var("CARGO_FEATURE_AVCODEC").is_ok() {
         builder = builder
-        .header(search_include(&include_paths, "libavcodec/avcodec.h"))
-        .header(search_include(&include_paths, "libavcodec/dv_profile.h"))
-        .header(search_include(&include_paths, "libavcodec/avfft.h"))
-        .header(search_include(&include_paths, "libavcodec/vaapi.h"))
-        .header(search_include(&include_paths, "libavcodec/vorbis_parser.h"));
+            .header(search_include(&include_paths, "libavcodec/avcodec.h"))
+            .header(search_include(&include_paths, "libavcodec/dv_profile.h"))
+            .header(search_include(&include_paths, "libavcodec/avfft.h"))
+            .header(search_include(&include_paths, "libavcodec/vaapi.h"))
+            .header(search_include(&include_paths, "libavcodec/vorbis_parser.h"));
     }
 
     if env::var("CARGO_FEATURE_AVDEVICE").is_ok() {
-        builder = builder
-        .header(search_include(&include_paths, "libavdevice/avdevice.h"));
+        builder = builder.header(search_include(&include_paths, "libavdevice/avdevice.h"));
     }
 
     if env::var("CARGO_FEATURE_AVFILTER").is_ok() {
         builder = builder
-        .header(search_include(&include_paths, "libavfilter/buffersink.h"))
-        .header(search_include(&include_paths, "libavfilter/buffersrc.h"))
-        .header(search_include(&include_paths, "libavfilter/avfilter.h"));
+            .header(search_include(&include_paths, "libavfilter/buffersink.h"))
+            .header(search_include(&include_paths, "libavfilter/buffersrc.h"))
+            .header(search_include(&include_paths, "libavfilter/avfilter.h"));
     }
 
     if env::var("CARGO_FEATURE_AVFORMAT").is_ok() {
         builder = builder
-        .header(search_include(&include_paths, "libavformat/avformat.h"))
-        .header(search_include(&include_paths, "libavformat/avio.h"));
+            .header(search_include(&include_paths, "libavformat/avformat.h"))
+            .header(search_include(&include_paths, "libavformat/avio.h"));
     }
 
     if env::var("CARGO_FEATURE_AVRESAMPLE").is_ok() {
-        builder = builder
-        .header(search_include(&include_paths, "libavresample/avresample.h"));
+        builder = builder.header(search_include(&include_paths, "libavresample/avresample.h"));
     }
 
     builder = builder
-    .header(search_include(&include_paths, "libavutil/adler32.h"))
-    .header(search_include(&include_paths, "libavutil/aes.h"))
-    .header(search_include(&include_paths, "libavutil/audio_fifo.h"))
-    .header(search_include(&include_paths, "libavutil/base64.h"))
-    .header(search_include(&include_paths, "libavutil/blowfish.h"))
-    .header(search_include(&include_paths, "libavutil/bprint.h"))
-    .header(search_include(&include_paths, "libavutil/buffer.h"))
-    .header(search_include(&include_paths, "libavutil/camellia.h"))
-    .header(search_include(&include_paths, "libavutil/cast5.h"))
-    .header(search_include(&include_paths, "libavutil/channel_layout.h"))
-    .header(search_include(&include_paths, "libavutil/cpu.h"))
-    .header(search_include(&include_paths, "libavutil/crc.h"))
-    .header(search_include(&include_paths, "libavutil/dict.h"))
-    .header(search_include(&include_paths, "libavutil/display.h"))
-    .header(search_include(&include_paths, "libavutil/downmix_info.h"))
-    .header(search_include(&include_paths, "libavutil/error.h"))
-    .header(search_include(&include_paths, "libavutil/eval.h"))
-    .header(search_include(&include_paths, "libavutil/fifo.h"))
-    .header(search_include(&include_paths, "libavutil/file.h"))
-    .header(search_include(&include_paths, "libavutil/frame.h"))
-    .header(search_include(&include_paths, "libavutil/hash.h"))
-    .header(search_include(&include_paths, "libavutil/hmac.h"))
-    .header(search_include(&include_paths, "libavutil/imgutils.h"))
-    .header(search_include(&include_paths, "libavutil/lfg.h"))
-    .header(search_include(&include_paths, "libavutil/log.h"))
-    .header(search_include(&include_paths, "libavutil/lzo.h"))
-    .header(search_include(&include_paths, "libavutil/macros.h"))
-    .header(search_include(&include_paths, "libavutil/mathematics.h"))
-    .header(search_include(&include_paths, "libavutil/md5.h"))
-    .header(search_include(&include_paths, "libavutil/mem.h"))
-    .header(search_include(&include_paths, "libavutil/motion_vector.h"))
-    .header(search_include(&include_paths, "libavutil/murmur3.h"))
-    .header(search_include(&include_paths, "libavutil/opt.h"))
-    .header(search_include(&include_paths, "libavutil/parseutils.h"))
-    .header(search_include(&include_paths, "libavutil/pixdesc.h"))
-    .header(search_include(&include_paths, "libavutil/pixfmt.h"))
-    .header(search_include(&include_paths, "libavutil/random_seed.h"))
-    .header(search_include(&include_paths, "libavutil/rational.h"))
-    .header(search_include(&include_paths, "libavutil/replaygain.h"))
-    .header(search_include(&include_paths, "libavutil/ripemd.h"))
-    .header(search_include(&include_paths, "libavutil/samplefmt.h"))
-    .header(search_include(&include_paths, "libavutil/sha.h"))
-    .header(search_include(&include_paths, "libavutil/sha512.h"))
-    .header(search_include(&include_paths, "libavutil/stereo3d.h"))
-    .header(search_include(&include_paths, "libavutil/avstring.h"))
-    .header(search_include(&include_paths, "libavutil/threadmessage.h"))
-    .header(search_include(&include_paths, "libavutil/time.h"))
-    .header(search_include(&include_paths, "libavutil/timecode.h"))
-    .header(search_include(&include_paths, "libavutil/twofish.h"))
-    .header(search_include(&include_paths, "libavutil/avutil.h"))
-    .header(search_include(&include_paths, "libavutil/xtea.h"));
+        .header(search_include(&include_paths, "libavutil/adler32.h"))
+        .header(search_include(&include_paths, "libavutil/aes.h"))
+        .header(search_include(&include_paths, "libavutil/audio_fifo.h"))
+        .header(search_include(&include_paths, "libavutil/base64.h"))
+        .header(search_include(&include_paths, "libavutil/blowfish.h"))
+        .header(search_include(&include_paths, "libavutil/bprint.h"))
+        .header(search_include(&include_paths, "libavutil/buffer.h"))
+        .header(search_include(&include_paths, "libavutil/camellia.h"))
+        .header(search_include(&include_paths, "libavutil/cast5.h"))
+        .header(search_include(&include_paths, "libavutil/channel_layout.h"))
+        .header(search_include(&include_paths, "libavutil/cpu.h"))
+        .header(search_include(&include_paths, "libavutil/crc.h"))
+        .header(search_include(&include_paths, "libavutil/dict.h"))
+        .header(search_include(&include_paths, "libavutil/display.h"))
+        .header(search_include(&include_paths, "libavutil/downmix_info.h"))
+        .header(search_include(&include_paths, "libavutil/error.h"))
+        .header(search_include(&include_paths, "libavutil/eval.h"))
+        .header(search_include(&include_paths, "libavutil/fifo.h"))
+        .header(search_include(&include_paths, "libavutil/file.h"))
+        .header(search_include(&include_paths, "libavutil/frame.h"))
+        .header(search_include(&include_paths, "libavutil/hash.h"))
+        .header(search_include(&include_paths, "libavutil/hmac.h"))
+        .header(search_include(&include_paths, "libavutil/imgutils.h"))
+        .header(search_include(&include_paths, "libavutil/lfg.h"))
+        .header(search_include(&include_paths, "libavutil/log.h"))
+        .header(search_include(&include_paths, "libavutil/lzo.h"))
+        .header(search_include(&include_paths, "libavutil/macros.h"))
+        .header(search_include(&include_paths, "libavutil/mathematics.h"))
+        .header(search_include(&include_paths, "libavutil/md5.h"))
+        .header(search_include(&include_paths, "libavutil/mem.h"))
+        .header(search_include(&include_paths, "libavutil/motion_vector.h"))
+        .header(search_include(&include_paths, "libavutil/murmur3.h"))
+        .header(search_include(&include_paths, "libavutil/opt.h"))
+        .header(search_include(&include_paths, "libavutil/parseutils.h"))
+        .header(search_include(&include_paths, "libavutil/pixdesc.h"))
+        .header(search_include(&include_paths, "libavutil/pixfmt.h"))
+        .header(search_include(&include_paths, "libavutil/random_seed.h"))
+        .header(search_include(&include_paths, "libavutil/rational.h"))
+        .header(search_include(&include_paths, "libavutil/replaygain.h"))
+        .header(search_include(&include_paths, "libavutil/ripemd.h"))
+        .header(search_include(&include_paths, "libavutil/samplefmt.h"))
+        .header(search_include(&include_paths, "libavutil/sha.h"))
+        .header(search_include(&include_paths, "libavutil/sha512.h"))
+        .header(search_include(&include_paths, "libavutil/stereo3d.h"))
+        .header(search_include(&include_paths, "libavutil/avstring.h"))
+        .header(search_include(&include_paths, "libavutil/threadmessage.h"))
+        .header(search_include(&include_paths, "libavutil/time.h"))
+        .header(search_include(&include_paths, "libavutil/timecode.h"))
+        .header(search_include(&include_paths, "libavutil/twofish.h"))
+        .header(search_include(&include_paths, "libavutil/avutil.h"))
+        .header(search_include(&include_paths, "libavutil/xtea.h"));
 
     if env::var("CARGO_FEATURE_POSTPROC").is_ok() {
-        builder = builder
-        .header(search_include(&include_paths, "libpostproc/postprocess.h"));
+        builder = builder.header(search_include(&include_paths, "libpostproc/postprocess.h"));
     }
 
     if env::var("CARGO_FEATURE_SWRESAMPLE").is_ok() {
-        builder = builder
-        .header(search_include(&include_paths, "libswresample/swresample.h"));
+        builder = builder.header(search_include(&include_paths, "libswresample/swresample.h"));
     }
 
     if env::var("CARGO_FEATURE_SWSCALE").is_ok() {
-        builder = builder
-        .header(search_include(&include_paths, "libswscale/swscale.h"));
+        builder = builder.header(search_include(&include_paths, "libswscale/swscale.h"));
     }
 
     // Finish the builder and generate the bindings.
