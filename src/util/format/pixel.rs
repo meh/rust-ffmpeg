@@ -579,6 +579,7 @@ impl From<AVPixelFormat> for Pixel {
 			AV_PIX_FMT_P016BE => Pixel::P016BE,
 
 			AV_PIX_FMT_NB => Pixel::None,
+			_ => unimplemented!(),
 		}
 	}
 }

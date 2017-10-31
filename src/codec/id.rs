@@ -951,6 +951,7 @@ impl From<AVCodecID> for Id {
 			AV_CODEC_ID_PCM_F24LE       => Id::PCM_F24LE,
 			AV_CODEC_ID_ATRAC3AL        => Id::ATRAC3AL,
 			AV_CODEC_ID_ATRAC3PAL       => Id::ATRAC3PAL,
+			_ => unimplemented!(),
 		}
 	}
 }

@@ -53,6 +53,7 @@ impl From<AVFrameSideDataType> for Type {
 			AV_FRAME_DATA_MASTERING_DISPLAY_METADATA => Type::MasteringDisplayMetadata,
 			AV_FRAME_DATA_GOP_TIMECODE       => Type::GOPTimecode,
 			AV_FRAME_DATA_SPHERICAL          => Type::Spherical,
+			_ => unimplemented!(),
 		}
 	}
 }

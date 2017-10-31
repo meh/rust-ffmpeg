@@ -45,6 +45,7 @@ impl From<AVColorSpace> for Space {
 			AVCOL_SPC_BT2020_CL   => Space::BT2020CL,
 			AVCOL_SPC_SMPTE2085   => Space::SMPTE2085,
 			AVCOL_SPC_NB          => Space::Unspecified,
+			_ => unimplemented!(),
 		}
 	}
 }

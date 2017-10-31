@@ -58,6 +58,7 @@ impl From<AVPacketSideDataType> for Type {
 			AV_PKT_DATA_MASTERING_DISPLAY_METADATA => Type::MasteringDisplayMetadata,
 			AV_PKT_DATA_SPHERICAL                  => Type::DataSpherical,
 			AV_PKT_DATA_NB                         => Type::DataNb,
+			_ => unimplemented!(),
 		}
 	}
 }
