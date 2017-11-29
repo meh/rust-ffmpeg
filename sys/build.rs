@@ -457,6 +457,9 @@ fn main() {
         if env::var("CARGO_FEATURE_AVDEVICE").is_ok() {
             println!("cargo:rustc-link-lib={}=avdevice", ffmpeg_ty);
         }
+        if env::var("CARGO_FEATURE_AVRESAMPLE").is_ok() {
+            println!("cargo:rustc-link-lib={}=avresample", ffmpeg_ty);
+        }
         if env::var("CARGO_FEATURE_SWSCALE").is_ok() {
             println!("cargo:rustc-link-lib={}=swscale", ffmpeg_ty);
         }
@@ -525,6 +528,11 @@ fn main() {
         pkg_config::Config::new()
             .statik(statik)
             .probe("libavdevice")
+            .unwrap();
+
+        pkg_config::Config::new()
+            .statik(statik)
+            .probe("libavresample")
             .unwrap();
 
         pkg_config::Config::new()
