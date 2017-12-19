@@ -5,7 +5,7 @@ use std::slice;
 use libc::c_int;
 use ffi::*;
 use ::{Error, Rational, format};
-use super::{flag, Flags, SideData, Ref, Mut, Borrow};
+use super::{Flags, SideData, Ref, Mut, Borrow};
 
 pub struct Packet(AVPacket);
 
@@ -94,12 +94,12 @@ impl Packet {
 
 	#[inline]
 	pub fn is_key(&self) -> bool {
-		self.flags().contains(flag::KEY)
+		self.flags().contains(Flags::KEY)
 	}
 
 	#[inline]
 	pub fn is_corrupt(&self) -> bool {
-		self.flags().contains(flag::CORRUPT)
+		self.flags().contains(Flags::CORRUPT)
 	}
 
 	#[inline]
