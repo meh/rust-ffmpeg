@@ -16,7 +16,7 @@ pub fn converter((width, height): (u32, u32),
                  input: ::format::Pixel,
                  output: ::format::Pixel)
 -> Result<scaling::Context, ::Error> {
-	scaling::Context::get(input, width, height, output, width, height, scaling::flag::FAST_BILINEAR)
+	scaling::Context::get(input, width, height, output, width, height, scaling::Flags::FAST_BILINEAR)
 }
 
 #[cfg(feature = "software-resampling")]
