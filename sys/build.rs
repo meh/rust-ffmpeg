@@ -190,7 +190,7 @@ fn build() -> io::Result<()> {
     enable!(configure, "BUILD_LIB_VAZAAR", "libvazaar");
     enable!(configure, "BUILD_LIB_MP3LAME", "libmp3lame");
     enable!(configure, "BUILD_LIB_OPENCORE_AMRNB", "libopencore-amrnb");
-    enable!(configure, "BUILD_LIB_OPENCORE_AMRWB", "libopencore-amrwrb");
+    enable!(configure, "BUILD_LIB_OPENCORE_AMRWB", "libopencore-amrwb");
     enable!(configure, "BUILD_LIB_OPENH264", "libopenh264");
     enable!(configure, "BUILD_LIB_OPENH265", "libopenh265");
     enable!(configure, "BUILD_LIB_OPENJPEG", "libopenjpeg");
