@@ -48,7 +48,7 @@ impl Packet {
         use std::io::Write;
 
         let mut packet = Packet::new(data.len());
-        packet.data_mut().unwrap().write(data).unwrap();
+        packet.data_mut().unwrap().write_all(data).unwrap();
 
         packet
     }
