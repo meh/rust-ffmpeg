@@ -37,7 +37,7 @@ impl Decoder for Option<Codec> {
 impl Decoder for Audio {
     fn decoder(self) -> Option<Codec> {
         if self.is_decoder() {
-            Some(*&*self)
+            Some(*self)
         } else {
             None
         }
@@ -47,7 +47,7 @@ impl Decoder for Audio {
 impl Decoder for Video {
     fn decoder(self) -> Option<Codec> {
         if self.is_decoder() {
-            Some(*&*self)
+            Some(*self)
         } else {
             None
         }
@@ -89,7 +89,7 @@ impl Encoder for Option<Codec> {
 impl Encoder for Audio {
     fn encoder(self) -> Option<Codec> {
         if self.is_encoder() {
-            Some(*&*self)
+            Some(*self)
         } else {
             None
         }
@@ -99,7 +99,7 @@ impl Encoder for Audio {
 impl Encoder for Video {
     fn encoder(self) -> Option<Codec> {
         if self.is_encoder() {
-            Some(*&*self)
+            Some(*self)
         } else {
             None
         }
