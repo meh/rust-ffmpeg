@@ -31,7 +31,7 @@ impl Context {
     }
 
     pub unsafe fn destructor(&self) -> Rc<Destructor> {
-        self.dtor.clone()
+        Rc::clone(&self.dtor)
     }
 }
 
