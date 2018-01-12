@@ -117,9 +117,9 @@ impl Input {
             match avformat_seek_file(
                 self.as_mut_ptr(),
                 -1,
-                range.start().map(|v| *v).unwrap_or(i64::min_value()),
+                range.start().cloned().unwrap_or(i64::min_value()),
                 ts,
-                range.end().map(|v| *v).unwrap_or(i64::max_value()),
+                range.end().cloned().unwrap_or(i64::max_value()),
                 0,
             ) {
                 s if s >= 0 => Ok(()),
