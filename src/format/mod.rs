@@ -30,12 +30,12 @@ pub fn register_all() {
 }
 
 pub fn register(format: &Format) {
-    match format {
-        &Format::Input(ref format) => unsafe {
+    match *format {
+        Format::Input(ref format) => unsafe {
             av_register_input_format(format.as_ptr() as *mut _);
         },
 
-        &Format::Output(ref format) => unsafe {
+        Format::Output(ref format) => unsafe {
             av_register_output_format(format.as_ptr() as *mut _);
         },
     }
@@ -64,8 +64,8 @@ pub fn open<P: AsRef<Path>>(path: &P, format: &Format) -> Result<Context, Error>
         let mut ps = ptr::null_mut();
         let path = from_path(path);
 
-        match format {
-            &Format::Input(ref format) => match avformat_open_input(
+        match *format {
+            Format::Input(ref format) => match avformat_open_input(
                 &mut ps,
                 path.as_ptr(),
                 format.as_ptr() as *mut _,
@@ -79,7 +79,7 @@ pub fn open<P: AsRef<Path>>(path: &P, format: &Format) -> Result<Context, Error>
                 e => Err(Error::from(e)),
             },
 
-            &Format::Output(ref format) => match avformat_alloc_output_context2(
+            Format::Output(ref format) => match avformat_alloc_output_context2(
                 &mut ps,
                 format.as_ptr() as *mut _,
                 ptr::null(),
@@ -106,8 +106,8 @@ pub fn open_with<P: AsRef<Path>>(
         let path = from_path(path);
         let mut opts = options.disown();
 
-        match format {
-            &Format::Input(ref format) => {
+        match *format {
+            Format::Input(ref format) => {
                 let res = avformat_open_input(
                     &mut ps,
                     path.as_ptr(),
@@ -127,7 +127,7 @@ pub fn open_with<P: AsRef<Path>>(
                 }
             }
 
-            &Format::Output(ref format) => match avformat_alloc_output_context2(
+            Format::Output(ref format) => match avformat_alloc_output_context2(
                 &mut ps,
                 format.as_ptr() as *mut _,
                 ptr::null(),

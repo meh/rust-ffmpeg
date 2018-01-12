@@ -24,11 +24,11 @@ impl<'a> Rect<'a> {
     }
 
     pub unsafe fn as_ptr(&self) -> *const AVSubtitleRect {
-        match self {
-            &Rect::None(ptr) => ptr,
-            &Rect::Bitmap(ref b) => b.as_ptr(),
-            &Rect::Text(ref t) => t.as_ptr(),
-            &Rect::Ass(ref a) => a.as_ptr(),
+        match *self {
+            Rect::None(ptr) => ptr,
+            Rect::Bitmap(ref b) => b.as_ptr(),
+            Rect::Text(ref t) => t.as_ptr(),
+            Rect::Ass(ref a) => a.as_ptr(),
         }
     }
 }
@@ -36,11 +36,11 @@ impl<'a> Rect<'a> {
 impl<'a> Rect<'a> {
     pub fn flags(&self) -> Flags {
         unsafe {
-            Flags::from_bits_truncate(match self {
-                &Rect::None(ptr) => (*ptr).flags,
-                &Rect::Bitmap(ref b) => (*b.as_ptr()).flags,
-                &Rect::Text(ref t) => (*t.as_ptr()).flags,
-                &Rect::Ass(ref a) => (*a.as_ptr()).flags,
+            Flags::from_bits_truncate(match *self {
+                Rect::None(ptr) => (*ptr).flags,
+                Rect::Bitmap(ref b) => (*b.as_ptr()).flags,
+                Rect::Text(ref t) => (*t.as_ptr()).flags,
+                Rect::Ass(ref a) => (*a.as_ptr()).flags,
             })
         }
     }

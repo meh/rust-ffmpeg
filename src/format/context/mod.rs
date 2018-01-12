@@ -19,7 +19,7 @@ unsafe impl Send for Context {}
 
 impl Context {
     pub fn is_input(&self) -> bool {
-        if let &Context::Input(..) = self {
+        if let Context::Input(..) = *self {
             true
         } else {
             false
@@ -35,7 +35,7 @@ impl Context {
     }
 
     pub fn is_output(&self) -> bool {
-        if let &Context::Output(..) = self {
+        if let Context::Output(..) = *self {
             true
         } else {
             false

@@ -23,20 +23,20 @@ impl<'a> RectMut<'a> {
     }
 
     pub unsafe fn as_ptr(&self) -> *const AVSubtitleRect {
-        match self {
-            &RectMut::None(ptr) => ptr as *const _,
-            &RectMut::Bitmap(ref b) => b.as_ptr(),
-            &RectMut::Text(ref t) => t.as_ptr(),
-            &RectMut::Ass(ref a) => a.as_ptr(),
+        match *self {
+            RectMut::None(ptr) => ptr as *const _,
+            RectMut::Bitmap(ref b) => b.as_ptr(),
+            RectMut::Text(ref t) => t.as_ptr(),
+            RectMut::Ass(ref a) => a.as_ptr(),
         }
     }
 
     pub unsafe fn as_mut_ptr(&mut self) -> *mut AVSubtitleRect {
-        match self {
-            &mut RectMut::None(ptr) => ptr,
-            &mut RectMut::Bitmap(ref mut b) => b.as_mut_ptr(),
-            &mut RectMut::Text(ref mut t) => t.as_mut_ptr(),
-            &mut RectMut::Ass(ref mut a) => a.as_mut_ptr(),
+        match *self {
+            RectMut::None(ptr) => ptr,
+            RectMut::Bitmap(ref mut b) => b.as_mut_ptr(),
+            RectMut::Text(ref mut t) => t.as_mut_ptr(),
+            RectMut::Ass(ref mut a) => a.as_mut_ptr(),
         }
     }
 }
@@ -44,11 +44,11 @@ impl<'a> RectMut<'a> {
 impl<'a> RectMut<'a> {
     pub fn flags(&self) -> Flags {
         unsafe {
-            Flags::from_bits_truncate(match self {
-                &RectMut::None(ptr) => (*ptr).flags,
-                &RectMut::Bitmap(ref b) => (*b.as_ptr()).flags,
-                &RectMut::Text(ref t) => (*t.as_ptr()).flags,
-                &RectMut::Ass(ref a) => (*a.as_ptr()).flags,
+            Flags::from_bits_truncate(match *self {
+                RectMut::None(ptr) => (*ptr).flags,
+                RectMut::Bitmap(ref b) => (*b.as_ptr()).flags,
+                RectMut::Text(ref t) => (*t.as_ptr()).flags,
+                RectMut::Ass(ref a) => (*a.as_ptr()).flags,
             })
         }
     }
