@@ -1,9 +1,11 @@
 #![allow(non_camel_case_types)]
 
+#[macro_use]
+extern crate bitflags;
+#[cfg(feature = "image")]
+extern crate image;
 extern crate libc;
 pub extern crate ffmpeg_sys as sys;
-#[macro_use] extern crate bitflags;
-#[cfg(feature = "image")] extern crate image;
 
 pub use sys as ffi;
 
@@ -23,7 +25,7 @@ pub use util::time;
 pub use util::frame::{self, Frame};
 pub use util::channel_layout::{self, ChannelLayout};
 pub use util::option;
-pub use util::mathematics::{self, Rounding, Rescale, rescale};
+pub use util::mathematics::{self, rescale, Rescale, Rounding};
 
 #[cfg(feature = "format")]
 pub mod format;
@@ -66,38 +68,38 @@ pub use filter::Filter;
 pub mod software;
 
 fn init_error() {
-	util::error::register_all();
+    util::error::register_all();
 }
 
 #[cfg(feature = "format")]
 fn init_format() {
-	format::register_all();
+    format::register_all();
 }
 
 #[cfg(not(feature = "format"))]
-fn init_format() { }
+fn init_format() {}
 
 #[cfg(feature = "device")]
 fn init_device() {
-	device::register_all();
+    device::register_all();
 }
 
 #[cfg(not(feature = "device"))]
-fn init_device() { }
+fn init_device() {}
 
 #[cfg(feature = "filter")]
 fn init_filter() {
-	filter::register_all();
+    filter::register_all();
 }
 
 #[cfg(not(feature = "filter"))]
-fn init_filter() { }
+fn init_filter() {}
 
 pub fn init() -> Result<(), Error> {
-	init_error();
-	init_format();
-	init_device();
-	init_filter();
+    init_error();
+    init_format();
+    init_device();
+    init_filter();
 
-	Ok(())
+    Ok(())
 }
