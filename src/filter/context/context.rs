@@ -46,7 +46,7 @@ impl<'a> Context<'a> {
     }
 
     pub fn set_sample_rate(&mut self, value: u32) {
-        let _ = option::Settable::set(self, "sample_rates", &(value as i64));
+        let _ = option::Settable::set(self, "sample_rates", &i64::from(value));
     }
 
     pub fn set_channel_layout(&mut self, value: ChannelLayout) {

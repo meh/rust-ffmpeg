@@ -1,4 +1,3 @@
-use libc::int64_t;
 use ffi::*;
 use super::Context;
 
@@ -16,8 +15,8 @@ impl Delay {
             Delay {
                 seconds: swr_get_delay(context.as_ptr() as *mut _, 1),
                 milliseconds: swr_get_delay(context.as_ptr() as *mut _, 1000),
-                input: swr_get_delay(context.as_ptr() as *mut _, context.input().rate as int64_t),
-                output: swr_get_delay(context.as_ptr() as *mut _, context.output().rate as int64_t),
+                input: swr_get_delay(context.as_ptr() as *mut _, i64::from(context.input().rate)),
+                output: swr_get_delay(context.as_ptr() as *mut _, i64::from(context.output().rate)),
             }
         }
     }

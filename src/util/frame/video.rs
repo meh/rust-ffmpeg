@@ -187,7 +187,7 @@ impl Video {
 
     #[inline]
     pub fn repeat(&self) -> f64 {
-        unsafe { (*self.as_ptr()).repeat_pict as f64 }
+        unsafe { f64::from((*self.as_ptr()).repeat_pict) }
     }
 
     #[inline]

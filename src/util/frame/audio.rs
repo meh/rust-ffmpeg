@@ -86,7 +86,7 @@ impl Audio {
     #[inline]
     pub fn set_channels(&mut self, value: u16) {
         unsafe {
-            av_frame_set_channels(self.as_mut_ptr(), value as c_int);
+            av_frame_set_channels(self.as_mut_ptr(), i32::from(value));
         }
     }
 

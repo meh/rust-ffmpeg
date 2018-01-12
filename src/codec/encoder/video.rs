@@ -334,7 +334,7 @@ impl Video {
     #[inline]
     pub fn set_intra_dc_precision(&mut self, value: u8) {
         unsafe {
-            (*self.as_mut_ptr()).intra_dc_precision = value as c_int;
+            (*self.as_mut_ptr()).intra_dc_precision = i32::from(value);
         }
     }
 

@@ -141,7 +141,7 @@ impl Buffer {
         unsafe {
             av_samples_get_buffer_size(
                 ptr::null_mut(),
-                channels as c_int,
+                i32::from(channels),
                 samples as c_int,
                 format.into(),
                 !align as c_int,
@@ -165,7 +165,7 @@ impl Buffer {
             av_samples_alloc_array_and_samples(
                 &mut buf.buffer,
                 &mut buf.size,
-                channels as c_int,
+                i32::from(channels),
                 samples as c_int,
                 format.into(),
                 !align as c_int,
@@ -207,7 +207,7 @@ impl Clone for Buffer {
                 0,
                 0,
                 source.samples as c_int,
-                source.channels as c_int,
+                i32::from(source.channels),
                 source.format.into(),
             );
         }

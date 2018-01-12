@@ -2,7 +2,7 @@ use std::cmp::Ordering;
 use std::ops::{Add, Div, Mul, Sub};
 use std::fmt;
 
-use libc::{c_int, int64_t};
+use libc::c_int;
 use ffi::*;
 
 #[derive(Copy, Clone)]
@@ -41,9 +41,9 @@ impl Rational {
             let exact = av_reduce(
                 &mut dst_num,
                 &mut dst_den,
-                self.numerator() as int64_t,
-                self.denominator() as int64_t,
-                max as int64_t,
+                i64::from(self.numerator()),
+                i64::from(self.denominator()),
+                i64::from(max),
             );
 
             if exact == 1 {
