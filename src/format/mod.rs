@@ -149,7 +149,10 @@ pub fn input<P: AsRef<Path>>(path: &P) -> Result<context::Input, Error> {
 			0 => {
 				match avformat_find_stream_info(ps, ptr::null_mut()) {
 					r if r >= 0 => Ok(context::Input::wrap(ps)),
-					e           => Err(Error::from(e)),
+					e           => {
+							avformat_close_input(&mut ps);
+							Err(Error::from(e))
+					}
 				}
 			}
 
@@ -171,7 +174,10 @@ pub fn input_with_dictionary<P: AsRef<Path>>(path: &P, options: Dictionary) -> R
 			0 => {
 				match avformat_find_stream_info(ps, ptr::null_mut()) {
 					r if r >= 0 => Ok(context::Input::wrap(ps)),
-					e           => Err(Error::from(e)),
+					e           => {
+							avformat_close_input(&mut ps);
+							Err(Error::from(e))
+					}
 				}
 			}
 
@@ -191,7 +197,10 @@ pub fn input_with_interrupt<P: AsRef<Path>, F>(path: &P, closure: F) -> Result<c
 			0 => {
 				match avformat_find_stream_info(ps, ptr::null_mut()) {
 					r if r >= 0 => Ok(context::Input::wrap(ps)),
-					e           => Err(Error::from(e)),
+					e           => {
+							avformat_close_input(&mut ps);
+							Err(Error::from(e))
+					}
 				}
 			}
 
