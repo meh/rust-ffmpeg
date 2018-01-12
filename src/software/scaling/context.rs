@@ -56,7 +56,7 @@ impl Context {
                 ptr::null_mut(),
             );
 
-            if ptr != ptr::null_mut() {
+            if ptr.is_null() {
                 Ok(Context {
                     ptr: ptr,
 
