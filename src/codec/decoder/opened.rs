@@ -88,7 +88,7 @@ impl DerefMut for Opened {
 
 impl AsRef<Context> for Opened {
     fn as_ref(&self) -> &Context {
-        &self
+        self
     }
 }
 

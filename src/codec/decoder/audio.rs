@@ -112,7 +112,7 @@ impl DerefMut for Audio {
 
 impl AsRef<Context> for Audio {
     fn as_ref(&self) -> &Context {
-        &self
+        self
     }
 }
 

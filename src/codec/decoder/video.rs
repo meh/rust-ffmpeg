@@ -136,7 +136,7 @@ impl DerefMut for Video {
 
 impl AsRef<Context> for Video {
     fn as_ref(&self) -> &Context {
-        &self
+        self
     }
 }
 

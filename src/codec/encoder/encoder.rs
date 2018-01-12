@@ -124,7 +124,7 @@ impl DerefMut for Encoder {
 
 impl AsRef<Context> for Encoder {
     fn as_ref(&self) -> &Context {
-        &self
+        self
     }
 }
 

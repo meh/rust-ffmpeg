@@ -72,7 +72,7 @@ impl DerefMut for Subtitle {
 
 impl AsRef<Context> for Subtitle {
     fn as_ref(&self) -> &Context {
-        &self
+        self
     }
 }
 
@@ -110,7 +110,7 @@ impl Deref for Encoder {
 
 impl AsRef<Context> for Encoder {
     fn as_ref(&self) -> &Context {
-        &self
+        self
     }
 }
 
