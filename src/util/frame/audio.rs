@@ -50,7 +50,7 @@ impl Audio {
                 format::Sample::None
             } else {
                 format::Sample::from(mem::transmute::<_, AVSampleFormat>(
-                    ((*self.as_ptr()).format),
+                    (*self.as_ptr()).format,
                 ))
             }
         }

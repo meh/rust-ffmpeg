@@ -97,7 +97,7 @@ impl Graph {
     pub fn dump(&self) -> String {
         unsafe {
             let ptr = avfilter_graph_dump(self.as_ptr() as *mut _, ptr::null());
-            let cstr = from_utf8_unchecked(CStr::from_ptr((ptr)).to_bytes());
+            let cstr = from_utf8_unchecked(CStr::from_ptr(ptr).to_bytes());
             let string = cstr.to_owned();
 
             av_free(ptr as *mut _);

@@ -53,7 +53,7 @@ impl Video {
                 format::Pixel::None
             } else {
                 format::Pixel::from(mem::transmute::<_, AVPixelFormat>(
-                    ((*self.as_ptr()).format),
+                    (*self.as_ptr()).format,
                 ))
             }
         }
