@@ -26,7 +26,7 @@ impl<T: Into<i64> + Clone> Rescale for T {
                 self.clone().into(),
                 source.into().into(),
                 destination.into().into(),
-            ).into()
+            )
         }
     }
 
@@ -41,7 +41,7 @@ impl<T: Into<i64> + Clone> Rescale for T {
                 source.into().into(),
                 destination.into().into(),
                 rounding.into(),
-            ).into()
+            )
         }
     }
 }

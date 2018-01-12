@@ -25,7 +25,7 @@ impl<'a> Stream<'a> {
 
 impl<'a> Stream<'a> {
     pub fn id(&self) -> i32 {
-        unsafe { i32::from((*self.as_ptr()).id) }
+        unsafe { (*self.as_ptr()).id }
     }
 
     pub fn codec(&self) -> codec::Context {
