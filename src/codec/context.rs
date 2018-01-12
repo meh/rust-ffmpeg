@@ -117,6 +117,12 @@ impl Context {
     }
 }
 
+impl Default for Context {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl Drop for Context {
     fn drop(&mut self) {
         unsafe {

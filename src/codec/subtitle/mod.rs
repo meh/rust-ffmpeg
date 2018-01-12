@@ -115,6 +115,12 @@ impl Subtitle {
     }
 }
 
+impl Default for Subtitle {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 pub struct RectIter<'a> {
     ptr: *const AVSubtitle,
     cur: c_uint,

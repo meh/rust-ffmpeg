@@ -47,6 +47,12 @@ impl Parameters {
     }
 }
 
+impl Default for Parameters {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl Drop for Parameters {
     fn drop(&mut self) {
         unsafe {

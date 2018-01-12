@@ -25,6 +25,12 @@ impl Iter {
     }
 }
 
+impl Default for Iter {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl Iterator for Iter {
     type Item = Format;
 

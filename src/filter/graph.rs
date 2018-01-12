@@ -216,3 +216,9 @@ impl<'a> Parser<'a> {
         }
     }
 }
+
+impl Default for Graph {
+    fn default() -> Self {
+        Self::new()
+    }
+}
