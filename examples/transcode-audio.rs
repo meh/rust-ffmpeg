@@ -136,7 +136,7 @@ fn main() {
 
     let input = env::args().nth(1).expect("missing input");
     let output = env::args().nth(2).expect("missing output");
-    let filter = env::args().nth(3).unwrap_or("anull".to_owned());
+    let filter = env::args().nth(3).unwrap_or_else(|| "anull".to_owned());
     let seek = env::args().nth(4).and_then(|s| s.parse::<i64>().ok());
 
     let mut ictx = format::input(&input).unwrap();
@@ -148,7 +148,7 @@ fn main() {
         let position = position.rescale((1, 1), rescale::TIME_BASE);
         // If this seek was embedded in the transcoding loop, a call of `flush()`
         // for every opened buffer after the successful seek would be advisable.
-        ictx.seek(position, ..position).unwrap();
+        ictx.seek(position, &(..position)).unwrap();
     }
 
     octx.set_metadata(ictx.metadata().to_owned());

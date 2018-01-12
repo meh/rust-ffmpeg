@@ -58,7 +58,7 @@ fn main() {
         }
 
         if let Some(codec) = ffmpeg::encoder::find_by_name(&arg) {
-            println!("");
+            println!();
             println!("type: encoder");
             println!("\t id: {:?}", codec.id());
             println!("\t name: {}", codec.name());

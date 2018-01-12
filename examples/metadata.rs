@@ -25,7 +25,7 @@ fn main() {
 
             println!(
                 "duration (seconds): {:.2}",
-                context.duration() as f64 / ffmpeg::ffi::AV_TIME_BASE as f64
+                context.duration() as f64 / f64::from(ffmpeg::ffi::AV_TIME_BASE)
             );
 
             for stream in context.streams() {
