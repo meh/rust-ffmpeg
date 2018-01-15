@@ -148,7 +148,7 @@ fn main() {
         let position = position.rescale((1, 1), rescale::TIME_BASE);
         // If this seek was embedded in the transcoding loop, a call of `flush()`
         // for every opened buffer after the successful seek would be advisable.
-        ictx.seek(position, &(..position)).unwrap();
+        ictx.seek(position, ..position).unwrap();
     }
 
     octx.set_metadata(ictx.metadata().to_owned());
