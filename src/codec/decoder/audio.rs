@@ -4,7 +4,8 @@ use libc::c_int;
 use ffi::*;
 
 use super::Opened;
-use ::{packet, Error, AudioService, ChannelLayout};
+use ::{Error, AudioService, ChannelLayout};
+use ::packet::{self, Mut, Packet};
 use ::frame;
 use ::util::format;
 use ::codec::Context;
@@ -21,6 +22,10 @@ impl Audio {
 				_          => Ok(got != 0)
 			}
 		}
+	}
+
+	pub fn decode_iter<'a, 'b>(&'a mut self, packet: &'b Packet) -> AudioFrameIter<'a, 'b> {
+		AudioFrameIter::new(self, packet)
 	}
 
 	pub fn rate(&self) -> u32 {
@@ -128,5 +133,55 @@ impl AsRef<Context> for Audio {
 impl AsMut<Context> for Audio {
 	fn as_mut(&mut self) -> &mut Context {
 		&mut self.0
+	}
+}
+
+pub struct AudioFrameIter<'a, 'b> {
+	audio: &'a mut Audio,
+	_packet: &'b Packet,
+	packet: Packet,
+}
+
+impl<'a, 'b> AudioFrameIter<'a, 'b> {
+	fn new(audio: &'a mut Audio, packet: &'b Packet) -> AudioFrameIter<'a, 'b> {
+		let mut copied = Packet::empty();
+		copied.clone_from(packet);
+
+		AudioFrameIter {
+			audio: audio,
+			_packet: packet,
+			packet: copied,
+		}
+	}
+}
+
+impl<'a, 'b> Iterator for AudioFrameIter<'a, 'b> {
+    type Item = Result<Option<frame::Audio>, Error>;
+
+    fn next(&mut self) -> Option<Self::Item> {
+		if self.packet.size() != 0 {
+			let mut frame = frame::Audio::empty();
+			let mut got: c_int = 0;
+
+			unsafe {
+				let avpkt = self.packet.as_mut_ptr();
+
+				match avcodec_decode_audio4(self.audio.as_mut_ptr(), frame.as_mut_ptr(), &mut got, avpkt) {
+					e if e < 0 => Some(Err(Error::from(e))),
+					n => {
+						(*avpkt).data = (*avpkt).data.offset(n as isize);
+						(*avpkt).size -= n;
+
+						if got != 0 {
+							Some(Ok(Some(frame)))
+						} else {
+							Some(Ok(None))
+						}
+					}
+				}
+			}
+		} else {
+			None
+		}
 	}
 }

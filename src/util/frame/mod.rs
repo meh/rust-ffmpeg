@@ -182,8 +182,10 @@ impl Frame {
 impl Drop for Frame {
 	#[inline]
 	fn drop(&mut self) {
-		unsafe {
-			av_frame_free(&mut self.as_mut_ptr());
+		if self._own {
+			unsafe {
+				av_frame_free(&mut self.as_mut_ptr());
+			}
 		}
 	}
 }
