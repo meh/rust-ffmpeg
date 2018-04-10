@@ -1,15 +1,15 @@
 use std::ops::{Deref, DerefMut};
 
-use libc::c_int;
 use ffi::*;
+use libc::c_int;
 
 use super::{slice, Opened};
-use {packet, Error, FieldOrder, Rational};
-use frame;
-use util::format;
-use util::chroma;
-use color;
 use codec::Context;
+use color;
+use frame;
+use util::chroma;
+use util::format;
+use {packet, Error, FieldOrder, Rational};
 
 pub struct Video(pub Opened);
 

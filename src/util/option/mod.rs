@@ -1,8 +1,8 @@
 mod traits;
 pub use self::traits::{Gettable, Iterable, Settable, Target};
 
-use ffi::*;
 use ffi::AVOptionType::*;
+use ffi::*;
 
 #[derive(PartialEq, Eq, Copy, Clone, Debug)]
 pub enum Type {

@@ -1,11 +1,11 @@
-use std::ptr;
 use std::marker::PhantomData;
+use std::ptr;
 
-use ffi::*;
-use Error;
-use format::context::common::Context;
 use device;
+use ffi::*;
+use format::context::common::Context;
 use libc::c_int;
+use Error;
 
 impl Context {
     pub fn devices(&self) -> Result<DeviceIter, Error> {

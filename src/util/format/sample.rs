@@ -1,13 +1,13 @@
 use std::ffi::{CStr, CString};
-use std::str::from_utf8_unchecked;
+use std::mem;
 use std::ops::Index;
 use std::ptr;
 use std::slice;
-use std::mem;
+use std::str::from_utf8_unchecked;
 
-use libc::{c_int, uint8_t};
-use ffi::*;
 use ffi::AVSampleFormat::*;
+use ffi::*;
+use libc::{c_int, uint8_t};
 
 #[derive(Eq, PartialEq, Copy, Clone, Debug)]
 pub enum Sample {

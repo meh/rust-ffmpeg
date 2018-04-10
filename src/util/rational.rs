@@ -1,9 +1,9 @@
 use std::cmp::Ordering;
-use std::ops::{Add, Div, Mul, Sub};
 use std::fmt;
+use std::ops::{Add, Div, Mul, Sub};
 
-use libc::c_int;
 use ffi::*;
+use libc::c_int;
 
 #[derive(Copy, Clone)]
 pub struct Rational(pub i32, pub i32);

@@ -1,9 +1,9 @@
-use std::ops::Deref;
-use std::marker::PhantomData;
 use std::ffi::CString;
+use std::marker::PhantomData;
+use std::ops::Deref;
 
-use ffi::*;
 use super::immutable;
+use ffi::*;
 
 pub struct Ref<'a> {
     ptr: *mut AVDictionary,

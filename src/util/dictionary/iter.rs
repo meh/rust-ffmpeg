@@ -1,6 +1,6 @@
+use std::ffi::{CStr, CString};
 use std::marker::PhantomData;
 use std::ptr;
-use std::ffi::{CStr, CString};
 use std::str::from_utf8_unchecked;
 
 use ffi::*;

@@ -10,8 +10,8 @@ pub use self::audio::Audio;
 pub mod flag;
 pub use self::flag::Flags;
 
-use libc::c_int;
 use ffi::*;
+use libc::c_int;
 use {Dictionary, DictionaryRef};
 
 #[derive(PartialEq, Eq, Copy, Clone, Debug)]

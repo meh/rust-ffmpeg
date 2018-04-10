@@ -1,8 +1,8 @@
 use std::ffi::CStr;
 use std::str::from_utf8_unchecked;
 
-use ffi::*;
 use super::{Audio, Capabilities, Id, Profile, Video};
+use ffi::*;
 use {media, Error};
 
 #[derive(PartialEq, Eq, Copy, Clone)]

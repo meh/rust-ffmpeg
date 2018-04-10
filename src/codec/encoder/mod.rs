@@ -24,10 +24,10 @@ pub use self::decision::Decision;
 
 use std::ffi::CString;
 
-use ffi::*;
 use codec::Context;
-use Codec;
 use codec::Id;
+use ffi::*;
+use Codec;
 
 pub fn new() -> Encoder {
     Context::new().encoder()

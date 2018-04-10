@@ -1,5 +1,5 @@
-pub use util::format::{sample, Sample};
 pub use util::format::{pixel, Pixel};
+pub use util::format::{sample, Sample};
 use util::interrupt;
 
 pub mod stream;
@@ -10,14 +10,14 @@ pub mod context;
 pub use self::context::Context;
 
 pub mod format;
-pub use self::format::{list, Input, Output};
 pub use self::format::{flag, Flags};
+pub use self::format::{list, Input, Output};
 
 pub mod network;
 
-use std::ptr;
-use std::path::Path;
 use std::ffi::{CStr, CString};
+use std::path::Path;
+use std::ptr;
 use std::str::from_utf8_unchecked;
 
 use ffi::*;

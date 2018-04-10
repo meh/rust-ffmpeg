@@ -1,12 +1,12 @@
 use std::path::Path;
 
-use std::ptr;
 use std::ffi::{CStr, CString};
+use std::ptr;
 use std::str::from_utf8_unchecked;
 
+use super::Flags;
 use ffi::*;
 use {codec, media};
-use super::Flags;
 
 pub struct Output {
     ptr: *mut AVOutputFormat,

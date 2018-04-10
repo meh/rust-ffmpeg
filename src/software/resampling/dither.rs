@@ -1,5 +1,5 @@
-use ffi::*;
 use ffi::SwrDitherType::*;
+use ffi::*;
 
 #[derive(Eq, PartialEq, Copy, Clone, Debug)]
 pub enum Dither {

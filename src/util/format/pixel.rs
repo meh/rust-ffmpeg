@@ -1,10 +1,10 @@
 use std::error;
 use std::ffi::{CStr, CString, NulError};
 use std::fmt;
-use std::str::{FromStr, from_utf8_unchecked};
+use std::str::{from_utf8_unchecked, FromStr};
 
-use ffi::*;
 use ffi::AVPixelFormat::*;
+use ffi::*;
 
 #[derive(Eq, PartialEq, Copy, Clone, Debug)]
 pub enum Pixel {
@@ -25,8 +25,10 @@ pub enum Pixel {
     YUVJ420P,
     YUVJ422P,
     YUVJ444P,
-    #[cfg(feature = "ff_api_xvmc")] XVMC_MPEG2_MC,
-    #[cfg(feature = "ff_api_xvmc")] XVMC_MPEG2_IDCT,
+    #[cfg(feature = "ff_api_xvmc")]
+    XVMC_MPEG2_MC,
+    #[cfg(feature = "ff_api_xvmc")]
+    XVMC_MPEG2_IDCT,
     UYVY422,
     UYYVYY411,
     BGR8,
@@ -48,11 +50,16 @@ pub enum Pixel {
     YUV440P,
     YUVJ440P,
     YUVA420P,
-    #[cfg(feature = "ff_api_vdpau")] VDPAU_H264,
-    #[cfg(feature = "ff_api_vdpau")] VDPAU_MPEG1,
-    #[cfg(feature = "ff_api_vdpau")] VDPAU_MPEG2,
-    #[cfg(feature = "ff_api_vdpau")] VDPAU_WMV3,
-    #[cfg(feature = "ff_api_vdpau")] VDPAU_VC1,
+    #[cfg(feature = "ff_api_vdpau")]
+    VDPAU_H264,
+    #[cfg(feature = "ff_api_vdpau")]
+    VDPAU_MPEG1,
+    #[cfg(feature = "ff_api_vdpau")]
+    VDPAU_MPEG2,
+    #[cfg(feature = "ff_api_vdpau")]
+    VDPAU_WMV3,
+    #[cfg(feature = "ff_api_vdpau")]
+    VDPAU_VC1,
     RGB48BE,
     RGB48LE,
 
@@ -66,10 +73,14 @@ pub enum Pixel {
     BGR555BE,
     BGR555LE,
 
-    #[cfg(feature = "ff_api_vaapi")] VAAPI_MOCO,
-    #[cfg(feature = "ff_api_vaapi")] VAAPI_IDCT,
-    #[cfg(feature = "ff_api_vaapi")] VAAPI_VLD,
-    #[cfg(not(feature = "ff_api_vaapi"))] VAAPI,
+    #[cfg(feature = "ff_api_vaapi")]
+    VAAPI_MOCO,
+    #[cfg(feature = "ff_api_vaapi")]
+    VAAPI_IDCT,
+    #[cfg(feature = "ff_api_vaapi")]
+    VAAPI_VLD,
+    #[cfg(not(feature = "ff_api_vaapi"))]
+    VAAPI,
 
     YUV420P16LE,
     YUV420P16BE,
@@ -77,7 +88,8 @@ pub enum Pixel {
     YUV422P16BE,
     YUV444P16LE,
     YUV444P16BE,
-    #[cfg(feature = "ff_api_vdpau")] VDPAU_MPEG4,
+    #[cfg(feature = "ff_api_vdpau")]
+    VDPAU_MPEG4,
     DXVA2_VLD,
 
     RGB444LE,
@@ -208,7 +220,8 @@ pub enum Pixel {
     VIDEOTOOLBOX,
 
     // --- defaults
-    #[cfg(feature = "ff_api_xvmc")] XVMC,
+    #[cfg(feature = "ff_api_xvmc")]
+    XVMC,
     Y400A,
     GRAY8A,
     GBR24P,

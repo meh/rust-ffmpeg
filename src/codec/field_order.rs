@@ -1,5 +1,5 @@
-use ffi::*;
 use ffi::AVFieldOrder::*;
+use ffi::*;
 
 #[derive(Eq, PartialEq, Clone, Copy, Debug)]
 pub enum FieldOrder {

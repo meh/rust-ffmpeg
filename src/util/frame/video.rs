@@ -1,15 +1,15 @@
 use std::mem;
-use std::slice;
 use std::ops::{Deref, DerefMut};
+use std::slice;
 
-use libc::c_int;
-use ffi::*;
-use Rational;
-use util::format;
-use util::chroma;
-use picture;
-use color;
 use super::Frame;
+use color;
+use ffi::*;
+use libc::c_int;
+use picture;
+use util::chroma;
+use util::format;
+use Rational;
 
 #[derive(PartialEq, Eq)]
 pub struct Video(Frame);
@@ -52,9 +52,7 @@ impl Video {
             if (*self.as_ptr()).format == -1 {
                 format::Pixel::None
             } else {
-                format::Pixel::from(mem::transmute::<_, AVPixelFormat>(
-                    (*self.as_ptr()).format,
-                ))
+                format::Pixel::from(mem::transmute::<_, AVPixelFormat>((*self.as_ptr()).format))
             }
         }
     }

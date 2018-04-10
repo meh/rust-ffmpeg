@@ -1,9 +1,9 @@
 use std::ffi::CStr;
-use std::str::from_utf8_unchecked;
 use std::marker::PhantomData;
+use std::str::from_utf8_unchecked;
 
-use ffi::*;
 use super::{Flags, Pad};
+use ffi::*;
 
 pub struct Filter {
     ptr: *mut AVFilter,

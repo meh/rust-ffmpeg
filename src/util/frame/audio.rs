@@ -1,12 +1,12 @@
 use std::mem;
-use std::slice;
 use std::ops::{Deref, DerefMut};
+use std::slice;
 
-use libc::{c_int, c_ulonglong, int64_t};
-use ffi::*;
-use ChannelLayout;
-use util::format;
 use super::Frame;
+use ffi::*;
+use libc::{c_int, c_ulonglong, int64_t};
+use util::format;
+use ChannelLayout;
 
 #[derive(PartialEq, Eq)]
 pub struct Audio(Frame);
@@ -49,9 +49,7 @@ impl Audio {
             if (*self.as_ptr()).format == -1 {
                 format::Sample::None
             } else {
-                format::Sample::from(mem::transmute::<_, AVSampleFormat>(
-                    (*self.as_ptr()).format,
-                ))
+                format::Sample::from(mem::transmute::<_, AVSampleFormat>((*self.as_ptr()).format))
             }
         }
     }
@@ -66,8 +64,7 @@ impl Audio {
     #[inline]
     pub fn channel_layout(&self) -> ChannelLayout {
         unsafe {
-            ChannelLayout::from_bits_truncate(av_frame_get_channel_layout(self.as_ptr())
-                as c_ulonglong)
+            ChannelLayout::from_bits_truncate(av_frame_get_channel_layout(self.as_ptr()) as c_ulonglong)
         }
     }
 

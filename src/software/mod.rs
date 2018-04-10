@@ -10,13 +10,7 @@ pub fn scaler(
     (out_width, out_height): (u32, u32),
 ) -> Result<scaling::Context, ::Error> {
     scaling::Context::get(
-        format,
-        in_width,
-        in_height,
-        format,
-        out_width,
-        out_height,
-        flags,
+        format, in_width, in_height, format, out_width, out_height, flags,
     )
 }
 
@@ -48,11 +42,6 @@ pub fn resampler(
     (out_format, out_layout, out_rate): (::format::Sample, ::ChannelLayout, u32),
 ) -> Result<resampling::Context, ::Error> {
     resampling::Context::get(
-        in_format,
-        in_layout,
-        in_rate,
-        out_format,
-        out_layout,
-        out_rate,
+        in_format, in_layout, in_rate, out_format, out_layout, out_rate,
     )
 }

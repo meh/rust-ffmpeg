@@ -1,11 +1,11 @@
 use std::ops::{Deref, DerefMut};
 
-use libc::c_int;
 use ffi::*;
+use libc::c_int;
 
 use super::Opened;
-use {packet, Error};
 use codec::Context;
+use {packet, Error};
 
 pub struct Subtitle(pub Opened);
 

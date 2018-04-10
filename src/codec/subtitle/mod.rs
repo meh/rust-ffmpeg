@@ -10,9 +10,9 @@ pub use self::rect_mut::{AssMut, BitmapMut, RectMut, TextMut};
 use std::marker::PhantomData;
 use std::mem;
 
-use libc::{c_uint, size_t, uint32_t};
-use ffi::*;
 use ffi::AVSubtitleType::*;
+use ffi::*;
+use libc::{c_uint, size_t, uint32_t};
 
 #[derive(Eq, PartialEq, Clone, Copy, Debug)]
 pub enum Type {

@@ -1,20 +1,20 @@
 //! NOTE: this will be much better once specialization comes
 
-use std::mem;
 use std::ffi::CString;
+use std::mem;
 
 use ffi::*;
 use libc::{c_int, c_void, int64_t};
-use {ChannelLayout, Error, Rational};
 use util::format;
+use {ChannelLayout, Error, Rational};
 
 macro_rules! check {
-	($expr:expr) => (
-		match $expr {
-			0 => Ok(()),
-			e => Err(Error::from(e)),
-		}
-	)
+    ($expr:expr) => {
+        match $expr {
+            0 => Ok(()),
+            e => Err(Error::from(e)),
+        }
+    };
 }
 
 pub unsafe trait Target {

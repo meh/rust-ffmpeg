@@ -1,12 +1,12 @@
 use std::ops::{Deref, DerefMut};
 use std::ptr;
 
-use libc::c_int;
 use ffi::*;
+use libc::c_int;
 
 use super::Encoder as Super;
-use {Dictionary, Error};
 use codec::{traits, Context};
+use {Dictionary, Error};
 
 pub struct Subtitle(pub Super);
 

@@ -1,13 +1,13 @@
 use std::ops::{Deref, DerefMut};
 use std::ptr;
 
-use libc::{c_float, c_int};
 use ffi::*;
+use libc::{c_float, c_int};
 
 use super::Encoder as Super;
 use super::{Comparison, Decision, MotionEstimation, Prediction};
-use {color, format, frame, packet, Dictionary, Error, Rational};
 use codec::{traits, Context};
+use {color, format, frame, packet, Dictionary, Error, Rational};
 
 pub struct Video(pub Super);
 

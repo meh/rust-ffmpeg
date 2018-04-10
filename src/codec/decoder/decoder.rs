@@ -1,9 +1,9 @@
-use std::ptr;
 use std::ops::{Deref, DerefMut};
+use std::ptr;
 
-use ffi::*;
-use codec::{traits, Context};
 use super::{Audio, Check, Conceal, Opened, Subtitle, Video};
+use codec::{traits, Context};
+use ffi::*;
 use {Dictionary, Discard, Error, Rational};
 
 pub struct Decoder(pub Context);

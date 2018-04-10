@@ -1,9 +1,9 @@
-use std::ops::Deref;
 use std::ffi::CString;
+use std::ops::Deref;
 
-use libc::c_int;
-use ffi::*;
 use super::{Ass, Bitmap, Flags, Text, Type};
+use ffi::*;
+use libc::c_int;
 
 pub enum RectMut<'a> {
     None(*mut AVSubtitleRect),

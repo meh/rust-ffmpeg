@@ -1,5 +1,5 @@
-use ffi::*;
 use ffi::AVColorTransferCharacteristic::*;
+use ffi::*;
 
 #[derive(Eq, PartialEq, Clone, Copy, Debug)]
 pub enum TransferCharacteristic {

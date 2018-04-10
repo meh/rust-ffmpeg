@@ -29,8 +29,8 @@ pub use self::video::Video;
 pub mod audio;
 pub use self::audio::Audio;
 
-pub mod field_order;
 pub mod audio_service;
+pub mod field_order;
 
 pub mod compliance;
 pub use self::compliance::Compliance;
@@ -43,8 +43,8 @@ pub use self::profile::Profile;
 
 pub mod threading;
 
-pub mod encoder;
 pub mod decoder;
+pub mod encoder;
 pub mod traits;
 
 use std::ffi::CStr;

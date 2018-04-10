@@ -2,10 +2,10 @@ use std::marker::PhantomData;
 use std::mem;
 use std::slice;
 
-use libc::c_int;
-use ffi::*;
-use {format, Error, Rational};
 use super::{flag, Borrow, Flags, Mut, Ref, SideData};
+use ffi::*;
+use libc::c_int;
+use {format, Error, Rational};
 
 pub struct Packet(AVPacket);
 

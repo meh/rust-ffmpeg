@@ -1,10 +1,10 @@
+pub mod extensions;
 pub mod input;
 pub mod output;
-pub mod extensions;
 
 use std::ffi::CStr;
-use std::str::from_utf8_unchecked;
 use std::marker::PhantomData;
+use std::str::from_utf8_unchecked;
 
 use ffi::*;
 

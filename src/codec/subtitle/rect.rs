@@ -1,9 +1,9 @@
-use std::marker::PhantomData;
 use std::ffi::CStr;
+use std::marker::PhantomData;
 use std::str::from_utf8_unchecked;
 
-use ffi::*;
 use super::{Flags, Type};
+use ffi::*;
 use {format, Picture};
 
 pub enum Rect<'a> {

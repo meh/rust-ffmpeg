@@ -1,10 +1,10 @@
 use std::ops::{Deref, DerefMut};
 
-use ffi::*;
 use super::{Audio, Decoder, Subtitle, Video};
 use codec::{Context, Profile};
-use {Error, Rational};
+use ffi::*;
 use media;
+use {Error, Rational};
 
 pub struct Opened(pub Decoder);
 

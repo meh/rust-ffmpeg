@@ -1,8 +1,8 @@
 use std::ffi::CStr;
 use std::str::from_utf8_unchecked;
 
-use ffi::*;
 use ffi::AVCodecID::*;
+use ffi::*;
 use util::media;
 
 #[allow(non_camel_case_types)]
@@ -13,7 +13,8 @@ pub enum Id {
     // video codecs
     MPEG1VIDEO,
     MPEG2VIDEO,
-    #[cfg(feature = "ff_api_xvmc")] MPEG2VIDEO_XVMC,
+    #[cfg(feature = "ff_api_xvmc")]
+    MPEG2VIDEO_XVMC,
     H261,
     H263,
     RV10,
@@ -359,7 +360,8 @@ pub enum Id {
     MLP,
     GSM_MS,
     ATRAC3,
-    #[cfg(feature = "ff_api_voxware")] VOXWARE,
+    #[cfg(feature = "ff_api_voxware")]
+    VOXWARE,
     APE,
     NELLYMOSER,
     MUSEPACK8,

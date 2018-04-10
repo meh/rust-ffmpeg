@@ -1,5 +1,5 @@
-use libc::c_int;
 use ffi::*;
+use libc::c_int;
 
 #[derive(Eq, PartialEq, Clone, Copy, Debug)]
 pub enum Compliance {

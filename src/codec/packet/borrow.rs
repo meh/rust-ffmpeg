@@ -1,9 +1,9 @@
 use std::mem;
 use std::ptr;
 
-use libc::c_int;
-use ffi::*;
 use super::Ref;
+use ffi::*;
+use libc::c_int;
 
 pub struct Borrow<'a> {
     packet: AVPacket,

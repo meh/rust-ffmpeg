@@ -1,6 +1,6 @@
-use Codec;
-use codec::{Audio, Id, Video};
 use super::{decoder, encoder};
+use codec::{Audio, Id, Video};
+use Codec;
 
 pub trait Decoder {
     fn decoder(self) -> Option<Codec>;

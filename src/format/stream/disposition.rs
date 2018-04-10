@@ -1,5 +1,5 @@
-use libc::c_int;
 use ffi::*;
+use libc::c_int;
 
 bitflags! {
     pub struct Disposition: c_int {
