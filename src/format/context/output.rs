@@ -9,11 +9,15 @@ use super::common::Context;
 use super::destructor;
 use codec::traits;
 use ffi::*;
+use format::context::IOContextWrite;
+use std::io::Seek;
+use std::io::Write;
 use {format, ChapterMut, Dictionary, Error, Rational, StreamMut};
 
 pub struct Output {
     ptr: *mut AVFormatContext,
     ctx: Context,
+    output_stream: Option<Box<Drop>>,
 }
 
 unsafe impl Send for Output {}
@@ -23,13 +27,18 @@ impl Output {
         Output {
             ptr: ptr,
             ctx: Context::wrap(ptr, destructor::Mode::Output),
+            output_stream: None,
         }
     }
 
-    pub unsafe fn wrap_stream(ptr: *mut AVFormatContext) -> Self {
+    pub unsafe fn wrap_stream<O: Write + Seek + 'static>(
+        ptr: *mut AVFormatContext,
+        stream: IOContextWrite<O>,
+    ) -> Self {
         Output {
             ptr: ptr,
             ctx: Context::wrap(ptr, destructor::Mode::OutputStream),
+            output_stream: Some(Box::new(stream)),
         }
     }
 
