@@ -16,11 +16,14 @@ pub use self::format::{list, Input, Output};
 pub mod network;
 
 use std::ffi::{CStr, CString};
+use std::io::Seek;
+use std::io::Write;
 use std::path::Path;
 use std::ptr;
 use std::str::from_utf8_unchecked;
 
 use ffi::*;
+use format::context::IOContextWrite;
 use {Dictionary, Error, Format};
 
 pub fn register_all() {
@@ -228,6 +231,34 @@ pub fn output<P: AsRef<Path>>(path: &P) -> Result<context::Output, Error> {
 
             e => Err(Error::from(e)),
         }
+    }
+}
+
+pub fn output_stream<O: Write + Seek>(
+    stream: &mut IOContextWrite<O>,
+    format: &str,
+) -> Result<context::Output, Error> {
+    let format = CString::new(format).unwrap();
+
+    let mut format_context_ptr = ptr::null_mut();
+    let result_int = unsafe {
+        avformat_alloc_output_context2(
+            &mut format_context_ptr,
+            ptr::null_mut(),
+            format.as_ptr(),
+            ptr::null(),
+        )
+    };
+
+    if result_int != 0 {
+        return Err(Error::from(result_int));
+    };
+
+    unsafe {
+        let format_context = format_context_ptr.as_mut().unwrap();
+        format_context.pb = stream.as_mut_ptr();
+        format_context.flags = AVFMT_FLAG_CUSTOM_IO;
+        Ok(context::Output::wrap_stream(format_context_ptr))
     }
 }
 
