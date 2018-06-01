@@ -144,10 +144,11 @@ fn main() {
     let mut ictx = format::input(&input).unwrap();
 
     let output_file = File::create(&output).unwrap();
-    let mut output_wrapper = IOContextWrite::new(output_file, 32 * 1024);
-    let mut octx = format::output_stream(output_wrapper, "mp3").unwrap();
+    let output_wrapper = IOContextWrite::new(output_file, 32 * 1024);
+    let mut octx_wrapped = format::output_stream(output_wrapper, "mp3").unwrap();
+    let mut octx = octx_wrapped.inner_mut();
 
-    let mut transcoder = transcoder(&mut ictx, &mut octx, &output, &filter).unwrap();
+    let mut transcoder = transcoder(&mut ictx, octx, &output, &filter).unwrap();
 
     if let Some(position) = seek {
         // If the position was given in seconds, rescale it to ffmpegs base timebase.

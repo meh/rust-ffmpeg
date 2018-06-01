@@ -237,7 +237,7 @@ pub fn output<P: AsRef<Path>>(path: &P) -> Result<context::Output, Error> {
 pub fn output_stream<O: Write + Seek + 'static>(
     mut stream: IOContextWrite<O>,
     format: &str,
-) -> Result<context::Output, Error> {
+) -> Result<context::OutputStream<O>, Error> {
     let format = CString::new(format).unwrap();
 
     let mut format_context_ptr = ptr::null_mut();
@@ -258,7 +258,7 @@ pub fn output_stream<O: Write + Seek + 'static>(
         let format_context = format_context_ptr.as_mut().unwrap();
         format_context.pb = stream.as_mut_ptr();
         format_context.flags = AVFMT_FLAG_CUSTOM_IO;
-        Ok(context::Output::wrap_stream(format_context_ptr, stream))
+        Ok(context::OutputStream::wrap(format_context_ptr, stream))
     }
 }
 

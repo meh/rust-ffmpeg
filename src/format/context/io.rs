@@ -83,6 +83,10 @@ where
     pub fn as_mut_ptr(&mut self) -> *mut AVIOContext {
         self.inner
     }
+
+    pub fn inner(&self) -> &O {
+        &*self.output
+    }
 }
 
 impl<O> Drop for IOContextWrite<O>
