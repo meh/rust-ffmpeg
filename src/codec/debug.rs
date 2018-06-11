@@ -15,8 +15,6 @@ bitflags! {
         const ER          = FF_DEBUG_ER;
         const MMCO        = FF_DEBUG_MMCO;
         const BUGS        = FF_DEBUG_BUGS;
-        const VIS_QP      = FF_DEBUG_VIS_QP;
-        const VIS_MB_TYPE = FF_DEBUG_VIS_MB_TYPE;
         const BUFFERS     = FF_DEBUG_BUFFERS;
         const THREADS     = FF_DEBUG_THREADS;
         const NOMC        = FF_DEBUG_NOMC;
