@@ -297,8 +297,6 @@ pub enum Id {
     ADPCM_IMA_ISS,
     ADPCM_G722,
     ADPCM_IMA_APC,
-    ADPCM_VIMA,
-    VIMA,
 
     ADPCM_AFC,
     ADPCM_IMA_OKI,
@@ -783,7 +781,6 @@ impl From<AVCodecID> for Id {
             AV_CODEC_ID_ADPCM_IMA_ISS => Id::ADPCM_IMA_ISS,
             AV_CODEC_ID_ADPCM_G722 => Id::ADPCM_G722,
             AV_CODEC_ID_ADPCM_IMA_APC => Id::ADPCM_IMA_APC,
-            AV_CODEC_ID_ADPCM_VIMA => Id::ADPCM_VIMA,
 
             AV_CODEC_ID_ADPCM_AFC => Id::ADPCM_AFC,
             AV_CODEC_ID_ADPCM_IMA_OKI => Id::ADPCM_IMA_OKI,
@@ -1261,8 +1258,6 @@ impl Into<AVCodecID> for Id {
             Id::ADPCM_IMA_ISS => AV_CODEC_ID_ADPCM_IMA_ISS,
             Id::ADPCM_G722 => AV_CODEC_ID_ADPCM_G722,
             Id::ADPCM_IMA_APC => AV_CODEC_ID_ADPCM_IMA_APC,
-            Id::ADPCM_VIMA => AV_CODEC_ID_ADPCM_VIMA,
-            Id::VIMA => AV_CODEC_ID_VIMA,
 
             Id::ADPCM_AFC => AV_CODEC_ID_ADPCM_AFC,
             Id::ADPCM_IMA_OKI => AV_CODEC_ID_ADPCM_IMA_OKI,
