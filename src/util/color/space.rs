@@ -35,6 +35,7 @@ impl Space {
 
 impl From<AVColorSpace> for Space {
     fn from(value: AVColorSpace) -> Self {
+        #[allow(unreachable_patterns)]
         match value {
             AVCOL_SPC_RGB => Space::RGB,
             AVCOL_SPC_BT709 => Space::BT709,
@@ -53,6 +54,8 @@ impl From<AVColorSpace> for Space {
             AVCOL_SPC_CHROMA_DERIVED_NCL => Space::ChromaDerivedNCL,
             AVCOL_SPC_CHROMA_DERIVED_CL => Space::ChromaDerivedCL,
             AVCOL_SPC_ICTCP => Space::ICTCP,
+
+            _ => unimplemented!(),
         }
     }
 }

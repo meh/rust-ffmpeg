@@ -64,6 +64,8 @@ impl From<AVPacketSideDataType> for Type {
 
             AV_PKT_DATA_CONTENT_LIGHT_LEVEL => Type::ContentLightLevel,
             AV_PKT_DATA_A53_CC => Type::A53CC,
+
+            _ => unimplemented!(),
         }
     }
 }
