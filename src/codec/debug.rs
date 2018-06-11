@@ -11,7 +11,6 @@ bitflags! {
         const DCT_COEFF   = FF_DEBUG_DCT_COEFF;
         const SKIP        = FF_DEBUG_SKIP;
         const STARTCODE   = FF_DEBUG_STARTCODE;
-        const PTS         = FF_DEBUG_PTS;
         const ER          = FF_DEBUG_ER;
         const MMCO        = FF_DEBUG_MMCO;
         const BUGS        = FF_DEBUG_BUGS;
