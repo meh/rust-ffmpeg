@@ -809,6 +809,7 @@ impl Into<AVPixelFormat> for Pixel {
             Pixel::VIDEOTOOLBOX => AV_PIX_FMT_VIDEOTOOLBOX,
 
             // --- defaults
+            #[cfg(feature = "ff_api_xvmc")]
             Pixel::XVMC => AV_PIX_FMT_XVMC,
             Pixel::Y400A => AV_PIX_FMT_Y400A,
             Pixel::GRAY8A => AV_PIX_FMT_GRAY8A,
