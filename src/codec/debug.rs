@@ -8,7 +8,6 @@ bitflags! {
         const BITSTREAM   = FF_DEBUG_BITSTREAM;
         const MB_TYPE     = FF_DEBUG_MB_TYPE;
         const QP          = FF_DEBUG_QP;
-        const MV          = FF_DEBUG_MV;
         const DCT_COEFF   = FF_DEBUG_DCT_COEFF;
         const SKIP        = FF_DEBUG_SKIP;
         const STARTCODE   = FF_DEBUG_STARTCODE;
