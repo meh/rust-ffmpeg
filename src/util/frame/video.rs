@@ -26,7 +26,15 @@ impl Video {
         self.set_width(width);
         self.set_height(height);
 
-        av_frame_get_buffer(self.as_mut_ptr(), 32);
+        const INIT_ALIGN: usize = 32;
+        let mut align = INIT_ALIGN;
+
+        let width = width as usize;
+        while width & (align-1) != 0 {
+            align = align >> 1;
+        }
+
+        av_frame_get_buffer(self.as_mut_ptr(), align as c_int);
     }
 }
 
