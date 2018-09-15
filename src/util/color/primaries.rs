@@ -23,6 +23,18 @@ pub enum Primaries {
 	EBU3213,
 }
 
+impl Primaries {
+    pub fn name(&self) -> Option<&'static str> {
+        if *self == Primaries::Unspecified {
+            return None;
+        }
+        unsafe {
+            let ptr = av_color_primaries_name((*self).into());
+            ptr.as_ref().map(|ptr| from_utf8_unchecked(CStr::from_ptr(ptr).to_bytes()))
+        }
+    }
+}
+
 impl From<AVColorPrimaries> for Primaries {
 	fn from(value: AVColorPrimaries) -> Primaries {
 		match value {

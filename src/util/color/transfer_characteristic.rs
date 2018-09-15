@@ -25,6 +25,18 @@ pub enum TransferCharacteristic {
 	ARIB_STD_B67,
 }
 
+impl TransferCharacteristic {
+    pub fn name(&self) -> Option<&'static str> {
+        if *self == TransferCharacteristic::Unspecified {
+            return None;
+        }
+        unsafe {
+            let ptr = av_color_transfer_name((*self).into());
+            ptr.as_ref().map(|ptr| from_utf8_unchecked(CStr::from_ptr(ptr).to_bytes()))
+        }
+    }
+}
+
 impl From<AVColorTransferCharacteristic> for TransferCharacteristic {
 	fn from(value: AVColorTransferCharacteristic) -> TransferCharacteristic {
 		match value {
