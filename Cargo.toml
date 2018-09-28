@@ -95,5 +95,5 @@ version  = "0.12"
 optional = true
 
 [dependencies.ffmpeg-sys]
-version = "3.3"
+version = "4.0"
 default-features = false
