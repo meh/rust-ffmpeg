@@ -12,7 +12,7 @@ use std::mem;
 
 use ffi::AVSubtitleType::*;
 use ffi::*;
-use libc::{c_uint, size_t, uint32_t};
+use libc::{c_uint, size_t};
 
 #[derive(Eq, PartialEq, Clone, Copy, Debug)]
 pub enum Type {
@@ -77,7 +77,7 @@ impl Subtitle {
     }
 
     pub fn set_start(&mut self, value: u32) {
-        self.0.start_display_time = value as uint32_t;
+        self.0.start_display_time = value as u32;
     }
 
     pub fn end(&self) -> u32 {
@@ -85,7 +85,7 @@ impl Subtitle {
     }
 
     pub fn set_end(&mut self, value: u32) {
-        self.0.end_display_time = value as uint32_t;
+        self.0.end_display_time = value as u32;
     }
 
     pub fn rects(&self) -> RectIter {
@@ -147,9 +147,9 @@ impl<'a> Iterator for RectIter<'a> {
                 None
             } else {
                 self.cur += 1;
-                Some(Rect::wrap(*(*self.ptr)
-                    .rects
-                    .offset((self.cur - 1) as isize)))
+                Some(Rect::wrap(
+                    *(*self.ptr).rects.offset((self.cur - 1) as isize),
+                ))
             }
         }
     }
@@ -191,9 +191,9 @@ impl<'a> Iterator for RectMutIter<'a> {
                 None
             } else {
                 self.cur += 1;
-                Some(RectMut::wrap(*(*self.ptr)
-                    .rects
-                    .offset((self.cur - 1) as isize)))
+                Some(RectMut::wrap(
+                    *(*self.ptr).rects.offset((self.cur - 1) as isize),
+                ))
             }
         }
     }

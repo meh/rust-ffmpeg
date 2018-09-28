@@ -2,6 +2,7 @@ use std::error;
 use std::ffi::CStr;
 use std::fmt;
 use std::io;
+use std::os::raw::c_char;
 use std::str::from_utf8_unchecked;
 
 use ffi::*;
@@ -166,8 +167,8 @@ fn index(error: &Error) -> usize {
 }
 
 // XXX: the length has to be synced with the number of errors
-static mut STRINGS: [[i8; AV_ERROR_MAX_STRING_SIZE as usize]; 27] =
-    [[0i8; AV_ERROR_MAX_STRING_SIZE as usize]; 27];
+static mut STRINGS: [[c_char; AV_ERROR_MAX_STRING_SIZE as usize]; 27] =
+    [[0; AV_ERROR_MAX_STRING_SIZE as usize]; 27];
 
 pub fn register_all() {
     unsafe {

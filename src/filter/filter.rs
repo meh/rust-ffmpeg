@@ -6,11 +6,11 @@ use super::{Flags, Pad};
 use ffi::*;
 
 pub struct Filter {
-    ptr: *mut AVFilter,
+    ptr: *const AVFilter,
 }
 
 impl Filter {
-    pub unsafe fn wrap(ptr: *mut AVFilter) -> Self {
+    pub unsafe fn wrap(ptr: *const AVFilter) -> Self {
         Filter { ptr: ptr }
     }
 
@@ -19,7 +19,7 @@ impl Filter {
     }
 
     pub unsafe fn as_mut_ptr(&mut self) -> *mut AVFilter {
-        self.ptr
+        self.ptr as *mut _
     }
 }
 

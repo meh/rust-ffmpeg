@@ -5,10 +5,31 @@ rust:
   - beta
   - nightly
 
+os:
+  - linux
+  - osx
+
+matrix:
+  allow_failures:
+    - rust: nightly
+
 addons:
   apt:
     packages:
+      - build-essential
       - yasm
 
-script:
-  - travis_wait cargo test --verbose --features build
+dist: bionic
+
+cache: cargo
+
+before_install:
+  - rm -rf "$TRAVIS_HOME/.cargo/registry/src"
+  # Without rustfmt, bindgen puts everything on one line and any warnings dump so many logs they break Travis
+  # See https://github.com/rust-lang/rust-bindgen/issues/1600
+  - rustup component add rustfmt
+  - if [[ $TRAVIS_OS_NAME == 'osx' ]]; then brew update; fi
+  - if [[ $TRAVIS_OS_NAME == 'osx' ]]; then brew install yasm; fi
+
+script: |
+    travis_wait cargo build --verbose --features "build"

@@ -28,14 +28,14 @@ pub fn converter(
         output,
         width,
         height,
-        scaling::flag::FAST_BILINEAR,
+        scaling::flag::Flags::FAST_BILINEAR,
     )
 }
 
-#[cfg(feature = "software-resampling")]
+#[cfg(feature = "resampling")]
 pub mod resampling;
 
-#[cfg(feature = "software-resampling")]
+#[cfg(feature = "resampling")]
 #[inline]
 pub fn resampler(
     (in_format, in_layout, in_rate): (::format::Sample, ::ChannelLayout, u32),

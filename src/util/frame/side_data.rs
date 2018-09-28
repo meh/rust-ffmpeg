@@ -27,6 +27,11 @@ pub enum Type {
 
     ContentLightLevel,
     IccProfile,
+
+    QpTableProperties,
+    QpTableData,
+
+    S12MTimecode,
 }
 
 impl Type {
@@ -41,6 +46,7 @@ impl Type {
 impl From<AVFrameSideDataType> for Type {
     #[inline(always)]
     fn from(value: AVFrameSideDataType) -> Self {
+        #[allow(unreachable_patterns)]
         match value {
             AV_FRAME_DATA_PANSCAN => Type::PanScan,
             AV_FRAME_DATA_A53_CC => Type::A53CC,
@@ -59,6 +65,12 @@ impl From<AVFrameSideDataType> for Type {
 
             AV_FRAME_DATA_CONTENT_LIGHT_LEVEL => Type::ContentLightLevel,
             AV_FRAME_DATA_ICC_PROFILE => Type::IccProfile,
+            // TODO It's undef #if in frame.h
+            AV_FRAME_DATA_QP_TABLE_PROPERTIES => Type::QpTableProperties,
+            AV_FRAME_DATA_QP_TABLE_DATA => Type::QpTableData,
+            AV_FRAME_DATA_S12M_TIMECODE => Type::S12MTimecode,
+
+            _ => unimplemented!(),
         }
     }
 }
@@ -84,6 +96,11 @@ impl Into<AVFrameSideDataType> for Type {
 
             Type::ContentLightLevel => AV_FRAME_DATA_CONTENT_LIGHT_LEVEL,
             Type::IccProfile => AV_FRAME_DATA_ICC_PROFILE,
+
+            Type::QpTableProperties => AV_FRAME_DATA_QP_TABLE_PROPERTIES,
+            Type::QpTableData => AV_FRAME_DATA_QP_TABLE_DATA,
+
+            Type::S12MTimecode => AV_FRAME_DATA_S12M_TIMECODE,
         }
     }
 }

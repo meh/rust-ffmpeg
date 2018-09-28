@@ -128,7 +128,8 @@ impl Context {
     }
 
     pub fn run(&mut self, input: &frame::Video, output: &mut frame::Video) -> Result<(), Error> {
-        if input.format() != self.input.format || input.width() != self.input.width
+        if input.format() != self.input.format
+            || input.width() != self.input.width
             || input.height() != self.input.height
         {
             return Err(Error::InputChanged);
@@ -140,7 +141,8 @@ impl Context {
             }
         }
 
-        if output.format() != self.output.format || output.width() != self.output.width
+        if output.format() != self.output.format
+            || output.width() != self.output.width
             || output.height() != self.output.height
         {
             return Err(Error::OutputChanged);
@@ -153,7 +155,7 @@ impl Context {
                 (*input.as_ptr()).linesize.as_ptr() as *const _,
                 0,
                 self.output.height as c_int,
-                (*output.as_mut_ptr()).data.as_ptr() as *const *const _,
+                (*output.as_mut_ptr()).data.as_ptr() as *const *mut _,
                 (*output.as_mut_ptr()).linesize.as_ptr() as *mut _,
             );
         }

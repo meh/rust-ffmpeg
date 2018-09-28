@@ -33,10 +33,16 @@ pub enum Type {
 
     ContentLightLevel,
     A53CC,
+
+    EncryptionInitInfo,
+    EncryptionInfo,
+
+    AFD,
 }
 
 impl From<AVPacketSideDataType> for Type {
     fn from(value: AVPacketSideDataType) -> Self {
+        #[allow(unreachable_patterns)]
         match value {
             AV_PKT_DATA_PALETTE => Type::Palette,
             AV_PKT_DATA_NEW_EXTRADATA => Type::NewExtraData,
@@ -64,6 +70,11 @@ impl From<AVPacketSideDataType> for Type {
 
             AV_PKT_DATA_CONTENT_LIGHT_LEVEL => Type::ContentLightLevel,
             AV_PKT_DATA_A53_CC => Type::A53CC,
+            AV_PKT_DATA_ENCRYPTION_INIT_INFO => Type::EncryptionInitInfo,
+            AV_PKT_DATA_ENCRYPTION_INFO => Type::EncryptionInfo,
+            AV_PKT_DATA_AFD => Type::AFD,
+
+            _ => unimplemented!(),
         }
     }
 }
@@ -97,6 +108,9 @@ impl Into<AVPacketSideDataType> for Type {
 
             Type::ContentLightLevel => AV_PKT_DATA_CONTENT_LIGHT_LEVEL,
             Type::A53CC => AV_PKT_DATA_A53_CC,
+            Type::EncryptionInitInfo => AV_PKT_DATA_ENCRYPTION_INIT_INFO,
+            Type::EncryptionInfo => AV_PKT_DATA_ENCRYPTION_INFO,
+            Type::AFD => AV_PKT_DATA_AFD,
         }
     }
 }

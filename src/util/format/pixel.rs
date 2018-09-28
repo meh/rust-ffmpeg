@@ -47,6 +47,10 @@ pub enum Pixel {
 
     GRAY16BE,
     GRAY16LE,
+    GRAY14BE,
+    GRAY14LE,
+    GRAYF32BE,
+    GRAYF32LE,
     YUV440P,
     YUVJ440P,
     YUVA420P,
@@ -113,7 +117,6 @@ pub enum Pixel {
     YUV444P10LE,
     YUV422P9BE,
     YUV422P9LE,
-    VDA_VLD,
 
     GBRP,
     GBRP9BE,
@@ -156,8 +159,6 @@ pub enum Pixel {
     BGRA64LE,
 
     YVYU422,
-
-    VDA,
 
     YA16BE,
     YA16LE,
@@ -220,11 +221,7 @@ pub enum Pixel {
     VIDEOTOOLBOX,
 
     // --- defaults
-    #[cfg(feature = "ff_api_xvmc")]
     XVMC,
-    Y400A,
-    GRAY8A,
-    GBR24P,
 
     RGB32,
     RGB32_1,
@@ -310,6 +307,7 @@ pub enum Pixel {
     GBRAPF32BE,
     GBRAPF32LE,
     DRM_PRIME,
+    OPENCL,
 }
 
 #[derive(Clone, Copy, PartialEq, Eq)]
@@ -355,6 +353,7 @@ impl Descriptor {
 impl From<AVPixelFormat> for Pixel {
     #[inline]
     fn from(value: AVPixelFormat) -> Self {
+        #[allow(unreachable_patterns)]
         match value {
             AV_PIX_FMT_NONE => Pixel::None,
 
@@ -395,6 +394,10 @@ impl From<AVPixelFormat> for Pixel {
 
             AV_PIX_FMT_GRAY16BE => Pixel::GRAY16BE,
             AV_PIX_FMT_GRAY16LE => Pixel::GRAY16LE,
+            AV_PIX_FMT_GRAY14BE => Pixel::GRAY14BE,
+            AV_PIX_FMT_GRAY14LE => Pixel::GRAY14LE,
+            AV_PIX_FMT_GRAYF32BE => Pixel::GRAYF32BE,
+            AV_PIX_FMT_GRAYF32LE => Pixel::GRAYF32LE,
             AV_PIX_FMT_YUV440P => Pixel::YUV440P,
             AV_PIX_FMT_YUVJ440P => Pixel::YUVJ440P,
             AV_PIX_FMT_YUVA420P => Pixel::YUVA420P,
@@ -459,7 +462,6 @@ impl From<AVPixelFormat> for Pixel {
             AV_PIX_FMT_YUV444P10LE => Pixel::YUV444P10LE,
             AV_PIX_FMT_YUV422P9BE => Pixel::YUV422P9BE,
             AV_PIX_FMT_YUV422P9LE => Pixel::YUV422P9LE,
-            AV_PIX_FMT_VDA_VLD => Pixel::VDA_VLD,
 
             AV_PIX_FMT_GBRP => Pixel::GBRP,
             AV_PIX_FMT_GBRP9BE => Pixel::GBRP9BE,
@@ -502,8 +504,6 @@ impl From<AVPixelFormat> for Pixel {
             AV_PIX_FMT_BGRA64LE => Pixel::BGRA64LE,
 
             AV_PIX_FMT_YVYU422 => Pixel::YVYU422,
-
-            AV_PIX_FMT_VDA => Pixel::VDA,
 
             AV_PIX_FMT_YA16BE => Pixel::YA16BE,
             AV_PIX_FMT_YA16LE => Pixel::YA16LE,
@@ -565,6 +565,8 @@ impl From<AVPixelFormat> for Pixel {
 
             AV_PIX_FMT_VIDEOTOOLBOX => Pixel::VIDEOTOOLBOX,
 
+            AV_PIX_FMT_XVMC => Pixel::XVMC,
+
             AV_PIX_FMT_P010LE => Pixel::P010LE,
             AV_PIX_FMT_P010BE => Pixel::P010BE,
             AV_PIX_FMT_GBRAP12BE => Pixel::GBRAP12BE,
@@ -589,6 +591,9 @@ impl From<AVPixelFormat> for Pixel {
             AV_PIX_FMT_GBRAPF32BE => Pixel::GBRAPF32BE,
             AV_PIX_FMT_GBRAPF32LE => Pixel::GBRAPF32LE,
             AV_PIX_FMT_DRM_PRIME => Pixel::DRM_PRIME,
+            AV_PIX_FMT_OPENCL => Pixel::OPENCL,
+
+            _ => unimplemented!(),
         }
     }
 }
@@ -636,6 +641,10 @@ impl Into<AVPixelFormat> for Pixel {
 
             Pixel::GRAY16BE => AV_PIX_FMT_GRAY16BE,
             Pixel::GRAY16LE => AV_PIX_FMT_GRAY16LE,
+            Pixel::GRAY14BE => AV_PIX_FMT_GRAY14BE,
+            Pixel::GRAY14LE => AV_PIX_FMT_GRAY14LE,
+            Pixel::GRAYF32BE => AV_PIX_FMT_GRAYF32BE,
+            Pixel::GRAYF32LE => AV_PIX_FMT_GRAYF32LE,
             Pixel::YUV440P => AV_PIX_FMT_YUV440P,
             Pixel::YUVJ440P => AV_PIX_FMT_YUVJ440P,
             Pixel::YUVA420P => AV_PIX_FMT_YUVA420P,
@@ -702,7 +711,6 @@ impl Into<AVPixelFormat> for Pixel {
             Pixel::YUV444P10LE => AV_PIX_FMT_YUV444P10LE,
             Pixel::YUV422P9BE => AV_PIX_FMT_YUV422P9BE,
             Pixel::YUV422P9LE => AV_PIX_FMT_YUV422P9LE,
-            Pixel::VDA_VLD => AV_PIX_FMT_VDA_VLD,
 
             Pixel::GBRP => AV_PIX_FMT_GBRP,
             Pixel::GBRP9BE => AV_PIX_FMT_GBRP9BE,
@@ -745,8 +753,6 @@ impl Into<AVPixelFormat> for Pixel {
             Pixel::BGRA64LE => AV_PIX_FMT_BGRA64LE,
 
             Pixel::YVYU422 => AV_PIX_FMT_YVYU422,
-
-            Pixel::VDA => AV_PIX_FMT_VDA,
 
             Pixel::YA16BE => AV_PIX_FMT_YA16BE,
             Pixel::YA16LE => AV_PIX_FMT_YA16LE,
@@ -810,9 +816,6 @@ impl Into<AVPixelFormat> for Pixel {
 
             // --- defaults
             Pixel::XVMC => AV_PIX_FMT_XVMC,
-            Pixel::Y400A => AV_PIX_FMT_Y400A,
-            Pixel::GRAY8A => AV_PIX_FMT_GRAY8A,
-            Pixel::GBR24P => AV_PIX_FMT_GBR24P,
 
             Pixel::RGB32 => AV_PIX_FMT_RGB32,
             Pixel::RGB32_1 => AV_PIX_FMT_RGB32_1,
@@ -898,6 +901,7 @@ impl Into<AVPixelFormat> for Pixel {
             Pixel::GBRAPF32BE => AV_PIX_FMT_GBRAPF32BE,
             Pixel::GBRAPF32LE => AV_PIX_FMT_GBRAPF32LE,
             Pixel::DRM_PRIME => AV_PIX_FMT_DRM_PRIME,
+            Pixel::OPENCL => AV_PIX_FMT_OPENCL,
         }
     }
 }
@@ -925,7 +929,7 @@ impl error::Error for ParsePixelError {
         }
     }
 
-    fn cause(&self) -> Option<&error::Error> {
+    fn cause(&self) -> Option<&dyn error::Error> {
         match *self {
             ParsePixelError::NulError(ref e) => Some(e),
             ParsePixelError::UnknownFormat => None,

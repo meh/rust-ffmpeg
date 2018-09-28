@@ -18,7 +18,7 @@ pub enum Primaries {
     SMPTE428,
     SMPTE431,
     SMPTE432,
-    JEDEC_P22,
+    EBU3213,
 }
 
 impl From<AVColorPrimaries> for Primaries {
@@ -40,7 +40,7 @@ impl From<AVColorPrimaries> for Primaries {
             AVCOL_PRI_SMPTE428 => Primaries::SMPTE428,
             AVCOL_PRI_SMPTE431 => Primaries::SMPTE431,
             AVCOL_PRI_SMPTE432 => Primaries::SMPTE432,
-            AVCOL_PRI_JEDEC_P22 => Primaries::JEDEC_P22,
+            AVCOL_PRI_EBU3213 => Primaries::EBU3213,
         }
     }
 }
@@ -63,7 +63,7 @@ impl Into<AVColorPrimaries> for Primaries {
             Primaries::SMPTE428 => AVCOL_PRI_SMPTE428,
             Primaries::SMPTE431 => AVCOL_PRI_SMPTE431,
             Primaries::SMPTE432 => AVCOL_PRI_SMPTE432,
-            Primaries::JEDEC_P22 => AVCOL_PRI_JEDEC_P22,
+            Primaries::EBU3213 => AVCOL_PRI_EBU3213,
         }
     }
 }
