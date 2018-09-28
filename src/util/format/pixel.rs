@@ -217,7 +217,6 @@ pub enum Pixel {
     VIDEOTOOLBOX,
 
     // --- defaults
-    #[cfg(feature = "ff_api_xvmc")]
     XVMC,
     Y400A,
     GRAY8A,
