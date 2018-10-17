@@ -22,7 +22,7 @@ bindgen    = "0.32"
 regex      = "0.2"
 
 [features]
-default  = ["avcodec", "avdevice", "avfilter", "avformat", "avresample", "swresample", "swscale"]
+default  = ["avcodec", "avdevice", "avfilter", "avformat", "swresample", "swscale"]
 
 static = []
 build  = ["static"]
