@@ -517,38 +517,28 @@ fn main() {
     else {
         pkg_config::Config::new()
             .statik(statik)
-            .probe("libavformat")
-            .unwrap();
-
-        pkg_config::Config::new()
-            .statik(statik)
-            .probe("libavfilter")
-            .unwrap();
-
-        pkg_config::Config::new()
-            .statik(statik)
-            .probe("libavdevice")
-            .unwrap();
-
-        pkg_config::Config::new()
-            .statik(statik)
-            .probe("libavresample")
-            .unwrap();
-
-        pkg_config::Config::new()
-            .statik(statik)
             .probe("libavutil")
-            .unwrap();
+            .unwrap()
+            .include_paths;
 
-        pkg_config::Config::new()
-            .statik(statik)
-            .probe("libswscale")
-            .unwrap();
+        let libs = vec![
+            ("libavformat", "AVFORMAT"),
+            ("libavfilter", "AVFILTER"),
+            ("libavdevice", "AVDEVICE"),
+            ("libavresample", "AVRESAMPLE"),
+            ("libswscale", "SWSCALE"),
+            ("libswresample", "SWRESAMPLE"),
+        ];
 
-        pkg_config::Config::new()
-            .statik(statik)
-            .probe("libswresample")
-            .unwrap();
+        for (lib_name, env_variable_name) in libs.iter() {
+            if env::var(format!("CARGO_FEATURE_{}", env_variable_name)).is_ok() {
+                pkg_config::Config::new()
+                    .statik(statik)
+                    .probe(lib_name)
+                    .unwrap()
+                    .include_paths;
+            }
+        };
 
         pkg_config::Config::new()
             .statik(statik)
