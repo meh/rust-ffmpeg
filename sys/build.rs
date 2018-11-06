@@ -217,7 +217,7 @@ fn build() -> io::Result<()> {
     enable!(configure, "BUILD_LIB_X265", "libx265");
     enable!(configure, "BUILD_LIB_AVS", "libavs");
     enable!(configure, "BUILD_LIB_XVID", "libxvid");
-
+    enable!(configure, "BUILD_LIB_DRM", "libdrm");
     // other external libraries
     enable!(configure, "BUILD_NVENC", "nvenc");
 
