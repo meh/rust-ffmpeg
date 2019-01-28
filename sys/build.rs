@@ -15,6 +15,34 @@ use regex::Regex;
 use bindgen::callbacks::{IntKind, ParseCallbacks};
 
 #[derive(Debug)]
+struct Library {
+    name: &'static str,
+    is_feature: bool,
+}
+
+impl Library {
+    fn feature_name(&self) -> Option<String> {
+        if self.is_feature {
+            Some("CARGO_FEATURE_".to_string() + &self.name.to_uppercase())
+        } else {
+            None
+        }
+    }
+}
+
+static LIBRARIES: &[Library] = &[
+    Library {name: "avcodec", is_feature: true},
+    Library {name: "avdevice", is_feature: true},
+    Library {name: "avfilter", is_feature: true},
+    Library {name: "avformat", is_feature: true},
+    Library {name: "avresample", is_feature: true},
+    Library {name: "avutil", is_feature: false},
+    Library {name: "postproc", is_feature: true},
+    Library {name: "swresample", is_feature: true},
+    Library {name: "swscale", is_feature: true},
+];
+
+#[derive(Debug)]
 struct IntCallbacks;
 
 impl ParseCallbacks for IntCallbacks {
@@ -93,6 +121,16 @@ fn fetch() -> io::Result<()> {
     }
 }
 
+fn switch(configure: &mut Command, feature: &str, name: &str) {
+    let arg = if env::var("CARGO_FEATURE_".to_string() + feature).is_ok() {
+        "--enable-"
+    }
+    else {
+        "--disable-"
+    };
+    configure.arg(arg.to_string() + name);
+}
+
 fn build() -> io::Result<()> {
     let mut configure = Command::new("./configure");
     configure.current_dir(&source());
@@ -120,17 +158,6 @@ fn build() -> io::Result<()> {
     // do not build programs since we don't need them
     configure.arg("--disable-programs");
 
-    macro_rules! switch {
-        ($conf:expr, $feat:expr, $name:expr) => (
-            if env::var(concat!("CARGO_FEATURE_", $feat)).is_ok() {
-                $conf.arg(concat!("--enable-", $name));
-            }
-            else {
-                $conf.arg(concat!("--disable-", $name));
-            }
-        )
-    }
-
     macro_rules! enable {
         ($conf:expr, $feat:expr, $name:expr) => (
             if env::var(concat!("CARGO_FEATURE_", $feat)).is_ok() {
@@ -148,23 +175,18 @@ fn build() -> io::Result<()> {
     // }
 
     // the binary using ffmpeg-sys must comply with GPL
-    switch!(configure, "BUILD_LICENSE_GPL", "gpl");
+    switch(&mut configure, "BUILD_LICENSE_GPL", "gpl");
 
     // the binary using ffmpeg-sys must comply with (L)GPLv3
-    switch!(configure, "BUILD_LICENSE_VERSION3", "version3");
+    switch(&mut configure, "BUILD_LICENSE_VERSION3", "version3");
 
     // the binary using ffmpeg-sys cannot be redistributed
-    switch!(configure, "BUILD_LICENSE_NONFREE", "nonfree");
+    switch(&mut configure, "BUILD_LICENSE_NONFREE", "nonfree");
 
     // configure building libraries based on features
-    switch!(configure, "AVCODEC", "avcodec");
-    switch!(configure, "AVDEVICE", "avdevice");
-    switch!(configure, "AVFILTER", "avfilter");
-    switch!(configure, "AVFORMAT", "avformat");
-    switch!(configure, "AVRESAMPLE", "avresample");
-    switch!(configure, "POSTPROC", "postproc");
-    switch!(configure, "SWRESAMPLE", "swresample");
-    switch!(configure, "SWSCALE", "swscale");
+    for lib in LIBRARIES.iter().filter(|lib| lib.is_feature) {
+        switch(&mut configure, &lib.name.to_uppercase(), lib.name);
+    }
 
     // configure external SSL libraries
     enable!(configure, "BUILD_LIB_GNUTLS", "gnutls");
@@ -432,6 +454,20 @@ fn search_include(include_paths: &Vec<PathBuf>, header: &str) -> String {
     format!("/usr/include/{}", header)
 }
 
+fn link_to_libraries(statik: bool) {
+    let ffmpeg_ty = if statik { "static" } else { "dylib" };
+    for lib in LIBRARIES {
+        let feat_is_enabled =
+            lib.feature_name().and_then(|f| env::var(&f).ok()).is_some();
+        if !lib.is_feature || feat_is_enabled {
+            println!("cargo:rustc-link-lib={}={}", ffmpeg_ty, lib.name);
+        }
+    }
+    if env::var("CARGO_FEATURE_BUILD_ZLIB").is_ok() && cfg!(target_os = "linux") {
+        println!("cargo:rustc-link-lib=z");
+    }
+}
+
 fn main() {
     let statik = env::var("CARGO_FEATURE_STATIC").is_ok();
 
@@ -440,37 +476,7 @@ fn main() {
             "cargo:rustc-link-search=native={}",
             search().join("lib").to_string_lossy()
         );
-
-        let ffmpeg_ty = if statik { "static" } else { "dylib" };
-
-        // Make sure to link with the ffmpeg libs we built
-        println!("cargo:rustc-link-lib={}=avutil", ffmpeg_ty);
-        if env::var("CARGO_FEATURE_AVCODEC").is_ok() {
-            println!("cargo:rustc-link-lib={}=avcodec", ffmpeg_ty);
-        }
-        if env::var("CARGO_FEATURE_AVFORMAT").is_ok() {
-            println!("cargo:rustc-link-lib={}=avformat", ffmpeg_ty);
-        }
-        if env::var("CARGO_FEATURE_AVFILTER").is_ok() {
-            println!("cargo:rustc-link-lib={}=avfilter", ffmpeg_ty);
-        }
-        if env::var("CARGO_FEATURE_AVDEVICE").is_ok() {
-            println!("cargo:rustc-link-lib={}=avdevice", ffmpeg_ty);
-        }
-        if env::var("CARGO_FEATURE_AVRESAMPLE").is_ok() {
-            println!("cargo:rustc-link-lib={}=avresample", ffmpeg_ty);
-        }
-        if env::var("CARGO_FEATURE_SWSCALE").is_ok() {
-            println!("cargo:rustc-link-lib={}=swscale", ffmpeg_ty);
-        }
-        if env::var("CARGO_FEATURE_SWRESAMPLE").is_ok() {
-            println!("cargo:rustc-link-lib={}=swresample", ffmpeg_ty);
-        }
-
-        if env::var("CARGO_FEATURE_BUILD_ZLIB").is_ok() && cfg!(target_os = "linux") {
-            println!("cargo:rustc-link-lib=z");
-        }
-
+        link_to_libraries(statik);
         if fs::metadata(&search().join("lib").join("libavutil.a")).is_err() {
             fs::create_dir_all(&output())
                 .ok()
@@ -505,12 +511,11 @@ fn main() {
     // Use prebuilt library
     else if let Ok(ffmpeg_dir) = env::var("FFMPEG_DIR") {
         let ffmpeg_dir = PathBuf::from(ffmpeg_dir);
-
         println!(
             "cargo:rustc-link-search=native={}",
             ffmpeg_dir.join("lib").to_string_lossy()
         );
-
+        link_to_libraries(statik);
         vec![ffmpeg_dir.join("include")]
     }
     // Fallback to pkg-config
