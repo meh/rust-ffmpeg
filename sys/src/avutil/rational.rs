@@ -1,5 +1,5 @@
 use AVRational;
-use libc::{c_double, c_int, int64_t};
+use libc::{c_double, c_int};
 
 #[inline(always)]
 pub unsafe fn av_make_q(num: c_int, den: c_int) -> AVRational {
@@ -8,7 +8,7 @@ pub unsafe fn av_make_q(num: c_int, den: c_int) -> AVRational {
 
 #[inline(always)]
 pub unsafe fn av_cmp_q(a: AVRational, b: AVRational) -> c_int {
-    let tmp: int64_t = i64::from(a.num) * i64::from(b.den) - i64::from(b.num) * i64::from(a.den);
+    let tmp = i64::from(a.num) * i64::from(b.den) - i64::from(b.num) * i64::from(a.den);
 
     if tmp != 0 {
         (((tmp ^ i64::from(a.den) ^ i64::from(b.den)) >> 63) | 1) as c_int
