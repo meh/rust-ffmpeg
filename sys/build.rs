@@ -889,7 +889,7 @@ fn main() {
         ],
     );
 
-    let tmp = std::env::current_dir().unwrap().join("tmp");
+    let tmp = output().join("tmp");
     if symlink_metadata(&tmp).is_err() {
         create_dir(&tmp).expect("Failed to create temporary output dir");
     }
