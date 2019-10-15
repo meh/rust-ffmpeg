@@ -59,6 +59,8 @@ impl From<AVFrameSideDataType> for Type {
 
             AV_FRAME_DATA_CONTENT_LIGHT_LEVEL => Type::ContentLightLevel,
             AV_FRAME_DATA_ICC_PROFILE => Type::IccProfile,
+
+            _ => unimplemented!(),
         }
     }
 }
