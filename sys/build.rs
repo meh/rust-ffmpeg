@@ -117,16 +117,14 @@ fn search() -> PathBuf {
 }
 
 fn fetch() -> io::Result<()> {
-    let status = try!(
-        Command::new("git")
+    let status = Command::new("git")
             .current_dir(&output())
             .arg("clone")
             .arg("-b")
             .arg(format!("release/{}", version()))
             .arg("https://github.com/FFmpeg/FFmpeg")
             .arg(format!("ffmpeg-{}", version()))
-            .status()
-    );
+            .status()?;
 
     if status.success() {
         Ok(())
@@ -281,24 +279,22 @@ fn build() -> io::Result<()> {
     }
 
     // run make
-    if !try!(
-        Command::new("make")
+    if !Command::new("make")
             .arg("-j")
             .arg(num_cpus::get().to_string())
             .current_dir(&source())
-            .status()
-    ).success()
+            .status()?
+            .success()
     {
         return Err(io::Error::new(io::ErrorKind::Other, "make failed"));
     }
 
     // run make install
-    if !try!(
-        Command::new("make")
+    if !Command::new("make")
             .current_dir(&source())
             .arg("install")
-            .status()
-    ).success()
+            .status()?
+            .success()
     {
         return Err(io::Error::new(io::ErrorKind::Other, "make install failed"));
     }

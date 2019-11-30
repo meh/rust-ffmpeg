@@ -15,11 +15,11 @@ keywords    = ["audio", "video"]
 libc = "0.2"
 
 [build-dependencies]
-num_cpus = "1.0"
-cc = "1.0"
+num_cpus   = "1.11"
+cc         = "1.0"
 pkg-config = "0.3"
 bindgen    = "0.51.1"
-regex      = "0.2"
+regex      = "1.3"
 
 [features]
 default  = ["avcodec", "avdevice", "avfilter", "avformat", "swresample", "swscale"]
