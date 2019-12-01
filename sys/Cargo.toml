@@ -11,6 +11,10 @@ description = "FFI bindings to FFmpeg"
 repository  = "https://github.com/meh/rust-ffmpeg-sys"
 keywords    = ["audio", "video"]
 
+[lib]
+# Disable doctests as a workaround for https://github.com/rust-lang/rust-bindgen/issues/1313
+doctest = false
+
 [dependencies]
 libc = "0.2"
 
