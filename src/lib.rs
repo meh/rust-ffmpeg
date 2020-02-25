@@ -8,7 +8,7 @@ pub extern crate ffmpeg_sys as sys;
 extern crate image;
 extern crate libc;
 
-pub use sys as ffi;
+pub use sys as ffi; 
 
 #[macro_use]
 pub mod util;
