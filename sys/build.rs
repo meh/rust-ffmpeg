@@ -1034,6 +1034,7 @@ fn main() {
         .rustified_enum("*")
         .prepend_enum_name(false)
         .derive_eq(true)
+        .size_t_is_usize(true)
         .parse_callbacks(Box::new(IntCallbacks));
 
     // The input headers we would like to generate
