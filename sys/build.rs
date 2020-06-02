@@ -12,7 +12,7 @@ use std::process::Command;
 use std::str;
 
 use regex::Regex;
-use bindgen::callbacks::{IntKind, ParseCallbacks, MacroParsingBehavior};
+use bindgen::callbacks::{EnumVariantCustomBehavior, EnumVariantValue, IntKind, ParseCallbacks, MacroParsingBehavior};
 
 #[derive(Debug)]
 struct Library {
@@ -43,9 +43,9 @@ static LIBRARIES: &[Library] = &[
 ];
 
 #[derive(Debug)]
-struct IntCallbacks;
+struct Callbacks;
 
-impl ParseCallbacks for IntCallbacks {
+impl ParseCallbacks for Callbacks {
     fn int_macro(&self, _name: &str, value: i64) -> Option<IntKind> {
         let ch_layout = Regex::new(r"^AV_CH").unwrap();
         let codec_cap = Regex::new(r"^AV_CODEC_CAP").unwrap();
@@ -67,6 +67,20 @@ impl ParseCallbacks for IntCallbacks {
             })
         } else if value >= i32::min_value() as i64 && value <= i32::max_value() as i64 {
             Some(IntKind::Int)
+        } else {
+            None
+        }
+    }
+
+    fn enum_variant_behavior(
+        &self,
+        _enum_name: Option<&str>,
+        original_variant_name: &str,
+        _variant_value: EnumVariantValue,
+    ) -> Option<EnumVariantCustomBehavior> {
+        let dummy_codec_id = Regex::new(r"^AV_CODEC_ID_FIRST").unwrap();
+        if dummy_codec_id.is_match(original_variant_name) {
+            Some(EnumVariantCustomBehavior::Constify)
         } else {
             None
         }
@@ -1035,7 +1049,7 @@ fn main() {
         .prepend_enum_name(false)
         .derive_eq(true)
         .size_t_is_usize(true)
-        .parse_callbacks(Box::new(IntCallbacks));
+        .parse_callbacks(Box::new(Callbacks));
 
     // The input headers we would like to generate
     // bindings for.
