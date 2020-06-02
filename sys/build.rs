@@ -5,7 +5,7 @@ extern crate pkg_config;
 extern crate regex;
 
 use std::env;
-use std::fs::{self, create_dir, symlink_metadata, File};
+use std::fs::{self, File};
 use std::io::{self, BufRead, BufReader, Write};
 use std::path::{Path, PathBuf};
 use std::process::Command;
@@ -978,19 +978,6 @@ fn main() {
         ],
     );
 
-    let tmp = output().join("tmp");
-    if symlink_metadata(&tmp).is_err() {
-        create_dir(&tmp).expect("Failed to create temporary output dir");
-    }
-    let mut f = File::create(tmp.join(".build")).expect("Filed to create .build");
-    let tool = cc::Build::new().get_compiler();
-    write!(f, "{}", tool.path().to_string_lossy().into_owned()).expect("failed to write cmd");
-    for arg in tool.args() {
-        write!(f, " {}", arg.to_str().unwrap()).expect("failed to write arg");
-    }
-    for dir in &include_paths {
-        write!(f, " -I {}", dir.to_string_lossy().into_owned()).expect("failed to write incdir");
-    }
     let clang_includes = include_paths
         .iter()
         .map(|include| format!("-I{}", include.to_string_lossy()));
