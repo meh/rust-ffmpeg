@@ -341,6 +341,25 @@ fn build() -> io::Result<()> {
     Ok(())
 }
 
+#[cfg(not(target_env = "msvc"))]
+fn try_vcpkg(_statik: bool) -> Option<Vec<PathBuf>> {
+    None
+}
+
+#[cfg(target_env = "msvc")]
+fn try_vcpkg(statik: bool) -> Option<Vec<PathBuf>> {
+    if !statik {
+        env::set_var("VCPKGRS_DYNAMIC", "1");
+    }
+
+    vcpkg::find_package("ffmpeg")
+        .map_err(|e| {
+            println!("Could not find ffmpeg with vcpkg: {}", e);
+        })
+        .map(|library| library.include_paths)
+        .ok()
+}
+
 fn check_features(
     include_paths: Vec<PathBuf>,
     infos: &Vec<(&'static str, Option<&'static str>, &'static str)>,
@@ -574,6 +593,24 @@ fn main() {
         );
         link_to_libraries(statik);
         vec![ffmpeg_dir.join("include")]
+    } else if let Some(paths) = try_vcpkg(statik) {
+        // vcpkg doesn't detect the "system" dependencies
+        if statik {
+            if cfg!(feature = "avcodec") || cfg!(feature = "avdevice") {
+                println!("cargo:rustc-link-lib=ole32");
+            }
+
+            if cfg!(feature = "avformat") {
+                println!("cargo:rustc-link-lib=secur32");
+                println!("cargo:rustc-link-lib=ws2_32");
+            }
+
+            // avutil depdendencies
+            println!("cargo:rustc-link-lib=bcrypt");
+            println!("cargo:rustc-link-lib=user32");
+        }
+
+        paths
     }
     // Fallback to pkg-config
     else {
