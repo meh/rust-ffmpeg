@@ -144,8 +144,14 @@ fn switch(configure: &mut Command, feature: &str, name: &str) {
 }
 
 fn build() -> io::Result<()> {
-    let mut configure = Command::new("./configure");
-    configure.current_dir(&source());
+    let source_dir = source();
+
+    // Command's path is not relative to command's current_dir
+    let configure_path = source_dir.join("configure");
+    assert!(configure_path.exists());
+    let mut configure = Command::new(&configure_path);
+    configure.current_dir(&source_dir);
+
     configure.arg(format!("--prefix={}", search().to_string_lossy()));
 
     if env::var("TARGET").unwrap() != env::var("HOST").unwrap() {
