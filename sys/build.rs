@@ -117,13 +117,16 @@ fn search() -> PathBuf {
 }
 
 fn fetch() -> io::Result<()> {
+    let output_base_path = output();
+    let clone_dest_dir = format!("ffmpeg-{}", version());
+    let _ = std::fs::remove_dir_all(output_base_path.join(&clone_dest_dir));
     let status = Command::new("git")
-            .current_dir(&output())
+            .current_dir(&output_base_path)
             .arg("clone")
             .arg("-b")
             .arg(format!("release/{}", version()))
             .arg("https://github.com/FFmpeg/FFmpeg")
-            .arg(format!("ffmpeg-{}", version()))
+            .arg(&clone_dest_dir)
             .status()?;
 
     if status.success() {
