@@ -123,6 +123,7 @@ fn fetch() -> io::Result<()> {
     let status = Command::new("git")
             .current_dir(&output_base_path)
             .arg("clone")
+            .arg("--depth=1")
             .arg("-b")
             .arg(format!("release/{}", version()))
             .arg("https://github.com/FFmpeg/FFmpeg")
