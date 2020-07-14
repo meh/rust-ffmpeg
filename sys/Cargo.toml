@@ -22,7 +22,7 @@ libc = "0.2"
 num_cpus   = "1.11"
 cc         = "1.0"
 pkg-config = "0.3"
-bindgen    = "0.52"
+bindgen    = "0.54"
 regex      = "1.3"
 
 [features]
