@@ -149,7 +149,19 @@ fn build() -> io::Result<()> {
     configure.arg(format!("--prefix={}", search().to_string_lossy()));
 
     if env::var("TARGET").unwrap() != env::var("HOST").unwrap() {
-        configure.arg(format!("--cross-prefix={}-", env::var("TARGET").unwrap()));
+        // Rust targets are subtly different than naming scheme for compiler prefixes.
+        // The cc crate has the messy logic of guessing a working prefix,
+        // and this is a messy way of reusing that logic.
+        let cc = cc::Build::new();
+        let compiler = cc.get_compiler();
+        let compiler = compiler.path()
+            .file_stem().unwrap().to_str().unwrap();
+        let suffix_pos = compiler.rfind('-').unwrap(); // cut off "-gcc"
+        let prefix = compiler[0..suffix_pos].trim_end_matches("-wr"); // "wr-c++" compiler
+
+        configure.arg(format!("--cross-prefix={}-", prefix));
+        configure.arg(format!("--arch={}", env::var("CARGO_CFG_TARGET_ARCH").unwrap()));
+        configure.arg(format!("--target_os={}", env::var("CARGO_CFG_TARGET_OS").unwrap()));
     }
 
     // control debug build
@@ -375,7 +387,9 @@ fn check_features(
     ).expect("Write failed");
 
     let executable = out_dir.join(if cfg!(windows) { "check.exe" } else { "check" });
-    let mut compiler = cc::Build::new().get_compiler().to_command();
+    let mut compiler = cc::Build::new()
+        .target(&env::var("HOST").unwrap()) // don't cross-compile this
+        .get_compiler().to_command();
 
     for dir in include_paths {
         compiler.arg("-I");
