@@ -323,11 +323,13 @@ fn check_features(
         }
         includes_code.push_str(&format!(
             r#"
+            #ifndef {var}_is_defined
             #ifndef {var}
             #define {var} 0
             #define {var}_is_defined 0
             #else
             #define {var}_is_defined 1
+            #endif
             #endif
         "#,
             var = var
