@@ -1,12 +1,11 @@
 use std::{
 	ffi::{CStr, CString},
-	mem,
 	ops::Index,
 	ptr, slice,
 	str::from_utf8_unchecked,
 };
 
-use libc::c_int;
+use libc::{c_int, c_void};
 
 use crate::ffi::{AVSampleFormat::*, *};
 
@@ -208,7 +207,7 @@ impl Clone for Buffer {
 		unsafe {
 			av_samples_copy(
 				self.buffer,
-				mem::transmute(source.buffer),
+				source.buffer as *const *mut u8,
 				0,
 				0,
 				source.samples as c_int,
@@ -223,7 +222,7 @@ impl Drop for Buffer {
 	#[inline]
 	fn drop(&mut self) {
 		unsafe {
-			av_freep(mem::transmute(self.buffer));
+			av_freep(self.buffer as *mut c_void);
 		}
 	}
 }

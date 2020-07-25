@@ -149,7 +149,7 @@ impl Audio {
 			panic!("unsupported type");
 		}
 
-		unsafe { slice::from_raw_parts(mem::transmute((*self.as_ptr()).data[index]), self.samples()) }
+		unsafe { slice::from_raw_parts((*self.as_ptr()).data[index] as *const T, self.samples()) }
 	}
 
 	#[inline]
@@ -162,12 +162,7 @@ impl Audio {
 			panic!("unsupported type");
 		}
 
-		unsafe {
-			slice::from_raw_parts_mut(
-				mem::transmute((*self.as_mut_ptr()).data[index]),
-				self.samples(),
-			)
-		}
+		unsafe { slice::from_raw_parts_mut((*self.as_mut_ptr()).data[index] as *mut T, self.samples()) }
 	}
 
 	#[inline]
