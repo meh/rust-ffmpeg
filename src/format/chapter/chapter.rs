@@ -13,9 +13,7 @@ impl<'a> Chapter<'a> {
 	}
 
 	pub unsafe fn as_ptr(&self) -> *const AVChapter {
-		*(*self.context.as_ptr())
-			.chapters
-			.offset(self.index as isize)
+		*(*self.context.as_ptr()).chapters.add(self.index)
 	}
 }
 
