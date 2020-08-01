@@ -306,7 +306,7 @@ fn build() -> io::Result<()> {
     // run ./configure
     let output = configure
         .output()
-        .expect(&format!("{:?} failed", configure));
+        .unwrap_or_else(|_| panic!("{:?} failed", configure));
     if !output.status.success() {
         println!("configure: {}", String::from_utf8_lossy(&output.stdout));
 
@@ -364,7 +364,7 @@ fn try_vcpkg(statik: bool) -> Option<Vec<PathBuf>> {
 
 fn check_features(
     include_paths: Vec<PathBuf>,
-    infos: &Vec<(&'static str, Option<&'static str>, &'static str)>,
+    infos: &[(&'static str, Option<&'static str>, &'static str)],
 ) {
     let mut includes_code = String::new();
     let mut main_code = String::new();
@@ -522,11 +522,11 @@ fn check_features(
     }
 }
 
-fn search_include(include_paths: &Vec<PathBuf>, header: &str) -> String {
+fn search_include(include_paths: &[PathBuf], header: &str) -> String {
     for dir in include_paths {
         let include = dir.join(header);
         if fs::metadata(&include).is_ok() {
-            return format!("{}", include.as_path().to_str().unwrap());
+            return include.as_path().to_str().unwrap().to_string();
         }
     }
     format!("/usr/include/{}", header)
@@ -556,9 +556,7 @@ fn main() {
         );
         link_to_libraries(statik);
         if fs::metadata(&search().join("lib").join("libavutil.a")).is_err() {
-            fs::create_dir_all(&output())
-                .ok()
-                .expect("failed to create build directory");
+            fs::create_dir_all(&output()).expect("failed to create build directory");
             fetch().unwrap();
             build().unwrap();
         }
@@ -680,7 +678,7 @@ fn main() {
 
     check_features(
         include_paths.clone(),
-        &vec![
+        &[
             ("libavutil/avutil.h", None, "FF_API_OLD_AVOPTIONS"),
             ("libavutil/avutil.h", None, "FF_API_PIX_FMT"),
             ("libavutil/avutil.h", None, "FF_API_CONTEXT_SIZE"),
