@@ -11,8 +11,10 @@ use std::path::{Path, PathBuf};
 use std::process::Command;
 use std::str;
 
+use bindgen::callbacks::{
+    EnumVariantCustomBehavior, EnumVariantValue, IntKind, MacroParsingBehavior, ParseCallbacks,
+};
 use regex::Regex;
-use bindgen::callbacks::{EnumVariantCustomBehavior, EnumVariantValue, IntKind, ParseCallbacks, MacroParsingBehavior};
 
 #[derive(Debug)]
 struct Library {
@@ -52,11 +54,13 @@ impl ParseCallbacks for Callbacks {
         let codec_flag = Regex::new(r"^AV_CODEC_FLAG").unwrap();
         let error_max_size = Regex::new(r"^AV_ERROR_MAX_STRING_SIZE").unwrap();
 
-        if value >= i64::min_value() as i64 && value <= i64::max_value() as i64
+        if value >= i64::min_value() as i64
+            && value <= i64::max_value() as i64
             && ch_layout.is_match(_name)
         {
             Some(IntKind::ULongLong)
-        } else if value >= i32::min_value() as i64 && value <= i32::max_value() as i64
+        } else if value >= i32::min_value() as i64
+            && value <= i32::max_value() as i64
             && (codec_cap.is_match(_name) || codec_flag.is_match(_name))
         {
             Some(IntKind::UInt)
@@ -399,7 +403,7 @@ fn check_features(
         ));
     }
 
-    let version_check_info = [("avcodec", 56, 60, 0, 80)];
+    let version_check_info = [("avcodec", 56, 60, 0, 108)];
     for &(lib, begin_version_major, end_version_major, begin_version_minor, end_version_minor) in
         version_check_info.iter()
     {
