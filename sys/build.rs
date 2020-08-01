@@ -521,6 +521,35 @@ fn check_features(
             }
         }
     }
+
+    let ffmpeg_lavc_versions = [
+        ("ffmpeg_3_0", 57, 24),
+        ("ffmpeg_3_1", 57, 48),
+        ("ffmpeg_3_2", 57, 64),
+        ("ffmpeg_3_3", 57, 89),
+        ("ffmpeg_3_1", 57, 107),
+        ("ffmpeg_4_0", 58, 18),
+        ("ffmpeg_4_1", 58, 35),
+        ("ffmpeg_4_2", 58, 54),
+        ("ffmpeg_4_3", 58, 91),
+    ];
+    for &(ffmpeg_version_flag, lavc_version_major, lavc_version_minor) in
+        ffmpeg_lavc_versions.iter()
+    {
+        let search_str = format!(
+            "[avcodec_version_greater_than_{lavc_version_major}_{lavc_version_minor}]",
+            lavc_version_major = lavc_version_major,
+            lavc_version_minor = lavc_version_minor - 1
+        );
+        let pos = stdout
+            .find(&search_str)
+            .expect("Variable not found in output")
+            + search_str.len();
+        if &stdout[pos..pos + 1] == "1" {
+            println!(r#"cargo:rustc-cfg=feature="{}""#, ffmpeg_version_flag);
+            println!(r#"cargo:{}=true"#, ffmpeg_version_flag);
+        }
+    }
 }
 
 fn search_include(include_paths: &[PathBuf], header: &str) -> String {
