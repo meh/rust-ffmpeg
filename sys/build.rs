@@ -2,7 +2,6 @@ extern crate bindgen;
 extern crate cc;
 extern crate num_cpus;
 extern crate pkg_config;
-extern crate regex;
 
 use std::env;
 use std::fs::{self, File};
@@ -14,7 +13,6 @@ use std::str;
 use bindgen::callbacks::{
     EnumVariantCustomBehavior, EnumVariantValue, IntKind, MacroParsingBehavior, ParseCallbacks,
 };
-use regex::Regex;
 
 #[derive(Debug)]
 struct Library {
@@ -49,22 +47,22 @@ struct Callbacks;
 
 impl ParseCallbacks for Callbacks {
     fn int_macro(&self, _name: &str, value: i64) -> Option<IntKind> {
-        let ch_layout = Regex::new(r"^AV_CH").unwrap();
-        let codec_cap = Regex::new(r"^AV_CODEC_CAP").unwrap();
-        let codec_flag = Regex::new(r"^AV_CODEC_FLAG").unwrap();
-        let error_max_size = Regex::new(r"^AV_ERROR_MAX_STRING_SIZE").unwrap();
+        let ch_layout_prefix = "AV_CH_";
+        let codec_cap_prefix = "AV_CODEC_CAP_";
+        let codec_flag_prefix = "AV_CODEC_FLAG_";
+        let error_max_size = "AV_ERROR_MAX_STRING_SIZE";
 
         if value >= i64::min_value() as i64
             && value <= i64::max_value() as i64
-            && ch_layout.is_match(_name)
+            && _name.starts_with(ch_layout_prefix)
         {
             Some(IntKind::ULongLong)
         } else if value >= i32::min_value() as i64
             && value <= i32::max_value() as i64
-            && (codec_cap.is_match(_name) || codec_flag.is_match(_name))
+            && (_name.starts_with(codec_cap_prefix) || _name.starts_with(codec_flag_prefix))
         {
             Some(IntKind::UInt)
-        } else if error_max_size.is_match(_name) {
+        } else if _name == error_max_size {
             Some(IntKind::Custom {
                 name: "usize",
                 is_signed: false,
@@ -82,8 +80,8 @@ impl ParseCallbacks for Callbacks {
         original_variant_name: &str,
         _variant_value: EnumVariantValue,
     ) -> Option<EnumVariantCustomBehavior> {
-        let dummy_codec_id = Regex::new(r"^AV_CODEC_ID_FIRST").unwrap();
-        if dummy_codec_id.is_match(original_variant_name) {
+        let dummy_codec_id_prefix = "AV_CODEC_ID_FIRST_";
+        if original_variant_name.starts_with(dummy_codec_id_prefix) {
             Some(EnumVariantCustomBehavior::Constify)
         } else {
             None
