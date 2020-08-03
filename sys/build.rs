@@ -173,6 +173,9 @@ fn build() -> io::Result<()> {
 
     configure.arg("--enable-pic");
 
+    // stop autodetected libraries enabling themselves, causing linking errors
+    configure.arg("--disable-autodetect");
+
     // do not build programs since we don't need them
     configure.arg("--disable-programs");
 
