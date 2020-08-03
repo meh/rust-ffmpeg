@@ -3,7 +3,7 @@ name    = "ffmpeg-sys"
 version = "4.0.2"
 build   = "build.rs"
 links   = "ffmpeg"
-
+readme = "README.md"
 authors = ["meh. <meh@schizofreni.co>"]
 license = "WTFPL"
 
