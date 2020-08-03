@@ -7,7 +7,7 @@ extern crate regex;
 use std::env;
 use std::fs::{self, create_dir, symlink_metadata, File};
 use std::io::{self, BufRead, BufReader, Write};
-use std::path::PathBuf;
+use std::path::{Path, PathBuf};
 use std::process::Command;
 use std::str;
 
@@ -530,11 +530,12 @@ fn main() {
     }
     // Fallback to pkg-config
     else {
-        pkg_config::Config::new()
+        let mut libavutil = pkg_config::Config::new()
+            .cargo_metadata(false)
             .statik(statik)
             .probe("libavutil")
-            .unwrap()
-            .include_paths;
+            .unwrap();
+        print_pkg_config_libs(statik, &libavutil);
 
         let libs = vec![
             ("libavformat", "AVFORMAT"),
@@ -547,19 +548,24 @@ fn main() {
 
         for (lib_name, env_variable_name) in libs.iter() {
             if env::var(format!("CARGO_FEATURE_{}", env_variable_name)).is_ok() {
-                pkg_config::Config::new()
+                print_pkg_config_libs(statik, &pkg_config::Config::new()
+                    .cargo_metadata(false)
                     .statik(statik)
                     .probe(lib_name)
-                    .unwrap()
-                    .include_paths;
+                    .unwrap());
             }
-        };
+        }
 
-        pkg_config::Config::new()
+        let libavcodec = pkg_config::Config::new()
+            .cargo_metadata(false)
             .statik(statik)
             .probe("libavcodec")
-            .unwrap()
-            .include_paths
+            .unwrap();
+        print_pkg_config_libs(statik, &libavcodec);
+
+        let mut paths = libavcodec.include_paths;
+        paths.append(&mut libavutil.include_paths);
+        paths
     };
 
     if statik && cfg!(target_os = "macos") {
@@ -889,7 +895,7 @@ fn main() {
         ],
     );
 
-    let tmp = std::env::current_dir().unwrap().join("tmp");
+    let tmp = output().join("tmp");
     if symlink_metadata(&tmp).is_err() {
         create_dir(&tmp).expect("Failed to create temporary output dir");
     }
@@ -1025,4 +1031,47 @@ fn main() {
     bindings
         .write_to_file(output().join("bindings.rs"))
         .expect("Couldn't write bindings!");
+}
+
+fn print_pkg_config_libs(statik: bool, lib: &pkg_config::Library) {
+    let target = env::var("TARGET").unwrap();
+    let is_msvc = target.contains("msvc");
+    let is_apple = target.contains("apple");
+
+    for val in &lib.link_paths {
+        println!("cargo:rustc-link-search=native={}", val.display());
+    }
+    for val in &lib.framework_paths {
+        println!("cargo:rustc-link-search=framework={}", val.display());
+    }
+    for val in &lib.frameworks {
+        println!("cargo:rustc-link=framework={}", val);
+    }
+
+    for val in &lib.libs {
+        if is_msvc && ["m", "c", "pthread"].contains(&val.as_str()) {
+            continue;
+        }
+        if is_apple && val == "stdc++" {
+            println!("cargo:rustc-link-lib=c++");
+            continue;
+        }
+
+        if statik && is_static_available(val, &lib.include_paths) {
+            println!("cargo:rustc-link-lib=static={}", val);
+        } else {
+            println!("cargo:rustc-link-lib={}", val);
+        }
+    }
+}
+
+fn is_static_available(lib: &str, dirs: &[PathBuf]) -> bool {
+    let libname = format!("lib{}.a", lib);
+    let has = dirs.iter().map(|d| d.as_path())
+        .chain([Path::new("/usr/local/lib")].iter().copied())
+        .any(|dir| dir.join(&libname).exists());
+    if !has {
+        println!("cargo:warning=static {} not found", libname);
+    }
+    has
 }
