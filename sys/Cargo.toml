@@ -39,6 +39,7 @@ build-license-nonfree  = ["build"]
 build-license-version3 = ["build"]
 
 # misc
+build-drm   = ["build"]
 build-nvenc = ["build"]
 build-pic   = ["build"]
 build-zlib  = ["build"]
