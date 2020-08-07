@@ -1130,8 +1130,6 @@ fn main() {
         .header(search_include(&include_paths, "libavutil/frame.h"))
         .header(search_include(&include_paths, "libavutil/hash.h"))
         .header(search_include(&include_paths, "libavutil/hmac.h"))
-        .header(search_include(&include_paths, "libavutil/hwcontext.h"))
-        .header(search_include(&include_paths, "libavutil/hwcontext_drm.h"))
         .header(search_include(&include_paths, "libavutil/imgutils.h"))
         .header(search_include(&include_paths, "libavutil/lfg.h"))
         .header(search_include(&include_paths, "libavutil/log.h"))
@@ -1161,7 +1159,7 @@ fn main() {
         .header(search_include(&include_paths, "libavutil/twofish.h"))
         .header(search_include(&include_paths, "libavutil/avutil.h"))
         .header(search_include(&include_paths, "libavutil/xtea.h"))
-	.header(search_include(&include_paths, "libavutil/hwcontext.h"));
+        .header(search_include(&include_paths, "libavutil/hwcontext.h"));
 
     if env::var("CARGO_FEATURE_POSTPROC").is_ok() {
         builder = builder.header(search_include(&include_paths, "libpostproc/postprocess.h"));
