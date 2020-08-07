@@ -17,7 +17,8 @@ addons:
 before_install:
   # Without rustfmt, bindgen puts everything on one line and any warnings dump so many logs they break Travis
   # See https://github.com/rust-lang/rust-bindgen/issues/1600
-  - rustup component add rustfmt
+  # optional, because nightlies may not have it
+  - rustup component add rustfmt || true
   - if [[ $TRAVIS_OS_NAME == 'linux' ]]; then ./.travis/install_linux.sh; fi
   - if [[ $TRAVIS_OS_NAME == 'osx' ]]; then brew update; fi
   - if [[ $TRAVIS_OS_NAME == 'osx' ]]; then brew install yasm; fi
