@@ -15,7 +15,7 @@ pub unsafe fn av_cmp_q(a: AVRational, b: AVRational) -> c_int {
     } else if b.den != 0 && a.den != 0 {
         0
     } else if a.num != 0 && b.num != 0 {
-        ((i64::from(a.num) >> 31) - (i64::from(b.num) >> 31)) as c_int
+        (a.num >> 31) - (b.num >> 31)
     } else {
         c_int::min_value()
     }
