@@ -96,4 +96,3 @@ optional = true
 [dependencies.ffmpeg-sys]
 version = "4.2"
 default-features = false
-path = "../ffmpeg-sys"
