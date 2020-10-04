@@ -22,7 +22,7 @@ libc = "0.2"
 num_cpus   = "1.11"
 cc         = "1.0"
 pkg-config = "0.3"
-bindgen    = "0.54"
+bindgen    = "0.55"
 
 [target.'cfg(target_env = "msvc")'.build-dependencies]
 vcpkg = "0.2"
