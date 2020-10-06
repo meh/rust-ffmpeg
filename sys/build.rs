@@ -194,6 +194,7 @@ fn build() -> io::Result<()> {
     if env::var("DEBUG").is_ok() {
         configure.arg("--enable-debug");
         configure.arg("--disable-stripping");
+        configure.arg("--disable-optimizations");
     } else {
         configure.arg("--disable-debug");
         configure.arg("--enable-stripping");
