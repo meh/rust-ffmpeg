@@ -2,6 +2,7 @@
 name    = "ffmpeg-next"
 version = "4.4.0-dev"
 build   = "build.rs"
+edition = "2018"
 
 authors = ["meh. <meh@schizofreni.co>", "Zhiming Wang <i@zhimingwang.org>"]
 license = "WTFPL"
@@ -105,6 +106,7 @@ rpi = []
 [dependencies]
 libc     = "0.2"
 bitflags = "1.2"
+thiserror = "1"
 
 [dependencies.image]
 version  = "0.12"
