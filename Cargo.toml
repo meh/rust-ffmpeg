@@ -2,6 +2,7 @@
 name    = "ffmpeg"
 version = "0.3.0"
 build   = "build.rs"
+edition = "2018"
 
 authors = ["meh. <meh@schizofreni.co>"]
 license = "WTFPL"
@@ -86,8 +87,9 @@ postprocessing      = ["ffmpeg-sys/postproc"]
 software-scaling    = ["ffmpeg-sys/swscale", "codec"]
 
 [dependencies]
-libc     = "0.2"
-bitflags = "1.0"
+libc      = "0.2"
+bitflags  = "1.0"
+thiserror = "1"
 
 [dependencies.image]
 version  = "0.23"
