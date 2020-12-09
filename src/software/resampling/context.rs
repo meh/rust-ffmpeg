@@ -1,10 +1,10 @@
 use std::ptr;
 
 use super::Delay;
-use ffi::*;
+use crate::ffi::*;
 use libc::c_int;
-use util::format;
-use {frame, ChannelLayout, Error};
+use crate::util::format;
+use crate::{frame, ChannelLayout, Error};
 
 #[derive(Eq, PartialEq, Copy, Clone)]
 pub struct Definition {

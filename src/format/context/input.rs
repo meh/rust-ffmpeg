@@ -4,9 +4,9 @@ use std::ops::{Deref, DerefMut};
 
 use super::common::Context;
 use super::destructor;
-use ffi::*;
-use util::range::Range;
-use {format, Codec, Error, Packet, Stream};
+use crate::ffi::*;
+use crate::util::range::Range;
+use crate::{format, Codec, Error, Packet, Stream};
 
 pub struct Input {
     ptr: *mut AVFormatContext,

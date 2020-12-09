@@ -16,8 +16,8 @@ pub use self::graph::Graph;
 use std::ffi::{CStr, CString};
 use std::str::from_utf8_unchecked;
 
-use ffi::*;
-use Error;
+use crate::ffi::*;
+use crate::Error;
 
 pub fn register_all() {
     unsafe {

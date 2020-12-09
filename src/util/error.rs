@@ -4,7 +4,7 @@ use std::fmt;
 use std::io;
 use std::str::from_utf8_unchecked;
 
-use ffi::*;
+use crate::ffi::*;
 use libc::{c_char, c_int};
 
 // Export POSIX error codes so that users can do something like

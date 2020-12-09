@@ -3,13 +3,13 @@ use std::ops::{Deref, DerefMut};
 use std::slice;
 
 use super::Frame;
-use color;
-use ffi::*;
+use crate::color;
+use crate::ffi::*;
 use libc::c_int;
-use picture;
-use util::chroma;
-use util::format;
-use Rational;
+use crate::picture;
+use crate::util::chroma;
+use crate::util::format;
+use crate::Rational;
 
 #[derive(PartialEq, Eq)]
 pub struct Video(Frame);

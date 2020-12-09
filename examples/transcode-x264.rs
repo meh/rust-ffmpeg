@@ -21,7 +21,7 @@ use std::collections::HashMap;
 use std::env;
 use std::time::Instant;
 
-use ffmpeg::{
+use crate::ffmpeg::{
     codec, decoder, encoder, format, frame, log, media, picture, Dictionary, Packet, Rational,
 };
 

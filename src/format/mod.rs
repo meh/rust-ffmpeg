@@ -1,6 +1,6 @@
-pub use util::format::{pixel, Pixel};
-pub use util::format::{sample, Sample};
-use util::interrupt;
+pub use crate::util::format::{pixel, Pixel};
+pub use crate::util::format::{sample, Sample};
+use crate::util::interrupt;
 
 pub mod stream;
 
@@ -20,8 +20,8 @@ use std::path::Path;
 use std::ptr;
 use std::str::from_utf8_unchecked;
 
-use ffi::*;
-use {Dictionary, Error, Format};
+use crate::ffi::*;
+use crate::{Dictionary, Error, Format};
 
 pub fn register_all() {
     unsafe {

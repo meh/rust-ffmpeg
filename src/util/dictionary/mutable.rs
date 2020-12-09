@@ -4,7 +4,7 @@ use std::marker::PhantomData;
 use std::ops::Deref;
 
 use super::immutable;
-use ffi::*;
+use crate::ffi::*;
 
 pub struct Ref<'a> {
     ptr: *mut AVDictionary,

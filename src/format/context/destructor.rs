@@ -1,4 +1,4 @@
-use ffi::*;
+use crate::ffi::*;
 
 #[derive(Copy, Clone, Debug)]
 pub enum Mode {
