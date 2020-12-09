@@ -924,8 +924,8 @@ impl fmt::Display for ParsePixelError {
 impl error::Error for ParsePixelError {
     fn description(&self) -> &str {
         match *self {
-            ParsePixelError::NulError(ref e) => e.description(),
-            ParsePixelError::UnknownFormat => "unknown pixel format",
+            ParsePixelError::NulError(ref e) => e.to_string(),
+            ParsePixelError::UnknownFormat => "unknown pixel format".to_string(),
         }
     }
 

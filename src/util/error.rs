@@ -120,7 +120,7 @@ impl From<Error> for io::Error {
 
 impl fmt::Display for Error {
     fn fmt(&self, f: &mut fmt::Formatter) -> Result<(), fmt::Error> {
-        f.write_str(error::Error::description(self))
+        f.write_str(&self.to_string())
     }
 }
 
