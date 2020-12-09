@@ -5,7 +5,7 @@ use std::io;
 use std::os::raw::c_char;
 use std::str::from_utf8_unchecked;
 
-use ffi::*;
+use crate::ffi::*;
 use libc::c_int;
 
 #[derive(Copy, Clone)]

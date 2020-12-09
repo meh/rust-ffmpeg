@@ -3,7 +3,7 @@ use std::ops::{Deref, DerefMut};
 use std::ptr;
 use std::fmt;
 use super::mutable;
-use ffi::*;
+use crate::ffi::*;
 
 pub struct Owned<'a> {
     inner: mutable::Ref<'a>,

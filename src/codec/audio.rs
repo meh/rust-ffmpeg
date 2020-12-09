@@ -1,8 +1,8 @@
 use std::ops::Deref;
 
 use super::codec::Codec;
-use ffi::*;
-use {format, ChannelLayout};
+use crate::ffi::*;
+use crate::{format, ChannelLayout};
 
 #[derive(PartialEq, Eq, Copy, Clone)]
 pub struct Audio {
@@ -121,7 +121,7 @@ impl ChannelLayoutIter {
     }
 
     pub fn best(self, max: i32) -> ChannelLayout {
-        self.fold(::channel_layout::ChannelLayout::MONO, |acc, cur| {
+        self.fold(crate::channel_layout::ChannelLayout::MONO, |acc, cur| {
             if cur.channels() > acc.channels() && cur.channels() <= max {
                 cur
             } else {

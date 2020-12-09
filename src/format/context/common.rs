@@ -3,9 +3,9 @@ use std::ptr;
 use std::rc::Rc;
 use std::fmt;
 use super::destructor::{self, Destructor};
-use ffi::*;
+use crate::ffi::*;
 use libc::{c_int, c_uint};
-use {media, Chapter, ChapterMut, DictionaryRef, Stream, StreamMut};
+use crate::{media, Chapter, ChapterMut, DictionaryRef, Stream, StreamMut};
 
 pub struct Context {
     ptr: *mut AVFormatContext,

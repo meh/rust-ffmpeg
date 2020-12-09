@@ -3,8 +3,8 @@ use std::ffi::{CStr, CString, NulError};
 use std::fmt;
 use std::str::{from_utf8_unchecked, FromStr};
 
-use ffi::AVPixelFormat::*;
-use ffi::*;
+use crate::ffi::AVPixelFormat::*;
+use crate::ffi::*;
 
 #[derive(Eq, PartialEq, Copy, Clone, Debug)]
 pub enum Pixel {

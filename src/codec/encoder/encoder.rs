@@ -1,9 +1,9 @@
 use std::ops::{Deref, DerefMut};
 
 use super::{audio, subtitle, video};
-use codec::Context;
+use crate::codec::Context;
 use libc::c_int;
-use {media, Error, Rational};
+use crate::{media, Error, Rational};
 
 pub struct Encoder(pub Context);
 

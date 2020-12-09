@@ -1,7 +1,7 @@
-use ffi::*;
-use {DictionaryRef, Rational};
+use crate::ffi::*;
+use crate::{DictionaryRef, Rational};
 
-use format::context::common::Context;
+use crate::format::context::common::Context;
 
 // WARNING: index refers to the offset in the chapters array (starting from 0)
 // it is not necessarly equal to the id (which may start at 1)

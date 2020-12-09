@@ -1,6 +1,6 @@
 use super::Context;
-use util::format;
-use {decoder, frame, ChannelLayout, Error};
+use crate::util::format;
+use crate::{decoder, frame, ChannelLayout, Error};
 
 impl frame::Audio {
     #[inline]

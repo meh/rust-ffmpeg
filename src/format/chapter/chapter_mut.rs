@@ -2,9 +2,9 @@ use std::mem;
 use std::ops::Deref;
 
 use super::Chapter;
-use ffi::*;
-use format::context::common::Context;
-use {Dictionary, DictionaryMut, Rational};
+use crate::ffi::*;
+use crate::format::context::common::Context;
+use crate::{Dictionary, DictionaryMut, Rational};
 
 // WARNING: index refers to the offset in the chapters array (starting from 0)
 // it is not necessarly equal to the id (which may start at 1)

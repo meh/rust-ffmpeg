@@ -1,5 +1,5 @@
-use ffi::*;
-use Error;
+use crate::ffi::*;
+use crate::Error;
 
 #[inline(always)]
 pub fn current() -> i64 {

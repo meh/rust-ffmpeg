@@ -3,8 +3,8 @@ use std::marker::PhantomData;
 use std::str::from_utf8_unchecked;
 
 use super::{Flags, Type};
-use ffi::*;
-use {format, Picture};
+use crate::ffi::*;
+use crate::{format, Picture};
 
 pub enum Rect<'a> {
     None(*const AVSubtitleRect),

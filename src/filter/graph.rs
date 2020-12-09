@@ -3,9 +3,9 @@ use std::ptr;
 use std::str::from_utf8_unchecked;
 
 use super::{Context, Filter};
-use ffi::*;
+use crate::ffi::*;
 use libc::c_int;
-use Error;
+use crate::Error;
 
 pub struct Graph {
     ptr: *mut AVFilterGraph,
