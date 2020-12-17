@@ -1,6 +1,6 @@
 use std::{
     ffi::{CStr, CString, NulError},
-    str::{from_utf8_unchecked, FromStr}
+    str::{from_utf8_unchecked, FromStr},
 };
 
 use thiserror::Error;
@@ -49,9 +49,13 @@ pub enum Pixel {
 
     GRAY16BE,
     GRAY16LE,
+    #[cfg(feature = "ffmpeg_4_1")]
     GRAY14BE,
+    #[cfg(feature = "ffmpeg_4_1")]
     GRAY14LE,
+    #[cfg(feature = "ffmpeg_4_1")]
     GRAYF32BE,
+    #[cfg(feature = "ffmpeg_4_1")]
     GRAYF32LE,
     YUV440P,
     YUVJ440P,
@@ -168,8 +172,10 @@ pub enum Pixel {
     QSV,
     MMAL,
 
+    #[cfg(feature = "ffmpeg_3_3")]
     D3D11VA_VLD,
 
+    #[cfg(feature = "ffmpeg_3_3")]
     CUDA,
 
     ZRGB,
@@ -223,6 +229,7 @@ pub enum Pixel {
     VIDEOTOOLBOX,
 
     // --- defaults
+    #[cfg(not(feature = "ff_api_xvmc"))]
     XVMC,
 
     RGB32,
@@ -294,13 +301,16 @@ pub enum Pixel {
     GBRAP10LE,
     GBRAP10BE,
     MEDIACODEC,
+    #[cfg(feature = "ffmpeg_3_3")]
     GRAY12BE,
+    #[cfg(feature = "ffmpeg_3_3")]
     GRAY12LE,
     GRAY10BE,
     GRAY10LE,
     P016LE,
     P016BE,
 
+    #[cfg(feature = "ffmpeg_3_3")]
     D3D11,
     GRAY9BE,
     GRAY9LE,
@@ -309,6 +319,7 @@ pub enum Pixel {
     GBRAPF32BE,
     GBRAPF32LE,
     DRM_PRIME,
+    #[cfg(feature = "ffmpeg_4_0")]
     OPENCL,
 }
 
@@ -396,9 +407,13 @@ impl From<AVPixelFormat> for Pixel {
 
             AV_PIX_FMT_GRAY16BE => Pixel::GRAY16BE,
             AV_PIX_FMT_GRAY16LE => Pixel::GRAY16LE,
+            #[cfg(feature = "ffmpeg_4_1")]
             AV_PIX_FMT_GRAY14BE => Pixel::GRAY14BE,
+            #[cfg(feature = "ffmpeg_4_1")]
             AV_PIX_FMT_GRAY14LE => Pixel::GRAY14LE,
+            #[cfg(feature = "ffmpeg_4_1")]
             AV_PIX_FMT_GRAYF32BE => Pixel::GRAYF32BE,
+            #[cfg(feature = "ffmpeg_4_1")]
             AV_PIX_FMT_GRAYF32LE => Pixel::GRAYF32LE,
             AV_PIX_FMT_YUV440P => Pixel::YUV440P,
             AV_PIX_FMT_YUVJ440P => Pixel::YUVJ440P,
@@ -513,8 +528,10 @@ impl From<AVPixelFormat> for Pixel {
             AV_PIX_FMT_QSV => Pixel::QSV,
             AV_PIX_FMT_MMAL => Pixel::MMAL,
 
+            #[cfg(feature = "ffmpeg_3_3")]
             AV_PIX_FMT_D3D11VA_VLD => Pixel::D3D11VA_VLD,
 
+            #[cfg(feature = "ffmpeg_3_3")]
             AV_PIX_FMT_CUDA => Pixel::CUDA,
 
             AV_PIX_FMT_0RGB => Pixel::ZRGB,
@@ -567,6 +584,7 @@ impl From<AVPixelFormat> for Pixel {
 
             AV_PIX_FMT_VIDEOTOOLBOX => Pixel::VIDEOTOOLBOX,
 
+            #[cfg(not(feature = "ff_api_xvmc"))]
             AV_PIX_FMT_XVMC => Pixel::XVMC,
 
             AV_PIX_FMT_P010LE => Pixel::P010LE,
@@ -576,7 +594,9 @@ impl From<AVPixelFormat> for Pixel {
             AV_PIX_FMT_GBRAP10LE => Pixel::GBRAP10LE,
             AV_PIX_FMT_GBRAP10BE => Pixel::GBRAP10BE,
             AV_PIX_FMT_MEDIACODEC => Pixel::MEDIACODEC,
+            #[cfg(feature = "ffmpeg_3_3")]
             AV_PIX_FMT_GRAY12BE => Pixel::GRAY12BE,
+            #[cfg(feature = "ffmpeg_3_3")]
             AV_PIX_FMT_GRAY12LE => Pixel::GRAY12LE,
             AV_PIX_FMT_GRAY10BE => Pixel::GRAY10BE,
             AV_PIX_FMT_GRAY10LE => Pixel::GRAY10LE,
@@ -585,6 +605,7 @@ impl From<AVPixelFormat> for Pixel {
 
             AV_PIX_FMT_NB => Pixel::None,
 
+            #[cfg(feature = "ffmpeg_3_3")]
             AV_PIX_FMT_D3D11 => Pixel::D3D11,
             AV_PIX_FMT_GRAY9BE => Pixel::GRAY9BE,
             AV_PIX_FMT_GRAY9LE => Pixel::GRAY9LE,
@@ -593,6 +614,7 @@ impl From<AVPixelFormat> for Pixel {
             AV_PIX_FMT_GBRAPF32BE => Pixel::GBRAPF32BE,
             AV_PIX_FMT_GBRAPF32LE => Pixel::GBRAPF32LE,
             AV_PIX_FMT_DRM_PRIME => Pixel::DRM_PRIME,
+            #[cfg(feature = "ffmpeg_4_0")]
             AV_PIX_FMT_OPENCL => Pixel::OPENCL,
 
             _ => unimplemented!(),
@@ -643,9 +665,13 @@ impl Into<AVPixelFormat> for Pixel {
 
             Pixel::GRAY16BE => AV_PIX_FMT_GRAY16BE,
             Pixel::GRAY16LE => AV_PIX_FMT_GRAY16LE,
+            #[cfg(feature = "ffmpeg_4_1")]
             Pixel::GRAY14BE => AV_PIX_FMT_GRAY14BE,
+            #[cfg(feature = "ffmpeg_4_1")]
             Pixel::GRAY14LE => AV_PIX_FMT_GRAY14LE,
+            #[cfg(feature = "ffmpeg_4_1")]
             Pixel::GRAYF32BE => AV_PIX_FMT_GRAYF32BE,
+            #[cfg(feature = "ffmpeg_4_1")]
             Pixel::GRAYF32LE => AV_PIX_FMT_GRAYF32LE,
             Pixel::YUV440P => AV_PIX_FMT_YUV440P,
             Pixel::YUVJ440P => AV_PIX_FMT_YUVJ440P,
@@ -762,8 +788,10 @@ impl Into<AVPixelFormat> for Pixel {
             Pixel::QSV => AV_PIX_FMT_QSV,
             Pixel::MMAL => AV_PIX_FMT_MMAL,
 
+            #[cfg(feature = "ffmpeg_3_3")]
             Pixel::D3D11VA_VLD => AV_PIX_FMT_D3D11VA_VLD,
 
+            #[cfg(feature = "ffmpeg_3_3")]
             Pixel::CUDA => AV_PIX_FMT_CUDA,
 
             Pixel::ZRGB => AV_PIX_FMT_0RGB,
@@ -817,6 +845,7 @@ impl Into<AVPixelFormat> for Pixel {
             Pixel::VIDEOTOOLBOX => AV_PIX_FMT_VIDEOTOOLBOX,
 
             // --- defaults
+            #[cfg(not(feature = "ff_api_xvmc"))]
             Pixel::XVMC => AV_PIX_FMT_XVMC,
 
             Pixel::RGB32 => AV_PIX_FMT_RGB32,
@@ -888,13 +917,16 @@ impl Into<AVPixelFormat> for Pixel {
             Pixel::GBRAP10LE => AV_PIX_FMT_GBRAP10LE,
             Pixel::GBRAP10BE => AV_PIX_FMT_GBRAP10BE,
             Pixel::MEDIACODEC => AV_PIX_FMT_MEDIACODEC,
+            #[cfg(feature = "ffmpeg_3_3")]
             Pixel::GRAY12BE => AV_PIX_FMT_GRAY12BE,
+            #[cfg(feature = "ffmpeg_3_3")]
             Pixel::GRAY12LE => AV_PIX_FMT_GRAY12LE,
             Pixel::GRAY10BE => AV_PIX_FMT_GRAY10BE,
             Pixel::GRAY10LE => AV_PIX_FMT_GRAY10LE,
             Pixel::P016LE => AV_PIX_FMT_P016LE,
             Pixel::P016BE => AV_PIX_FMT_P016BE,
 
+            #[cfg(feature = "ffmpeg_3_3")]
             Pixel::D3D11 => AV_PIX_FMT_D3D11,
             Pixel::GRAY9BE => AV_PIX_FMT_GRAY9BE,
             Pixel::GRAY9LE => AV_PIX_FMT_GRAY9LE,
@@ -903,6 +935,7 @@ impl Into<AVPixelFormat> for Pixel {
             Pixel::GBRAPF32BE => AV_PIX_FMT_GBRAPF32BE,
             Pixel::GBRAPF32LE => AV_PIX_FMT_GBRAPF32LE,
             Pixel::DRM_PRIME => AV_PIX_FMT_DRM_PRIME,
+            #[cfg(feature = "ffmpeg_4_0")]
             Pixel::OPENCL => AV_PIX_FMT_OPENCL,
         }
     }

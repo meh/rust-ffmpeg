@@ -3,11 +3,13 @@ use std::rc::Rc;
 
 use super::decoder::Decoder;
 use super::encoder::Encoder;
-use super::{threading, Compliance, Debug, Flags, Id, Parameters};
+#[cfg(feature = "ffmpeg_3_1")]
+use super::Parameters;
+use super::{threading, Compliance, Debug, Flags, Id};
 use crate::ffi::*;
-use libc::c_int;
 use crate::media;
 use crate::{Codec, Error};
+use libc::c_int;
 
 pub struct Context {
     ptr: *mut AVCodecContext,
@@ -105,6 +107,7 @@ impl Context {
         }
     }
 
+    #[cfg(feature = "ffmpeg_3_1")]
     pub fn set_parameters<P: Into<Parameters>>(&mut self, parameters: P) -> Result<(), Error> {
         let parameters = parameters.into();
 

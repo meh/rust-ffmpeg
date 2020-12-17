@@ -2,8 +2,8 @@ use super::Disposition;
 use crate::codec::{self, packet};
 use crate::ffi::*;
 use crate::format::context::common::Context;
-use libc::c_int;
 use crate::{DictionaryRef, Discard, Rational};
+use libc::c_int;
 
 #[derive(Debug)]
 pub struct Stream<'a> {
@@ -33,9 +33,16 @@ impl<'a> Stream<'a> {
         unsafe { codec::Context::wrap((*self.as_ptr()).codec, Some(self.context.destructor())) }
     }
 
+    #[cfg(feature = "ffmpeg_3_1")]
     pub fn parameters(&self) -> codec::Parameters {
+        #[cfg(feature = "ffmpeg_3_1")]
         unsafe {
             codec::Parameters::wrap((*self.as_ptr()).codecpar, Some(self.context.destructor()))
+        }
+
+        #[cfg(not(feature = "ffmpeg_3_1"))]
+        unsafe {
+            codec::Parameters::wrap((*self.as_ptr()).codec, Some(self.context.destructor()))
         }
     }
 

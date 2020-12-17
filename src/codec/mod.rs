@@ -20,7 +20,9 @@ pub use self::capabilities::Capabilities;
 
 pub mod codec;
 
+#[cfg(feature = "ffmpeg_3_1")]
 pub mod parameters;
+#[cfg(feature = "ffmpeg_3_1")]
 pub use self::parameters::Parameters;
 
 pub mod video;
