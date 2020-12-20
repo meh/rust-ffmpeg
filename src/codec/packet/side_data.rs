@@ -26,17 +26,24 @@ pub enum Type {
     WebVTTIdentifier,
     WebVTTSettings,
     MetadataUpdate,
+    #[cfg(feature = "ffmpeg_3_1")]
     MPEGTSStreamID,
     MasteringDisplayMetadata,
+    #[cfg(feature = "ffmpeg_3_3")]
     DataSpherical,
     DataNb,
 
+    #[cfg(feature = "ffmpeg_3_3")]
     ContentLightLevel,
+    #[cfg(feature = "ffmpeg_3_4")]
     A53CC,
 
+    #[cfg(feature = "ffmpeg_4_0")]
     EncryptionInitInfo,
+    #[cfg(feature = "ffmpeg_4_0")]
     EncryptionInfo,
 
+    #[cfg(feature = "ffmpeg_4_1")]
     AFD,
 }
 
@@ -63,15 +70,22 @@ impl From<AVPacketSideDataType> for Type {
             AV_PKT_DATA_WEBVTT_IDENTIFIER => Type::WebVTTIdentifier,
             AV_PKT_DATA_WEBVTT_SETTINGS => Type::WebVTTSettings,
             AV_PKT_DATA_METADATA_UPDATE => Type::MetadataUpdate,
+            #[cfg(feature = "ffmpeg_3_1")]
             AV_PKT_DATA_MPEGTS_STREAM_ID => Type::MPEGTSStreamID,
             AV_PKT_DATA_MASTERING_DISPLAY_METADATA => Type::MasteringDisplayMetadata,
+            #[cfg(feature = "ffmpeg_3_3")]
             AV_PKT_DATA_SPHERICAL => Type::DataSpherical,
             AV_PKT_DATA_NB => Type::DataNb,
 
+            #[cfg(feature = "ffmpeg_3_3")]
             AV_PKT_DATA_CONTENT_LIGHT_LEVEL => Type::ContentLightLevel,
+            #[cfg(feature = "ffmpeg_3_4")]
             AV_PKT_DATA_A53_CC => Type::A53CC,
+            #[cfg(feature = "ffmpeg_4_0")]
             AV_PKT_DATA_ENCRYPTION_INIT_INFO => Type::EncryptionInitInfo,
+            #[cfg(feature = "ffmpeg_4_0")]
             AV_PKT_DATA_ENCRYPTION_INFO => Type::EncryptionInfo,
+            #[cfg(feature = "ffmpeg_4_1")]
             AV_PKT_DATA_AFD => Type::AFD,
 
             _ => unimplemented!(),
@@ -101,15 +115,22 @@ impl Into<AVPacketSideDataType> for Type {
             Type::WebVTTIdentifier => AV_PKT_DATA_WEBVTT_IDENTIFIER,
             Type::WebVTTSettings => AV_PKT_DATA_WEBVTT_SETTINGS,
             Type::MetadataUpdate => AV_PKT_DATA_METADATA_UPDATE,
+            #[cfg(feature = "ffmpeg_3_1")]
             Type::MPEGTSStreamID => AV_PKT_DATA_MPEGTS_STREAM_ID,
             Type::MasteringDisplayMetadata => AV_PKT_DATA_MASTERING_DISPLAY_METADATA,
+            #[cfg(feature = "ffmpeg_3_3")]
             Type::DataSpherical => AV_PKT_DATA_SPHERICAL,
             Type::DataNb => AV_PKT_DATA_NB,
 
+            #[cfg(feature = "ffmpeg_3_3")]
             Type::ContentLightLevel => AV_PKT_DATA_CONTENT_LIGHT_LEVEL,
+            #[cfg(feature = "ffmpeg_3_4")]
             Type::A53CC => AV_PKT_DATA_A53_CC,
+            #[cfg(feature = "ffmpeg_4_0")]
             Type::EncryptionInitInfo => AV_PKT_DATA_ENCRYPTION_INIT_INFO,
+            #[cfg(feature = "ffmpeg_4_0")]
             Type::EncryptionInfo => AV_PKT_DATA_ENCRYPTION_INFO,
+            #[cfg(feature = "ffmpeg_4_1")]
             Type::AFD => AV_PKT_DATA_AFD,
         }
     }

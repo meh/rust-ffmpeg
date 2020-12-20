@@ -15,7 +15,8 @@ keywords    = ["audio", "video"]
 default = ["codec", "device", "filter", "format", "resampling", "software-scaling"]
 
 static = ["ffmpeg-sys/static"]
-build  = ["static", "ffmpeg-sys/build"]
+# Currently the version built by ffmpeg-sys is 4.1
+build  = ["static", "ffmpeg-sys/build", "ffmpeg_4_1"]
 
 # licensing
 build-license-gpl      = ["ffmpeg-sys/build-license-gpl"]
@@ -85,6 +86,16 @@ format              = ["ffmpeg-sys/avformat", "codec"]
 resampling          = ["ffmpeg-sys/swresample"]
 postprocessing      = ["ffmpeg-sys/postproc"]
 software-scaling    = ["ffmpeg-sys/swscale", "codec"]
+
+# The minimum version supported is FFMpeg 3.0, which is enabled automatically
+ffmpeg_3_1 = []
+ffmpeg_3_2 = ["ffmpeg_3_1"]
+ffmpeg_3_3 = ["ffmpeg_3_2"]
+ffmpeg_3_4 = ["ffmpeg_3_3"]
+ffmpeg_4_0 = ["ffmpeg_3_4"]
+ffmpeg_4_1 = ["ffmpeg_4_0"]
+ffmpeg_4_2 = ["ffmpeg_4_1"]
+ffmpeg_4_3 = ["ffmpeg_4_2"]
 
 [dependencies]
 libc      = "0.2"
