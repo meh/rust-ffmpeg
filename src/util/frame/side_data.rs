@@ -23,9 +23,12 @@ pub enum Type {
     AudioServiceType,
     MasteringDisplayMetadata,
     GOPTimecode,
+    #[cfg(feature = "ffmpeg_3_3")]
     Spherical,
 
+    #[cfg(feature = "ffmpeg_3_3")]
     ContentLightLevel,
+    #[cfg(feature = "ffmpeg_3_4")]
     IccProfile,
 
     #[cfg(feature = "ffmpeg_4_0")]
@@ -71,9 +74,12 @@ impl From<AVFrameSideDataType> for Type {
             AV_FRAME_DATA_AUDIO_SERVICE_TYPE => Type::AudioServiceType,
             AV_FRAME_DATA_MASTERING_DISPLAY_METADATA => Type::MasteringDisplayMetadata,
             AV_FRAME_DATA_GOP_TIMECODE => Type::GOPTimecode,
+            #[cfg(feature = "ffmpeg_3_3")]
             AV_FRAME_DATA_SPHERICAL => Type::Spherical,
 
+            #[cfg(feature = "ffmpeg_3_3")]
             AV_FRAME_DATA_CONTENT_LIGHT_LEVEL => Type::ContentLightLevel,
+            #[cfg(feature = "ffmpeg_3_4")]
             AV_FRAME_DATA_ICC_PROFILE => Type::IccProfile,
 
             #[cfg(feature = "ffmpeg_4_0")]
@@ -112,9 +118,12 @@ impl Into<AVFrameSideDataType> for Type {
             Type::AudioServiceType => AV_FRAME_DATA_AUDIO_SERVICE_TYPE,
             Type::MasteringDisplayMetadata => AV_FRAME_DATA_MASTERING_DISPLAY_METADATA,
             Type::GOPTimecode => AV_FRAME_DATA_GOP_TIMECODE,
+            #[cfg(feature = "ffmpeg_3_3")]
             Type::Spherical => AV_FRAME_DATA_SPHERICAL,
 
+            #[cfg(feature = "ffmpeg_3_3")]
             Type::ContentLightLevel => AV_FRAME_DATA_CONTENT_LIGHT_LEVEL,
+            #[cfg(feature = "ffmpeg_3_4")]
             Type::IccProfile => AV_FRAME_DATA_ICC_PROFILE,
 
             #[cfg(feature = "ffmpeg_4_0")]

@@ -28,6 +28,7 @@ ffmpeg41 = []
 ffmpeg4 = []
 
 static = ["ffmpeg-sys/static"]
+# Currently the version built by ffmpeg-sys is 4.1
 build  = ["static", "ffmpeg-sys/build"]
 
 # licensing

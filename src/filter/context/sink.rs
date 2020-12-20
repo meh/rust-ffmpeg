@@ -1,7 +1,7 @@
 use super::Context;
 use crate::ffi::*;
-use libc::c_int;
 use crate::{Error, Frame};
+use libc::c_int;
 
 pub struct Sink<'a> {
     ctx: &'a mut Context<'a>,
@@ -14,6 +14,7 @@ impl<'a> Sink<'a> {
 }
 
 impl<'a> Sink<'a> {
+    #[cfg(feature = "ffmpeg_3_3")]
     pub fn frame(&mut self, frame: &mut Frame) -> Result<(), Error> {
         unsafe {
             match av_buffersink_get_frame(self.ctx.as_mut_ptr(), frame.as_mut_ptr()) {
@@ -23,6 +24,7 @@ impl<'a> Sink<'a> {
         }
     }
 
+    #[cfg(feature = "ffmpeg_3_3")]
     pub fn samples(&mut self, frame: &mut Frame, samples: usize) -> Result<(), Error> {
         unsafe {
             match av_buffersink_get_samples(

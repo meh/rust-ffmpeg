@@ -11,8 +11,8 @@ pub mod flag;
 pub use self::flag::Flags;
 
 use crate::ffi::*;
-use libc::c_int;
 use crate::{Dictionary, DictionaryRef};
+use libc::c_int;
 
 #[derive(PartialEq, Eq, Copy, Clone, Debug)]
 pub struct Packet {
@@ -77,6 +77,19 @@ impl Frame {
 
     #[inline]
     pub fn packet(&self) -> Packet {
+        #[cfg(feature = "ffmpeg_3_2")]
+        unsafe {
+            Packet {
+                duration: av_frame_get_pkt_duration(self.as_ptr()) as i64,
+                position: av_frame_get_pkt_pos(self.as_ptr()) as i64,
+                size: av_frame_get_pkt_size(self.as_ptr()) as usize,
+
+                pts: (*self.as_ptr()).pts,
+                dts: (*self.as_ptr()).pkt_dts,
+            }
+        }
+
+        #[cfg(not(feature = "ffmpeg_3_2"))]
         unsafe {
             Packet {
                 duration: av_frame_get_pkt_duration(self.as_ptr()) as i64,

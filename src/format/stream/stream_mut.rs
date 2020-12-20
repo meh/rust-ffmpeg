@@ -47,11 +47,18 @@ impl<'a> StreamMut<'a> {
         }
     }
 
+    #[cfg(feature = "ffmpeg_3_1")]
     pub fn set_parameters<P: Into<codec::Parameters>>(&mut self, parameters: P) {
         let parameters = parameters.into();
 
+        #[cfg(feature = "ffmpeg_3_1")]
         unsafe {
             avcodec_parameters_copy((*self.as_mut_ptr()).codecpar, parameters.as_ptr());
+        }
+
+        #[cfg(not(feature = "ffmpeg_3_1"))]
+        unsafe {
+            avcodec_parameters_copy((*self.as_mut_ptr()).codec, parameters.as_ptr());
         }
     }
 
