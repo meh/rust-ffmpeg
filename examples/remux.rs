@@ -42,7 +42,8 @@ fn main() {
     octx.set_metadata(ictx.metadata().to_owned());
     octx.write_header().unwrap();
 
-    for (stream, mut packet) in ictx.packets() {
+    let mut packets = ictx.packets();
+    while let Some(Ok((stream, mut packet))) = packets.next() {
         let ist_index = stream.index();
         let ost_index = stream_mapping[ist_index];
         if ost_index < 0 {
