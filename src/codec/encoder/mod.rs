@@ -20,40 +20,42 @@ pub mod comparison;
 pub use self::comparison::Comparison;
 
 pub mod decision;
-pub use self::decision::Decision;
-
 use std::ffi::CString;
 
-use crate::codec::Context;
-use crate::codec::Id;
-use crate::ffi::*;
-use crate::Codec;
+pub use self::decision::Decision;
+use crate::{
+	codec::{Context, Id},
+	ffi::*,
+	Codec,
+};
 
 pub fn new() -> Encoder {
-    Context::new().encoder()
+	Context::new().encoder()
 }
 
 pub fn find(id: Id) -> Option<Codec> {
-    unsafe {
-        let ptr = avcodec_find_encoder(id.into());
+	unsafe {
+		let ptr = avcodec_find_encoder(id.into());
 
-        if ptr.is_null() {
-            None
-        } else {
-            Some(Codec::wrap(ptr))
-        }
-    }
+		if ptr.is_null() {
+			None
+		}
+		else {
+			Some(Codec::wrap(ptr))
+		}
+	}
 }
 
 pub fn find_by_name(name: &str) -> Option<Codec> {
-    unsafe {
-        let name = CString::new(name).unwrap();
-        let ptr = avcodec_find_encoder_by_name(name.as_ptr());
+	unsafe {
+		let name = CString::new(name).unwrap();
+		let ptr = avcodec_find_encoder_by_name(name.as_ptr());
 
-        if ptr.is_null() {
-            None
-        } else {
-            Some(Codec::wrap(ptr))
-        }
-    }
+		if ptr.is_null() {
+			None
+		}
+		else {
+			Some(Codec::wrap(ptr))
+		}
+	}
 }

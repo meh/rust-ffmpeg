@@ -49,19 +49,18 @@ pub mod decoder;
 pub mod encoder;
 pub mod traits;
 
-use std::ffi::CStr;
-use std::str::from_utf8_unchecked;
+use std::{ffi::CStr, str::from_utf8_unchecked};
 
 use crate::ffi::*;
 
 pub fn version() -> u32 {
-    unsafe { avcodec_version() }
+	unsafe { avcodec_version() }
 }
 
 pub fn configuration() -> &'static str {
-    unsafe { from_utf8_unchecked(CStr::from_ptr(avcodec_configuration()).to_bytes()) }
+	unsafe { from_utf8_unchecked(CStr::from_ptr(avcodec_configuration()).to_bytes()) }
 }
 
 pub fn license() -> &'static str {
-    unsafe { from_utf8_unchecked(CStr::from_ptr(avcodec_license()).to_bytes()) }
+	unsafe { from_utf8_unchecked(CStr::from_ptr(avcodec_license()).to_bytes()) }
 }
