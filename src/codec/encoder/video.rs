@@ -428,7 +428,7 @@ impl Encoder {
 		&mut self,
 		frame: &frame::Video,
 		out: &mut P,
-	) -> Result<bool, Error> {
+	) -> Result<(), Error> {
 		unsafe {
 			if self.format() != frame.format()
 				|| self.width() != frame.width()
@@ -437,28 +437,26 @@ impl Encoder {
 				return Err(Error::InvalidData);
 			}
 
-			let mut got: c_int = 0;
-
-			match avcodec_encode_video2(
-				self.0.as_mut_ptr(),
-				out.as_mut_ptr(),
-				frame.as_ptr(),
-				&mut got,
-			) {
-				e if e < 0 => Err(Error::from(e)),
-				_ => Ok(got != 0),
+			match avcodec_send_frame(self.as_mut_ptr(), frame.as_ptr()) {
+				e if e < 0 => Err(Error::from(e))?,
+				_ => (),
 			}
+
+			match avcodec_receive_packet(self.as_mut_ptr(), out.as_mut_ptr()) {
+				e if e < 0 => Err(Error::from(e))?,
+				_ => (),
+			}
+
+			Ok(())
 		}
 	}
 
 	#[inline]
-	pub fn flush<P: packet::Mut>(&mut self, out: &mut P) -> Result<bool, Error> {
+	pub fn flush<P: packet::Mut>(&mut self, out: &mut P) -> Result<(), Error> {
 		unsafe {
-			let mut got: c_int = 0;
-
-			match avcodec_encode_video2(self.0.as_mut_ptr(), out.as_mut_ptr(), ptr::null(), &mut got) {
+			match avcodec_receive_packet(self.0.as_mut_ptr(), out.as_mut_ptr()) {
 				e if e < 0 => Err(Error::from(e)),
-				_ => Ok(got != 0),
+				_ => Ok(())
 			}
 		}
 	}
