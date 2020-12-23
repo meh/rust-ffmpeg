@@ -161,8 +161,9 @@ fn main() {
 
 	let mut decoded = frame::Audio::empty();
 	let mut encoded = ffmpeg::Packet::empty();
+	let mut packets = ictx.packets();
 
-	for (stream, mut packet) in ictx.packets() {
+	while let Some(Ok((stream, mut packet))) = packets.next() {
 		if stream.index() == transcoder.stream {
 			packet.rescale_ts(stream.time_base(), in_time_base);
 
