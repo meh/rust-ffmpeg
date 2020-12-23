@@ -1,12 +1,16 @@
-use std::ops::{Deref, DerefMut};
-use std::ptr;
+use std::{
+    ops::{Deref, DerefMut},
+    ptr,
+};
 
 use crate::ffi::*;
 use libc::c_int;
 
 use super::Encoder as Super;
-use crate::codec::{traits, Context};
-use crate::{Dictionary, Error};
+use crate::{
+    codec::{traits, Context},
+    Dictionary, Error,
+};
 
 pub struct Subtitle(pub Super);
 
@@ -27,7 +31,8 @@ impl Subtitle {
                     0 => Ok(Encoder(self)),
                     e => Err(Error::from(e)),
                 }
-            } else {
+            }
+            else {
                 Err(Error::EncoderNotFound)
             }
         }
@@ -49,7 +54,8 @@ impl Subtitle {
                     0 => Ok(Encoder(self)),
                     e => Err(Error::from(e)),
                 }
-            } else {
+            }
+            else {
                 Err(Error::EncoderNotFound)
             }
         }

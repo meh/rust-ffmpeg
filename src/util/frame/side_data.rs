@@ -1,12 +1,10 @@
-use std::ffi::CStr;
-use std::marker::PhantomData;
-use std::slice;
-use std::str::from_utf8_unchecked;
+use std::{ffi::CStr, marker::PhantomData, slice, str::from_utf8_unchecked};
 
 use super::Frame;
-use crate::ffi::AVFrameSideDataType::*;
-use crate::ffi::*;
-use crate::DictionaryRef;
+use crate::{
+    ffi::{AVFrameSideDataType::*, *},
+    DictionaryRef,
+};
 
 #[derive(Eq, PartialEq, Copy, Clone, Debug)]
 pub enum Type {

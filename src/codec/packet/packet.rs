@@ -1,11 +1,8 @@
-use std::marker::PhantomData;
-use std::mem;
-use std::slice;
+use std::{marker::PhantomData, mem, slice};
 
 use super::{Borrow, Flags, Mut, Ref, SideData};
-use crate::ffi::*;
+use crate::{ffi::*, format, Error, Rational};
 use libc::c_int;
-use crate::{format, Error, Rational};
 
 pub struct Packet(AVPacket);
 
@@ -183,7 +180,8 @@ impl Packet {
         unsafe {
             if self.0.data.is_null() {
                 None
-            } else {
+            }
+            else {
                 Some(slice::from_raw_parts(self.0.data, self.0.size as usize))
             }
         }
@@ -194,7 +192,8 @@ impl Packet {
         unsafe {
             if self.0.data.is_null() {
                 None
-            } else {
+            }
+            else {
                 Some(slice::from_raw_parts_mut(self.0.data, self.0.size as usize))
             }
         }
@@ -301,7 +300,8 @@ impl<'a> Iterator for SideDataIter<'a> {
         unsafe {
             if self.cur >= (*self.ptr).side_data_elems {
                 None
-            } else {
+            }
+            else {
                 self.cur += 1;
                 Some(SideData::wrap(
                     (*self.ptr).side_data.offset((self.cur - 1) as isize),

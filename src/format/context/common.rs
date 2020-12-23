@@ -1,12 +1,8 @@
-use std::fmt;
-use std::mem;
-use std::ptr;
-use std::rc::Rc;
+use std::{fmt, mem, ptr, rc::Rc};
 
 use super::destructor::{self, Destructor};
-use crate::ffi::*;
+use crate::{ffi::*, media, Chapter, ChapterMut, DictionaryRef, Stream, StreamMut};
 use libc::{c_int, c_uint};
-use crate::{media, Chapter, ChapterMut, DictionaryRef, Stream, StreamMut};
 
 pub struct Context {
     ptr: *mut AVFormatContext,
@@ -49,7 +45,8 @@ impl Context {
         unsafe {
             if index >= self.nb_streams() as usize {
                 None
-            } else {
+            }
+            else {
                 Some(Stream::wrap(self, index))
             }
         }
@@ -62,7 +59,8 @@ impl Context {
         unsafe {
             if index >= self.nb_streams() as usize {
                 None
-            } else {
+            }
+            else {
                 Some(StreamMut::wrap(self, index))
             }
         }
@@ -96,7 +94,8 @@ impl Context {
         unsafe {
             if index >= self.nb_chapters() as usize {
                 None
-            } else {
+            }
+            else {
                 Some(Chapter::wrap(self, index))
             }
         }
@@ -109,7 +108,8 @@ impl Context {
         unsafe {
             if index >= self.nb_chapters() as usize {
                 None
-            } else {
+            }
+            else {
                 Some(ChapterMut::wrap(self, index))
             }
         }
@@ -178,7 +178,8 @@ impl<'a> Best<'a> {
 
             if index >= 0 && !decoder.is_null() {
                 Some(Stream::wrap(self.context, index as usize))
-            } else {
+            }
+            else {
                 None
             }
         }

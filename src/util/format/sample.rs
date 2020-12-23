@@ -1,11 +1,11 @@
-use std::ffi::{CStr, CString};
-use std::ops::Index;
-use std::ptr;
-use std::slice;
-use std::str::from_utf8_unchecked;
+use std::{
+    ffi::{CStr, CString},
+    ops::Index,
+    ptr, slice,
+    str::from_utf8_unchecked,
+};
 
-use crate::ffi::AVSampleFormat::*;
-use crate::ffi::*;
+use crate::ffi::{AVSampleFormat::*, *};
 use libc::{c_int, c_void};
 
 #[derive(Eq, PartialEq, Copy, Clone, Debug)]

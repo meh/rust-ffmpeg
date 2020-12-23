@@ -16,20 +16,23 @@ fn main() {
 
             if let Some(profiles) = codec.profiles() {
                 println!("\t profiles: {:?}", profiles.collect::<Vec<_>>());
-            } else {
+            }
+            else {
                 println!("\t profiles: none");
             }
 
             if let Ok(video) = codec.video() {
                 if let Some(rates) = video.rates() {
                     println!("\t rates: {:?}", rates.collect::<Vec<_>>());
-                } else {
+                }
+                else {
                     println!("\t rates: any");
                 }
 
                 if let Some(formats) = video.formats() {
                     println!("\t formats: {:?}", formats.collect::<Vec<_>>());
-                } else {
+                }
+                else {
                     println!("\t formats: any");
                 }
             }
@@ -37,19 +40,22 @@ fn main() {
             if let Ok(audio) = codec.audio() {
                 if let Some(rates) = audio.rates() {
                     println!("\t rates: {:?}", rates.collect::<Vec<_>>());
-                } else {
+                }
+                else {
                     println!("\t rates: any");
                 }
 
                 if let Some(formats) = audio.formats() {
                     println!("\t formats: {:?}", formats.collect::<Vec<_>>());
-                } else {
+                }
+                else {
                     println!("\t formats: any");
                 }
 
                 if let Some(layouts) = audio.channel_layouts() {
                     println!("\t channel_layouts: {:?}", layouts.collect::<Vec<_>>());
-                } else {
+                }
+                else {
                     println!("\t channel_layouts: any");
                 }
             }
@@ -73,13 +79,15 @@ fn main() {
             if let Ok(video) = codec.video() {
                 if let Some(rates) = video.rates() {
                     println!("\t rates: {:?}", rates.collect::<Vec<_>>());
-                } else {
+                }
+                else {
                     println!("\t rates: any");
                 }
 
                 if let Some(formats) = video.formats() {
                     println!("\t formats: {:?}", formats.collect::<Vec<_>>());
-                } else {
+                }
+                else {
                     println!("\t formats: any");
                 }
             }
@@ -87,19 +95,22 @@ fn main() {
             if let Ok(audio) = codec.audio() {
                 if let Some(rates) = audio.rates() {
                     println!("\t rates: {:?}", rates.collect::<Vec<_>>());
-                } else {
+                }
+                else {
                     println!("\t rates: any");
                 }
 
                 if let Some(formats) = audio.formats() {
                     println!("\t formats: {:?}", formats.collect::<Vec<_>>());
-                } else {
+                }
+                else {
                     println!("\t formats: any");
                 }
 
                 if let Some(layouts) = audio.channel_layouts() {
                     println!("\t channel_layouts: {:?}", layouts.collect::<Vec<_>>());
-                } else {
+                }
+                else {
                     println!("\t channel_layouts: any");
                 }
             }

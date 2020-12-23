@@ -1,5 +1,4 @@
-pub use crate::util::format::{pixel, Pixel};
-pub use crate::util::format::{sample, Sample};
+pub use crate::util::format::{pixel, sample, Pixel, Sample};
 use crate::util::interrupt;
 
 pub mod io;
@@ -13,17 +12,17 @@ pub mod context;
 pub use self::context::Context;
 
 pub mod format;
-pub use self::format::{flag, Flags};
-pub use self::format::{list, Input, Output};
+pub use self::format::{flag, list, Flags, Input, Output};
 
 pub mod network;
 
-use std::ffi::{CStr, CString};
-use std::ptr;
-use std::str::from_utf8_unchecked;
+use std::{
+    ffi::{CStr, CString},
+    ptr,
+    str::from_utf8_unchecked,
+};
 
-use crate::ffi::*;
-use crate::{Dictionary, Error, Format};
+use crate::{ffi::*, Dictionary, Error, Format};
 
 pub fn register_all() {
     unsafe {
@@ -224,10 +223,7 @@ pub fn output(path: impl AsRef<str>) -> Result<context::Output, Error> {
     }
 }
 
-pub fn output_with(
-    path: impl AsRef<str>,
-    options: Dictionary,
-) -> Result<context::Output, Error> {
+pub fn output_with(path: impl AsRef<str>, options: Dictionary) -> Result<context::Output, Error> {
     unsafe {
         let mut ps = ptr::null_mut();
         let path = CString::new(path.as_ref()).unwrap();

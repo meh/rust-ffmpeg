@@ -1,8 +1,10 @@
-use std::ffi::{CStr, CString};
-use std::fmt;
-use std::marker::PhantomData;
-use std::ptr;
-use std::str::from_utf8_unchecked;
+use std::{
+    ffi::{CStr, CString},
+    fmt,
+    marker::PhantomData,
+    ptr,
+    str::from_utf8_unchecked,
+};
 
 use super::{Iter, Owned};
 use crate::ffi::*;
@@ -34,7 +36,8 @@ impl<'a> Ref<'a> {
 
             if entry.is_null() {
                 None
-            } else {
+            }
+            else {
                 Some(from_utf8_unchecked(
                     CStr::from_ptr((*entry).value).to_bytes(),
                 ))
@@ -52,8 +55,8 @@ impl<'a> Ref<'a> {
 }
 
 impl<'a> IntoIterator for &'a Ref<'a> {
-    type Item = (&'a str, &'a str);
     type IntoIter = Iter<'a>;
+    type Item = (&'a str, &'a str);
 
     fn into_iter(self) -> Self::IntoIter {
         self.iter()

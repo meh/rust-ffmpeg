@@ -1,6 +1,4 @@
-use std::ffi::CStr;
-use std::marker::PhantomData;
-use std::str::from_utf8_unchecked;
+use std::{ffi::CStr, marker::PhantomData, str::from_utf8_unchecked};
 
 use super::{Flags, Pad};
 use crate::ffi::*;
@@ -34,7 +32,8 @@ impl Filter {
 
             if ptr.is_null() {
                 None
-            } else {
+            }
+            else {
                 Some(from_utf8_unchecked(CStr::from_ptr(ptr).to_bytes()))
             }
         }
@@ -46,7 +45,8 @@ impl Filter {
 
             if ptr.is_null() {
                 None
-            } else {
+            }
+            else {
                 Some(PadIter::new((*self.as_ptr()).inputs))
             }
         }
@@ -58,7 +58,8 @@ impl Filter {
 
             if ptr.is_null() {
                 None
-            } else {
+            }
+            else {
                 Some(PadIter::new((*self.as_ptr()).outputs))
             }
         }

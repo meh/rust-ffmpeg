@@ -1,12 +1,13 @@
 use std::path::Path;
 
-use std::ffi::{CStr, CString};
-use std::ptr;
-use std::str::from_utf8_unchecked;
+use std::{
+    ffi::{CStr, CString},
+    ptr,
+    str::from_utf8_unchecked,
+};
 
 use super::Flags;
-use crate::ffi::*;
-use crate::{codec, media};
+use crate::{codec, ffi::*, media};
 
 pub struct Output {
     ptr: *mut AVOutputFormat,
@@ -41,7 +42,8 @@ impl Output {
 
             if ptr.is_null() {
                 Vec::new()
-            } else {
+            }
+            else {
                 from_utf8_unchecked(CStr::from_ptr(ptr).to_bytes())
                     .split(',')
                     .collect()
@@ -55,7 +57,8 @@ impl Output {
 
             if ptr.is_null() {
                 Vec::new()
-            } else {
+            }
+            else {
                 from_utf8_unchecked(CStr::from_ptr(ptr).to_bytes())
                     .split(',')
                     .collect()

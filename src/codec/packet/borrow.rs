@@ -1,5 +1,4 @@
-use std::mem;
-use std::ptr;
+use std::{mem, ptr};
 
 use super::Ref;
 use crate::ffi::*;

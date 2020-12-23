@@ -5,8 +5,7 @@ use std::{
 
 use thiserror::Error;
 
-use crate::ffi::AVPixelFormat::*;
-use crate::ffi::*;
+use crate::ffi::{AVPixelFormat::*, *};
 
 #[derive(Eq, PartialEq, Copy, Clone, Debug)]
 #[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
@@ -372,11 +371,11 @@ unsafe impl Send for Descriptor {}
 unsafe impl Sync for Descriptor {}
 
 impl Pixel {
-    pub const Y400A: Pixel = Pixel::YA8;
-    pub const GRAY8A: Pixel = Pixel::YA8;
     pub const GBR24P: Pixel = Pixel::GBRP;
+    pub const GRAY8A: Pixel = Pixel::YA8;
     #[cfg(feature = "ff_api_xvmc")]
     pub const XVMC: Pixel = Pixel::XVMC_MPEG2_IDCT;
+    pub const Y400A: Pixel = Pixel::YA8;
 
     pub fn descriptor(self) -> Option<Descriptor> {
         unsafe {
@@ -1080,7 +1079,8 @@ impl FromStr for Pixel {
 
         if format == Pixel::None {
             Err(ParsePixelError::UnknownFormat)
-        } else {
+        }
+        else {
             Ok(format)
         }
     }

@@ -1,9 +1,6 @@
-use std::ffi::CStr;
-use std::marker::PhantomData;
-use std::str::from_utf8_unchecked;
+use std::{ffi::CStr, marker::PhantomData, str::from_utf8_unchecked};
 
-use crate::ffi::*;
-use crate::media;
+use crate::{ffi::*, media};
 
 pub struct Pad<'a> {
     ptr: *const AVFilterPad,
@@ -37,7 +34,8 @@ impl<'a> Pad<'a> {
 
             if ptr.is_null() {
                 None
-            } else {
+            }
+            else {
                 Some(from_utf8_unchecked(CStr::from_ptr(ptr).to_bytes()))
             }
         }

@@ -1,10 +1,8 @@
 use std::ptr;
 
 use super::Flags;
-use crate::ffi::*;
+use crate::{ffi::*, frame, util::format, Error};
 use libc::c_int;
-use crate::util::format;
-use crate::{frame, Error};
 
 #[derive(Eq, PartialEq, Copy, Clone, Debug)]
 pub struct Definition {
@@ -72,7 +70,8 @@ impl Context {
                         height: dst_h,
                     },
                 })
-            } else {
+            }
+            else {
                 Err(Error::InvalidData)
             }
         }

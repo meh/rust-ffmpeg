@@ -1,5 +1,4 @@
-use std::ffi::CString;
-use std::ops::Deref;
+use std::{ffi::CString, ops::Deref};
 
 use super::{Ass, Bitmap, Flags, Text, Type};
 use crate::ffi::*;

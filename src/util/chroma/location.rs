@@ -1,5 +1,4 @@
-use crate::ffi::AVChromaLocation::*;
-use crate::ffi::*;
+use crate::ffi::{AVChromaLocation::*, *};
 
 #[derive(Eq, PartialEq, Clone, Copy, Debug)]
 #[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]

@@ -13,11 +13,12 @@ pub use self::context::{Context, Sink, Source};
 pub mod graph;
 pub use self::graph::Graph;
 
-use std::ffi::{CStr, CString};
-use std::str::from_utf8_unchecked;
+use std::{
+    ffi::{CStr, CString},
+    str::from_utf8_unchecked,
+};
 
-use crate::ffi::*;
-use crate::Error;
+use crate::{ffi::*, Error};
 
 pub fn register_all() {
     unsafe {
@@ -53,7 +54,8 @@ pub fn find(name: &str) -> Option<Filter> {
 
         if ptr.is_null() {
             None
-        } else {
+        }
+        else {
             Some(Filter::wrap(ptr as *mut _))
         }
     }

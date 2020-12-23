@@ -2,9 +2,7 @@ pub mod extensions;
 pub mod input;
 pub mod output;
 
-use std::ffi::CStr;
-use std::marker::PhantomData;
-use std::str::from_utf8_unchecked;
+use std::{ffi::CStr, marker::PhantomData, str::from_utf8_unchecked};
 
 use crate::ffi::*;
 

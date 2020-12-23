@@ -1,6 +1,8 @@
 use super::{decoder, encoder};
-use crate::codec::{Audio, Id, Video};
-use crate::Codec;
+use crate::{
+    codec::{Audio, Id, Video},
+    Codec,
+};
 
 pub trait Decoder {
     fn decoder(self) -> Option<Codec>;
@@ -22,7 +24,8 @@ impl Decoder for Codec {
     fn decoder(self) -> Option<Codec> {
         if self.is_decoder() {
             Some(self)
-        } else {
+        }
+        else {
             None
         }
     }
@@ -38,7 +41,8 @@ impl Decoder for Audio {
     fn decoder(self) -> Option<Codec> {
         if self.is_decoder() {
             Some(*self)
-        } else {
+        }
+        else {
             None
         }
     }
@@ -48,7 +52,8 @@ impl Decoder for Video {
     fn decoder(self) -> Option<Codec> {
         if self.is_decoder() {
             Some(*self)
-        } else {
+        }
+        else {
             None
         }
     }
@@ -74,7 +79,8 @@ impl Encoder for Codec {
     fn encoder(self) -> Option<Codec> {
         if self.is_encoder() {
             Some(self)
-        } else {
+        }
+        else {
             None
         }
     }
@@ -90,7 +96,8 @@ impl Encoder for Audio {
     fn encoder(self) -> Option<Codec> {
         if self.is_encoder() {
             Some(*self)
-        } else {
+        }
+        else {
             None
         }
     }
@@ -100,7 +107,8 @@ impl Encoder for Video {
     fn encoder(self) -> Option<Codec> {
         if self.is_encoder() {
             Some(*self)
-        } else {
+        }
+        else {
             None
         }
     }

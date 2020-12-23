@@ -1,10 +1,8 @@
 extern crate ffmpeg_next as ffmpeg;
 
-use std::env;
-use std::path::Path;
+use std::{env, path::Path};
 
-use crate::ffmpeg::{codec, filter, format, frame, media};
-use crate::ffmpeg::{rescale, Rescale};
+use crate::ffmpeg::{codec, filter, format, frame, media, rescale, Rescale};
 
 fn filter(
     spec: &str,
@@ -189,14 +187,16 @@ impl Transcoder {
     }
 }
 
-// Transcode the `best` audio stream of the input file into a the output file while applying a
-// given filter. If no filter was specified the stream gets copied (`anull` filter).
+// Transcode the `best` audio stream of the input file into a the output file
+// while applying a given filter. If no filter was specified the stream gets
+// copied (`anull` filter).
 //
 // Example 1: Transcode *.mp3 file to *.wmv while speeding it up
 // transcode-audio in.mp3 out.wmv "atempo=1.2"
 //
 // Example 2: Overlay an audio file
-// transcode-audio in.mp3 out.mp3 "amovie=overlay.mp3 [ov]; [in][ov] amerge [out]"
+// transcode-audio in.mp3 out.mp3 "amovie=overlay.mp3 [ov]; [in][ov] amerge
+// [out]"
 //
 // Example 3: Seek to a specified position (in seconds)
 // transcode-audio in.mp3 out.mp3 anull 30

@@ -1,5 +1,4 @@
-use crate::ffi::AVAudioServiceType::*;
-use crate::ffi::*;
+use crate::ffi::{AVAudioServiceType::*, *};
 
 #[derive(Eq, PartialEq, Clone, Copy, Debug)]
 pub enum AudioService {

@@ -1,5 +1,4 @@
-use crate::ffi::SwrFilterType::*;
-use crate::ffi::*;
+use crate::ffi::{SwrFilterType::*, *};
 
 #[derive(Eq, PartialEq, Copy, Clone, Debug)]
 pub enum Filter {

@@ -23,10 +23,11 @@ pub use self::opened::Opened;
 
 use std::ffi::CString;
 
-use crate::codec::Context;
-use crate::codec::Id;
-use crate::ffi::*;
-use crate::Codec;
+use crate::{
+    codec::{Context, Id},
+    ffi::*,
+    Codec,
+};
 
 pub fn new() -> Decoder {
     Context::new().decoder()
@@ -38,7 +39,8 @@ pub fn find(id: Id) -> Option<Codec> {
 
         if ptr.is_null() {
             None
-        } else {
+        }
+        else {
             Some(Codec::wrap(ptr))
         }
     }
@@ -51,7 +53,8 @@ pub fn find_by_name(name: &str) -> Option<Codec> {
 
         if ptr.is_null() {
             None
-        } else {
+        }
+        else {
             Some(Codec::wrap(ptr))
         }
     }

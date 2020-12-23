@@ -1,7 +1,9 @@
-use std::fmt;
-use std::iter::FromIterator;
-use std::ops::{Deref, DerefMut};
-use std::ptr;
+use std::{
+    fmt,
+    iter::FromIterator,
+    ops::{Deref, DerefMut},
+    ptr,
+};
 
 use super::mutable;
 use crate::ffi::*;

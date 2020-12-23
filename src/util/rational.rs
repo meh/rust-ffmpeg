@@ -1,6 +1,8 @@
-use std::cmp::Ordering;
-use std::fmt;
-use std::ops::{Add, Div, Mul, Sub};
+use std::{
+    cmp::Ordering,
+    fmt,
+    ops::{Add, Div, Mul, Sub},
+};
 
 use crate::ffi::*;
 use libc::c_int;
@@ -50,7 +52,8 @@ impl Rational {
 
             if exact == 1 {
                 Ok(Rational(dst_num, dst_den))
-            } else {
+            }
+            else {
                 Err(Rational(dst_num, dst_den))
             }
         }

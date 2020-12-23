@@ -10,8 +10,7 @@ pub use self::audio::Audio;
 pub mod flag;
 pub use self::flag::Flags;
 
-use crate::ffi::*;
-use crate::{Dictionary, DictionaryRef};
+use crate::{ffi::*, Dictionary, DictionaryRef};
 use libc::c_int;
 
 #[derive(PartialEq, Eq, Copy, Clone, Debug)]
@@ -158,7 +157,8 @@ impl Frame {
 
             if ptr.is_null() {
                 None
-            } else {
+            }
+            else {
                 Some(SideData::wrap(ptr))
             }
         }
@@ -171,7 +171,8 @@ impl Frame {
 
             if ptr.is_null() {
                 None
-            } else {
+            }
+            else {
                 Some(SideData::wrap(ptr))
             }
         }

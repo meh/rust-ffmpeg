@@ -1,10 +1,14 @@
-use std::ops::{Deref, DerefMut};
-use std::ptr;
+use std::{
+    ops::{Deref, DerefMut},
+    ptr,
+};
 
 use super::{Audio, Check, Conceal, Opened, Subtitle, Video};
-use crate::codec::{traits, Context};
-use crate::ffi::*;
-use crate::{Dictionary, Discard, Error, Rational};
+use crate::{
+    codec::{traits, Context},
+    ffi::*,
+    Dictionary, Discard, Error, Rational,
+};
 
 pub struct Decoder(pub Context);
 
@@ -25,7 +29,8 @@ impl Decoder {
                     0 => Ok(Opened(self)),
                     e => Err(Error::from(e)),
                 }
-            } else {
+            }
+            else {
                 Err(Error::DecoderNotFound)
             }
         }
@@ -47,7 +52,8 @@ impl Decoder {
                     0 => Ok(Opened(self)),
                     e => Err(Error::from(e)),
                 }
-            } else {
+            }
+            else {
                 Err(Error::DecoderNotFound)
             }
         }
@@ -56,7 +62,8 @@ impl Decoder {
     pub fn video(self) -> Result<Video, Error> {
         if let Some(codec) = super::find(self.id()) {
             self.open_as(codec).and_then(|o| o.video())
-        } else {
+        }
+        else {
             Err(Error::DecoderNotFound)
         }
     }
@@ -64,7 +71,8 @@ impl Decoder {
     pub fn audio(self) -> Result<Audio, Error> {
         if let Some(codec) = super::find(self.id()) {
             self.open_as(codec).and_then(|o| o.audio())
-        } else {
+        }
+        else {
             Err(Error::DecoderNotFound)
         }
     }
@@ -72,7 +80,8 @@ impl Decoder {
     pub fn subtitle(self) -> Result<Subtitle, Error> {
         if let Some(codec) = super::find(self.id()) {
             self.open_as(codec).and_then(|o| o.subtitle())
-        } else {
+        }
+        else {
             Err(Error::DecoderNotFound)
         }
     }

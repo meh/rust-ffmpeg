@@ -1,8 +1,7 @@
 use std::ops::Deref;
 
 use super::codec::Codec;
-use crate::ffi::*;
-use crate::{format, ChannelLayout};
+use crate::{ffi::*, format, ChannelLayout};
 
 #[derive(PartialEq, Eq, Copy, Clone)]
 pub struct Audio {
@@ -20,7 +19,8 @@ impl Audio {
         unsafe {
             if (*self.as_ptr()).supported_samplerates.is_null() {
                 None
-            } else {
+            }
+            else {
                 Some(RateIter::new((*self.codec.as_ptr()).supported_samplerates))
             }
         }
@@ -30,7 +30,8 @@ impl Audio {
         unsafe {
             if (*self.codec.as_ptr()).sample_fmts.is_null() {
                 None
-            } else {
+            }
+            else {
                 Some(FormatIter::new((*self.codec.as_ptr()).sample_fmts))
             }
         }
@@ -40,7 +41,8 @@ impl Audio {
         unsafe {
             if (*self.codec.as_ptr()).channel_layouts.is_null() {
                 None
-            } else {
+            }
+            else {
                 Some(ChannelLayoutIter::new(
                     (*self.codec.as_ptr()).channel_layouts,
                 ))
@@ -124,7 +126,8 @@ impl ChannelLayoutIter {
         self.fold(ChannelLayout::MONO, |acc, cur| {
             if cur.channels() > acc.channels() && cur.channels() <= max {
                 cur
-            } else {
+            }
+            else {
                 acc
             }
         })

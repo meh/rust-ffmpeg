@@ -1,12 +1,12 @@
-use std::mem;
-use std::ops::{Deref, DerefMut};
-use std::slice;
+use std::{
+    mem,
+    ops::{Deref, DerefMut},
+    slice,
+};
 
 use super::Frame;
-use crate::ffi::*;
+use crate::{ffi::*, util::format, ChannelLayout};
 use libc::{c_int, c_ulonglong};
-use crate::util::format;
-use crate::ChannelLayout;
 
 #[derive(PartialEq, Eq)]
 pub struct Audio(Frame);
@@ -48,7 +48,8 @@ impl Audio {
         unsafe {
             if (*self.as_ptr()).format == -1 {
                 format::Sample::None
-            } else {
+            }
+            else {
                 format::Sample::from(mem::transmute::<_, AVSampleFormat>((*self.as_ptr()).format))
             }
         }
@@ -133,7 +134,8 @@ impl Audio {
 
         if self.is_packed() {
             1
-        } else {
+        }
+        else {
             self.channels() as usize
         }
     }

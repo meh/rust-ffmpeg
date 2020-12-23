@@ -1,6 +1,5 @@
 use super::{Context, Flags};
-use crate::util::format;
-use crate::{decoder, frame, Error, Picture};
+use crate::{decoder, frame, util::format, Error, Picture};
 
 impl<'a> Picture<'a> {
     #[inline]

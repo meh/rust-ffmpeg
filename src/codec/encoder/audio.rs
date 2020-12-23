@@ -1,13 +1,18 @@
-use std::ops::{Deref, DerefMut};
-use std::ptr;
+use std::{
+    ops::{Deref, DerefMut},
+    ptr,
+};
 
 use crate::ffi::*;
 use libc::c_int;
 
 use super::Encoder as Super;
-use crate::codec::{traits, Context};
-use crate::util::format;
-use crate::{frame, packet, ChannelLayout, Dictionary, Error};
+use crate::{
+    codec::{traits, Context},
+    frame, packet,
+    util::format,
+    ChannelLayout, Dictionary, Error,
+};
 
 pub struct Audio(pub Super);
 
@@ -28,7 +33,8 @@ impl Audio {
                     0 => Ok(Encoder(self)),
                     e => Err(Error::from(e)),
                 }
-            } else {
+            }
+            else {
                 Err(Error::EncoderNotFound)
             }
         }
@@ -64,7 +70,8 @@ impl Audio {
                     0 => Ok(Encoder(self)),
                     e => Err(Error::from(e)),
                 }
-            } else {
+            }
+            else {
                 Err(Error::EncoderNotFound)
             }
         }

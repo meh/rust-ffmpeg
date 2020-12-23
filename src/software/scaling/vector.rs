@@ -1,5 +1,4 @@
-use std::marker::PhantomData;
-use std::slice;
+use std::{marker::PhantomData, slice};
 
 use crate::ffi::*;
 use libc::{c_double, c_int};

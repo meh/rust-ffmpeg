@@ -1,8 +1,10 @@
 use super::Disposition;
-use crate::codec::{self, packet};
-use crate::ffi::*;
-use crate::format::context::common::Context;
-use crate::{DictionaryRef, Discard, Rational};
+use crate::{
+    codec::{self, packet},
+    ffi::*,
+    format::context::common::Context,
+    DictionaryRef, Discard, Rational,
+};
 use libc::c_int;
 
 #[derive(Debug)]

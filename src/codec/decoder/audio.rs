@@ -4,10 +4,7 @@ use crate::ffi::*;
 use libc::c_int;
 
 use super::Opened;
-use crate::codec::Context;
-use crate::frame;
-use crate::util::format;
-use crate::{packet, AudioService, ChannelLayout, Error};
+use crate::{codec::Context, frame, packet, util::format, AudioService, ChannelLayout, Error};
 
 pub struct Audio(pub Opened);
 

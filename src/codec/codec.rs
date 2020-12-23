@@ -1,9 +1,7 @@
-use std::ffi::CStr;
-use std::str::from_utf8_unchecked;
+use std::{ffi::CStr, str::from_utf8_unchecked};
 
 use super::{Audio, Capabilities, Id, Profile, Video};
-use crate::ffi::*;
-use crate::{media, Error};
+use crate::{ffi::*, media, Error};
 
 #[derive(PartialEq, Eq, Copy, Clone)]
 pub struct Codec {
@@ -45,7 +43,8 @@ impl Codec {
             let long_name = (*self.as_ptr()).long_name;
             if long_name.is_null() {
                 ""
-            } else {
+            }
+            else {
                 from_utf8_unchecked(CStr::from_ptr(long_name).to_bytes())
             }
         }
@@ -67,7 +66,8 @@ impl Codec {
         unsafe {
             if self.medium() == media::Type::Video {
                 Ok(Video::new(self))
-            } else {
+            }
+            else {
                 Err(Error::InvalidData)
             }
         }
@@ -81,7 +81,8 @@ impl Codec {
         unsafe {
             if self.medium() == media::Type::Audio {
                 Ok(Audio::new(self))
-            } else {
+            }
+            else {
                 Err(Error::InvalidData)
             }
         }
@@ -99,7 +100,8 @@ impl Codec {
         unsafe {
             if (*self.as_ptr()).profiles.is_null() {
                 None
-            } else {
+            }
+            else {
                 Some(ProfileIter::new(self.id(), (*self.as_ptr()).profiles))
             }
         }

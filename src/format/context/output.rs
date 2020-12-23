@@ -1,15 +1,19 @@
-use std::ffi::CString;
-use std::mem::size_of;
-use std::ops::{Deref, DerefMut};
-use std::ptr;
+use std::{
+    ffi::CString,
+    mem::size_of,
+    ops::{Deref, DerefMut},
+    ptr,
+};
 
 use libc;
 
-use super::common::Context;
-use super::destructor;
-use crate::codec::traits;
-use crate::ffi::*;
-use crate::{format::{self, io::Io}, ChapterMut, Dictionary, Error, Rational, StreamMut};
+use super::{common::Context, destructor};
+use crate::{
+    codec::traits,
+    ffi::*,
+    format::{self, io::Io},
+    ChapterMut, Dictionary, Error, Rational, StreamMut,
+};
 
 pub struct Output {
     ptr: *mut AVFormatContext,
@@ -35,6 +39,7 @@ impl Output {
             io: Some(io),
         }
     }
+
     pub unsafe fn as_ptr(&self) -> *const AVFormatContext {
         self.ptr as *const _
     }
@@ -136,7 +141,8 @@ impl Output {
                     (*self.as_mut_ptr()).nb_chapters = nb_chapters as u32;
                     let index = (*self.ctx.as_ptr()).nb_chapters - 1;
                     index as usize
-                } else {
+                }
+                else {
                     // failed to add the chapter
                     av_freep(ptr);
                     return Err(Error::Bug);

@@ -4,8 +4,7 @@ use crate::ffi::*;
 use libc::c_int;
 
 use super::Opened;
-use crate::codec::Context;
-use crate::{packet, Error};
+use crate::{codec::Context, packet, Error};
 
 pub struct Subtitle(pub Opened);
 

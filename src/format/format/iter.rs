@@ -44,7 +44,8 @@ impl Iterator for Iter {
                         self.step = Step::Output;
 
                         self.next()
-                    } else {
+                    }
+                    else {
                         self.input = ptr;
 
                         Some(Format::Input(Input::wrap(ptr)))
@@ -58,7 +59,8 @@ impl Iterator for Iter {
                         self.step = Step::Done;
 
                         self.next()
-                    } else {
+                    }
+                    else {
                         self.output = ptr;
 
                         Some(Format::Output(Output::wrap(ptr)))

@@ -1,14 +1,9 @@
-use std::ptr;
-use std::rc::Rc;
+use std::{ptr, rc::Rc};
 
-use super::decoder::Decoder;
-use super::encoder::Encoder;
 #[cfg(feature = "ffmpeg_3_1")]
 use super::Parameters;
-use super::{threading, Compliance, Debug, Flags, Id};
-use crate::ffi::*;
-use crate::media;
-use crate::{Codec, Error};
+use super::{decoder::Decoder, encoder::Encoder, threading, Compliance, Debug, Flags, Id};
+use crate::{ffi::*, media, Codec, Error};
 use libc::c_int;
 
 pub struct Context {
@@ -54,7 +49,8 @@ impl Context {
         unsafe {
             if (*self.as_ptr()).codec.is_null() {
                 None
-            } else {
+            }
+            else {
                 Some(Codec::wrap((*self.as_ptr()).codec as *mut _))
             }
         }

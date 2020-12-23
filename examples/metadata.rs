@@ -67,7 +67,8 @@ fn main() {
                         println!("\tvideo.references: {}", video.references());
                         println!("\tvideo.intra_dc_precision: {}", video.intra_dc_precision());
                     }
-                } else if codec.medium() == ffmpeg::media::Type::Audio {
+                }
+                else if codec.medium() == ffmpeg::media::Type::Audio {
                     if let Ok(audio) = codec.decoder().audio() {
                         println!("\tbit_rate: {}", audio.bit_rate());
                         println!("\tmax_rate: {}", audio.max_bit_rate());

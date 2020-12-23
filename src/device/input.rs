@@ -1,8 +1,6 @@
 use std::ptr;
 
-use crate::ffi::*;
-use crate::format;
-use crate::Format;
+use crate::{ffi::*, format, Format};
 
 pub struct AudioIter(*mut AVInputFormat);
 
@@ -15,7 +13,8 @@ impl Iterator for AudioIter {
 
             if ptr.is_null() && !self.0.is_null() {
                 None
-            } else {
+            }
+            else {
                 self.0 = ptr;
 
                 Some(Format::Input(format::Input::wrap(ptr)))
@@ -39,7 +38,8 @@ impl Iterator for VideoIter {
 
             if ptr.is_null() && !self.0.is_null() {
                 None
-            } else {
+            }
+            else {
                 self.0 = ptr;
 
                 Some(Format::Input(format::Input::wrap(ptr)))

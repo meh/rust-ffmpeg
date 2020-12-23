@@ -1,8 +1,7 @@
 use std::ptr;
 
 use super::Context;
-use crate::ffi::*;
-use crate::{Error, Frame};
+use crate::{ffi::*, Error, Frame};
 
 pub struct Source<'a> {
     ctx: &'a mut Context<'a>,

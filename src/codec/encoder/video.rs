@@ -1,13 +1,16 @@
-use std::ops::{Deref, DerefMut};
-use std::ptr;
+use std::{
+    ops::{Deref, DerefMut},
+    ptr,
+};
 
 use crate::ffi::*;
 use libc::{c_float, c_int};
 
-use super::Encoder as Super;
-use super::{Comparison, Decision, MotionEstimation, Prediction};
-use crate::codec::{traits, Context};
-use crate::{color, format, frame, packet, Dictionary, Error, Rational};
+use super::{Comparison, Decision, Encoder as Super, MotionEstimation, Prediction};
+use crate::{
+    codec::{traits, Context},
+    color, format, frame, packet, Dictionary, Error, Rational,
+};
 
 pub struct Video(pub Super);
 
@@ -30,7 +33,8 @@ impl Video {
                     0 => Ok(Encoder(self)),
                     e => Err(Error::from(e)),
                 }
-            } else {
+            }
+            else {
                 Err(Error::EncoderNotFound)
             }
         }
@@ -68,7 +72,8 @@ impl Video {
                     0 => Ok(Encoder(self)),
                     e => Err(Error::from(e)),
                 }
-            } else {
+            }
+            else {
                 Err(Error::EncoderNotFound)
             }
         }
@@ -292,7 +297,8 @@ impl Video {
         unsafe {
             if let Some(value) = value {
                 (*self.as_mut_ptr()).intra_quant_bias = value as c_int;
-            } else {
+            }
+            else {
                 (*self.as_mut_ptr()).intra_quant_bias = FF_DEFAULT_QUANT_BIAS;
             }
         }
@@ -304,7 +310,8 @@ impl Video {
         unsafe {
             if let Some(value) = value {
                 (*self.as_mut_ptr()).inter_quant_bias = value as c_int;
-            } else {
+            }
+            else {
                 (*self.as_mut_ptr()).inter_quant_bias = FF_DEFAULT_QUANT_BIAS;
             }
         }

@@ -1,10 +1,8 @@
 use std::ptr;
 
 use super::Delay;
-use crate::ffi::*;
+use crate::{ffi::*, frame, util::format, ChannelLayout, Error};
 use libc::c_int;
-use crate::util::format;
-use crate::{frame, ChannelLayout, Error};
 
 #[derive(Eq, PartialEq, Copy, Clone)]
 pub struct Definition {
@@ -77,7 +75,8 @@ impl Context {
                         },
                     }),
                 }
-            } else {
+            }
+            else {
                 Err(Error::InvalidData)
             }
         }
@@ -105,7 +104,8 @@ impl Context {
 
     /// Run the resampler from the given input to the given output.
     ///
-    /// When there are internal frames to process it will return `Ok(Some(Delay { .. }))`.
+    /// When there are internal frames to process it will return `Ok(Some(Delay
+    /// { .. }))`.
     pub fn run(
         &mut self,
         input: &frame::Audio,

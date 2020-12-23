@@ -1,11 +1,7 @@
-use std::marker::PhantomData;
-use std::ptr;
+use std::{marker::PhantomData, ptr};
 
-use crate::device;
-use crate::ffi::*;
-use crate::format::context::common::Context;
+use crate::{device, ffi::*, format::context::common::Context, Error};
 use libc::c_int;
-use crate::Error;
 
 impl Context {
     pub fn devices(&self) -> Result<DeviceIter, Error> {
@@ -57,7 +53,8 @@ impl<'a> Iterator for DeviceIter<'a> {
         unsafe {
             if self.cur >= (*self.ptr).nb_devices {
                 None
-            } else {
+            }
+            else {
                 self.cur += 1;
                 Some(device::Info::wrap(
                     *(*self.ptr).devices.offset((self.cur - 1) as isize),

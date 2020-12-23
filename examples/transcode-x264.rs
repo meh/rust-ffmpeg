@@ -17,9 +17,7 @@
 
 extern crate ffmpeg_next as ffmpeg;
 
-use std::collections::HashMap;
-use std::env;
-use std::time::Instant;
+use std::{collections::HashMap, env, time::Instant};
 
 use crate::ffmpeg::{
     codec, decoder, encoder, format, frame, log, media, picture, Dictionary, Packet, Rational,
@@ -207,7 +205,8 @@ fn main() {
                 )
                 .unwrap(),
             );
-        } else {
+        }
+        else {
             // Set up for stream copy for non-video stream.
             let mut ost = octx.add_stream(encoder::find(codec::Id::None)).unwrap();
             ost.set_parameters(ist.parameters());

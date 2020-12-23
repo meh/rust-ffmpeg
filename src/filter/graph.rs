@@ -1,11 +1,12 @@
-use std::ffi::{CStr, CString};
-use std::ptr;
-use std::str::from_utf8_unchecked;
+use std::{
+    ffi::{CStr, CString},
+    ptr,
+    str::from_utf8_unchecked,
+};
 
 use super::{Context, Filter};
-use crate::ffi::*;
+use crate::{ffi::*, Error};
 use libc::c_int;
-use crate::Error;
 
 pub struct Graph {
     ptr: *mut AVFilterGraph,
@@ -88,7 +89,8 @@ impl Graph {
 
             if ptr.is_null() {
                 None
-            } else {
+            }
+            else {
                 Some(Context::wrap(ptr))
             }
         }
@@ -160,7 +162,8 @@ impl<'a> Parser<'a> {
 
             if self.inputs.is_null() {
                 self.inputs = input;
-            } else {
+            }
+            else {
                 (*self.inputs).next = input;
             }
         }
@@ -186,7 +189,8 @@ impl<'a> Parser<'a> {
 
             if self.outputs.is_null() {
                 self.outputs = output;
-            } else {
+            }
+            else {
                 (*self.outputs).next = output;
             }
         }

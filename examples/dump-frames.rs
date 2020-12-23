@@ -1,12 +1,12 @@
 extern crate ffmpeg_next as ffmpeg;
 
-use crate::ffmpeg::format::{input, Pixel};
-use crate::ffmpeg::media::Type;
-use crate::ffmpeg::software::scaling::{context::Context, flag::Flags};
-use crate::ffmpeg::util::frame::video::Video;
-use std::env;
-use std::fs::File;
-use std::io::prelude::*;
+use crate::ffmpeg::{
+    format::{input, Pixel},
+    media::Type,
+    software::scaling::{context::Context, flag::Flags},
+    util::frame::video::Video,
+};
+use std::{env, fs::File, io::prelude::*};
 
 fn main() -> Result<(), ffmpeg::Error> {
     ffmpeg::init().unwrap();

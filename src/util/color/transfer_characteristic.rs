@@ -1,8 +1,6 @@
-use std::ffi::CStr;
-use std::str::from_utf8_unchecked;
+use std::{ffi::CStr, str::from_utf8_unchecked};
 
-use crate::ffi::AVColorTransferCharacteristic::*;
-use crate::ffi::*;
+use crate::ffi::{AVColorTransferCharacteristic::*, *};
 
 #[derive(Eq, PartialEq, Clone, Copy, Debug)]
 #[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]

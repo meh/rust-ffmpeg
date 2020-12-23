@@ -16,8 +16,7 @@ pub mod range;
 pub mod rational;
 pub mod time;
 
-use std::ffi::CStr;
-use std::str::from_utf8_unchecked;
+use std::{ffi::CStr, str::from_utf8_unchecked};
 
 use crate::ffi::*;
 

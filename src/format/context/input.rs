@@ -1,12 +1,16 @@
-use std::ffi::CString;
-use std::mem;
-use std::ops::{Deref, DerefMut};
+use std::{
+    ffi::CString,
+    mem,
+    ops::{Deref, DerefMut},
+};
 
-use super::common::Context;
-use super::destructor;
-use crate::ffi::*;
-use crate::util::range::Range;
-use crate::{format::{self, io::Io}, Codec, Error, Packet, Stream};
+use super::{common::Context, destructor};
+use crate::{
+    ffi::*,
+    format::{self, io::Io},
+    util::range::Range,
+    Codec, Error, Packet, Stream,
+};
 
 pub struct Input {
     ptr: *mut AVFormatContext,
@@ -53,7 +57,8 @@ impl Input {
 
             if ptr.is_null() {
                 None
-            } else {
+            }
+            else {
                 Some(Codec::wrap(ptr))
             }
         }
@@ -65,7 +70,8 @@ impl Input {
 
             if ptr.is_null() {
                 None
-            } else {
+            }
+            else {
                 Some(Codec::wrap(ptr))
             }
         }
@@ -77,7 +83,8 @@ impl Input {
 
             if ptr.is_null() {
                 None
-            } else {
+            }
+            else {
                 Some(Codec::wrap(ptr))
             }
         }
@@ -89,7 +96,8 @@ impl Input {
 
             if ptr.is_null() {
                 None
-            } else {
+            }
+            else {
                 Some(Codec::wrap(ptr))
             }
         }

@@ -1,10 +1,14 @@
-use std::ops::{Deref, DerefMut};
-use std::ptr;
+use std::{
+    ops::{Deref, DerefMut},
+    ptr,
+};
 
 use super::{Audio, Decoder, Subtitle, Video};
-use crate::codec::{Context, Profile};
-use crate::ffi::*;
-use crate::{media, packet, Error, Frame, Rational};
+use crate::{
+    codec::{Context, Profile},
+    ffi::*,
+    media, packet, Error, Frame, Rational,
+};
 
 pub struct Opened(pub Decoder);
 
@@ -12,7 +16,8 @@ impl Opened {
     pub fn video(self) -> Result<Video, Error> {
         if self.medium() == media::Type::Video {
             Ok(Video(self))
-        } else {
+        }
+        else {
             Err(Error::InvalidData)
         }
     }
@@ -20,7 +25,8 @@ impl Opened {
     pub fn audio(self) -> Result<Audio, Error> {
         if self.medium() == media::Type::Audio {
             Ok(Audio(self))
-        } else {
+        }
+        else {
             Err(Error::InvalidData)
         }
     }
@@ -28,7 +34,8 @@ impl Opened {
     pub fn subtitle(self) -> Result<Subtitle, Error> {
         if self.medium() == media::Type::Subtitle {
             Ok(Subtitle(self))
-        } else {
+        }
+        else {
             Err(Error::InvalidData)
         }
     }
@@ -80,7 +87,8 @@ impl Opened {
 
             if value == (AVRational { num: 0, den: 1 }) {
                 None
-            } else {
+            }
+            else {
                 Some(Rational::from(value))
             }
         }
