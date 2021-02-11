@@ -577,6 +577,21 @@ fn link_to_libraries(statik: bool) {
 }
 
 fn main() {
+    // The long chain of `header` method calls for `bindgen::Builder` seems to be overflowing the default stack size on Windows.
+    // The main thread appears to have a hardcoded stack size which is unaffected by `RUST_MIN_STACK`. As a workaround, spawn a thread here with a stack size that works expermentally, and allow overriding it with `FFMPEG_SYS_BUILD_STACK_SIZE` just in case.
+    let stack_size = std::env::var("FFMPEG_SYS_BUILD_STACK_SIZE").map(|s| s.parse()).unwrap_or(Ok(3 * 1024 * 1024));
+    eprintln!("Using stack size: {:?}", stack_size);
+
+    std::thread::Builder::new()
+        .name("ffmpg-sys-build".into())
+        .stack_size(stack_size.unwrap())
+        .spawn(thread_main)
+        .unwrap()
+        .join()
+        .unwrap();
+}
+
+fn thread_main() {
     let statik = env::var("CARGO_FEATURE_STATIC").is_ok();
 
     let include_paths: Vec<PathBuf> = if env::var("CARGO_FEATURE_BUILD").is_ok() {
