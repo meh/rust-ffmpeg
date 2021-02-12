@@ -2,6 +2,9 @@ pub use crate::util::format::{pixel, Pixel};
 pub use crate::util::format::{sample, Sample};
 use crate::util::interrupt;
 
+pub mod io;
+pub use self::io::Io;
+
 pub mod stream;
 
 pub mod chapter;

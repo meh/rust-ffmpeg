@@ -9,11 +9,12 @@ use super::common::Context;
 use super::destructor;
 use crate::codec::traits;
 use crate::ffi::*;
-use crate::{format, ChapterMut, Dictionary, Error, Rational, StreamMut};
+use crate::{format::{self, io::Io}, ChapterMut, Dictionary, Error, Rational, StreamMut};
 
 pub struct Output {
     ptr: *mut AVFormatContext,
     ctx: Context,
+    io: Option<Io>,
 }
 
 unsafe impl Send for Output {}
@@ -23,9 +24,17 @@ impl Output {
         Output {
             ptr,
             ctx: Context::wrap(ptr, destructor::Mode::Output),
+            io: None,
         }
     }
 
+    pub unsafe fn wrap_with(ptr: *mut AVFormatContext, io: Io) -> Self {
+        Output {
+            ptr,
+            ctx: Context::wrap(ptr, destructor::Mode::Output),
+            io: Some(io),
+        }
+    }
     pub unsafe fn as_ptr(&self) -> *const AVFormatContext {
         self.ptr as *const _
     }
