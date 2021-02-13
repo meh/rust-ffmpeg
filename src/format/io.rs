@@ -8,8 +8,6 @@ pub trait Stream: Read + Write + Seek {
 	}
 }
 
-impl<T> Stream for T where T: Read + Write + Seek { }
-
 #[derive(Debug)]
 pub struct Io {
 	ptr: *mut AVIOContext,
