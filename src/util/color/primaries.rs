@@ -1,6 +1,8 @@
 use crate::ffi::{AVColorPrimaries::*, *};
 
 #[derive(Eq, PartialEq, Clone, Copy, Debug)]
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
+#[cfg_attr(feature = "serde", serde(rename_all = "kebab-case"))]
 pub enum Primaries {
 	Reserved0,
 	BT709,
