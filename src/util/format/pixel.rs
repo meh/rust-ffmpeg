@@ -9,6 +9,8 @@ use crate::ffi::AVPixelFormat::*;
 use crate::ffi::*;
 
 #[derive(Eq, PartialEq, Copy, Clone, Debug)]
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
+#[cfg_attr(feature = "serde", serde(rename_all = "kebab-case"))]
 pub enum Pixel {
     None,
 
