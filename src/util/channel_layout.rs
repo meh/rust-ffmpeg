@@ -3,6 +3,8 @@ use libc::c_ulonglong;
 use crate::ffi::*;
 
 bitflags! {
+		#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
+		#[cfg_attr(feature = "serde", serde(rename_all = "kebab-case"))]
 		pub struct ChannelLayout: c_ulonglong {
 				const FRONT_LEFT            = AV_CH_FRONT_LEFT;
 				const FRONT_RIGHT           = AV_CH_FRONT_RIGHT;

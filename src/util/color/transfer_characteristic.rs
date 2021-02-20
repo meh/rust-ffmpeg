@@ -1,6 +1,8 @@
 use crate::ffi::{AVColorTransferCharacteristic::*, *};
 
 #[derive(Eq, PartialEq, Clone, Copy, Debug)]
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
+#[cfg_attr(feature = "serde", serde(rename_all = "kebab-case"))]
 pub enum TransferCharacteristic {
 	Reserved0,
 	BT709,
