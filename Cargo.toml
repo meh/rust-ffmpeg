@@ -121,3 +121,6 @@ optional = true
 [dependencies.ffmpeg-sys]
 version = "4.3.5"
 default-features = false
+
+[patch.crates-io]
+ffmpeg-sys = { path = "../rust-ffmpeg-sys" }
