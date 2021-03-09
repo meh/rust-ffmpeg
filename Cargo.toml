@@ -101,6 +101,7 @@ ffmpeg_4_3 = ["ffmpeg_4_2"]
 libc      = "0.2"
 bitflags  = "1.0"
 thiserror = "1"
+vsprintf = "2"
 
 [dependencies.serde]
 version = "1.0.0"
@@ -114,3 +115,10 @@ optional = true
 [dependencies.ffmpeg-sys]
 version = "4.2"
 default-features = false
+
+[dependencies.log]
+version = "0.4"
+optional = true
+
+[dev-dependencies]
+env_logger = "0.8"

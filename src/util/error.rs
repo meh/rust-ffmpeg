@@ -4,8 +4,8 @@ use libc::c_int;
 
 use crate::ffi::*;
 
-#[derive(Copy, Clone)]
 pub enum Error {
+	Io(io::Error),
 	Bug,
 	Bug2,
 	Unknown,
@@ -68,15 +68,55 @@ impl From<c_int> for Error {
 			AVERROR_HTTP_NOT_FOUND => Error::HttpNotFound,
 			AVERROR_HTTP_OTHER_4XX => Error::HttpOther4xx,
 			AVERROR_HTTP_SERVER_ERROR => Error::HttpServerError,
-
-			_ => Error::Unknown,
+			err => Error::Io(io::Error::from_raw_os_error(-err)),
 		}
 	}
 }
 
 impl Into<c_int> for Error {
 	fn into(self) -> c_int {
+		self.as_raw_error()
+	}
+}
+
+impl From<Error> for io::Error {
+	fn from(value: Error) -> io::Error {
+		match value {
+			Error::Io(err) =>
+				err,
+
+			value =>
+				io::Error::new(io::ErrorKind::Other, value)
+		}
+	}
+}
+
+impl fmt::Display for Error {
+	fn fmt(&self, f: &mut fmt::Formatter) -> Result<(), fmt::Error> {
 		match self {
+			Error::Io(err) =>
+				err.fmt(f),
+
+			err => f.write_str(unsafe {
+				from_utf8_unchecked(CStr::from_ptr(STRINGS[index(err)].as_ptr()).to_bytes())
+			})
+		}
+	}
+}
+
+impl fmt::Debug for Error {
+	fn fmt(&self, f: &mut fmt::Formatter) -> Result<(), fmt::Error> {
+		f.write_str("ffmpeg::Error(")?;
+		f.write_str(&format!("{}: ", AVUNERROR(self.as_raw_error())))?;
+		fmt::Display::fmt(self, f)?;
+		f.write_str(")")
+	}
+}
+
+impl Error {
+	pub fn as_raw_error(&self) -> c_int {
+		match self {
+			Error::Io(err) => err.raw_os_error().unwrap(),
 			Error::BsfNotFound => AVERROR_BSF_NOT_FOUND,
 			Error::Bug => AVERROR_BUG,
 			Error::BufferTooSmall => AVERROR_BUFFER_TOO_SMALL,
@@ -108,32 +148,10 @@ impl Into<c_int> for Error {
 	}
 }
 
-impl From<Error> for io::Error {
-	fn from(value: Error) -> io::Error {
-		io::Error::new(io::ErrorKind::Other, value)
-	}
-}
-
-impl fmt::Display for Error {
-	fn fmt(&self, f: &mut fmt::Formatter) -> Result<(), fmt::Error> {
-		f.write_str(unsafe {
-			from_utf8_unchecked(CStr::from_ptr(STRINGS[index(self)].as_ptr()).to_bytes())
-		})
-	}
-}
-
-impl fmt::Debug for Error {
-	fn fmt(&self, f: &mut fmt::Formatter) -> Result<(), fmt::Error> {
-		f.write_str("ffmpeg::Error(")?;
-		f.write_str(&format!("{}: ", AVUNERROR((*self).into())))?;
-		fmt::Display::fmt(self, f)?;
-		f.write_str(")")
-	}
-}
-
 #[inline(always)]
 fn index(error: &Error) -> usize {
-	match *error {
+	match error {
+		Error::Io(_) => unreachable!(),
 		Error::BsfNotFound => 0,
 		Error::Bug => 1,
 		Error::BufferTooSmall => 2,

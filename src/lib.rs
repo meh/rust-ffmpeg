@@ -64,8 +64,10 @@ pub use crate::filter::Filter;
 
 pub mod software;
 
-fn init_error() {
+fn init_util() {
 	util::error::register_all();
+	#[cfg(feature = "log")]
+	util::log::register();
 }
 
 #[cfg(feature = "format")]
@@ -93,7 +95,7 @@ fn init_filter() {
 fn init_filter() {}
 
 pub fn init() -> Result<(), Error> {
-	init_error();
+	init_util();
 	init_format();
 	init_device();
 	init_filter();

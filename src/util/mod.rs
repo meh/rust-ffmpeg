@@ -15,6 +15,9 @@ pub mod range;
 pub mod rational;
 pub mod time;
 
+#[cfg(feature = "log")]
+pub mod log;
+
 use std::{ffi::CStr, str::from_utf8_unchecked};
 
 use crate::ffi::*;
