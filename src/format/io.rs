@@ -1,24 +1,51 @@
-use std::{slice, convert::TryInto, io::{self, Read, Write, Seek, SeekFrom}, ptr};
+use std::{slice, convert::TryInto, io::{Read, Write, Seek, SeekFrom}, ptr};
 use libc::{c_void, c_int, SEEK_CUR, SEEK_END, SEEK_SET};
-use crate::{ffi::*, Format, format::context::{self, Context}, Error};
+use crate::{ffi::*, format::context, Error};
 
-pub trait Stream: Read + Write + Seek {
-	fn size(&self) -> io::Result<usize> {
-		Ok(0)
+pub enum Proxy {
+	Input(Box<dyn InputIo>),
+	Stream(Box<dyn StreamIo>),
+	Output(Box<dyn Write>),
+}
+
+impl Proxy {
+	pub fn as_read(&mut self) -> &mut dyn Read {
+		match self {
+			Proxy::Input(ref mut inner) => inner,
+			Proxy::Stream(ref mut inner) => inner,
+			Proxy::Output(_) => unreachable!(),
+		}
+	}
+
+	pub fn as_seek(&mut self) -> &mut dyn Seek {
+		match self {
+			Proxy::Input(ref mut inner) => inner,
+			Proxy::Stream(_) | Proxy::Output(_) => unreachable!(),
+		}
+	}
+
+	pub fn as_write(&mut self) -> &mut dyn Write {
+		match self {
+			Proxy::Output(ref mut inner) => inner,
+			Proxy::Stream(_) | Proxy::Input(_) => unreachable!(),
+		}
 	}
 }
 
 #[derive(Debug)]
 pub struct Io {
 	ptr: *mut AVIOContext,
-	proxy: *mut Box<dyn Stream>,
+	proxy: *mut Proxy,
 }
 
-impl<F: Stream + Sized + 'static> From<F> for Io {
-	fn from(value: F) -> Io {
-		Io::new(Box::new(value))
-	}
-}
+pub trait InputIo: Read + Seek { }
+impl<T: Read + Seek> InputIo for T { }
+
+pub trait StreamIo: Read { }
+impl<T: Read> StreamIo for T { }
+
+pub trait OutputIo: Write { }
+impl<T: Write> OutputIo for T { }
 
 impl Io {
 	pub unsafe fn as_ptr(&self) -> *const AVIOContext {
@@ -30,12 +57,11 @@ impl Io {
 	}
 }
 
-#[no_mangle]
-unsafe extern fn read_packet(opaque: *mut c_void, buf: *mut u8, size: c_int) -> c_int {
-	let mut proxy = Box::<Box<dyn Stream>>::from_raw(opaque.cast());
+unsafe extern "C" fn read_packet(opaque: *mut c_void, buf: *mut u8, size: c_int) -> c_int {
+	let mut proxy = Box::<Proxy>::from_raw(opaque.cast());
 	let buffer = slice::from_raw_parts_mut(buf, size.try_into().unwrap());
 
-	let result = match proxy.read(buffer) {
+	let result = match proxy.as_read().read(buffer) {
 		Ok(0) => AVERROR_EOF,
 		Ok(size) => size.try_into().unwrap(),
 		Err(err) => err.raw_os_error().unwrap().try_into().unwrap(),
@@ -45,40 +71,42 @@ unsafe extern fn read_packet(opaque: *mut c_void, buf: *mut u8, size: c_int) -> 
 	result.try_into().unwrap()
 }
 
-#[no_mangle]
-unsafe extern fn write_packet(opaque: *mut c_void, buf: *mut u8, size: c_int) -> c_int {
-	let mut proxy = Box::<Box<dyn Stream>>::from_raw(opaque.cast());
-	let buffer = slice::from_raw_parts(buf, size.try_into().unwrap());
+unsafe extern "C" fn seek(opaque: *mut c_void, offset: i64, whence: c_int) -> i64 {
+	let mut proxy = Box::<Proxy>::from_raw(opaque.cast());
 
-	let result = match proxy.write(buffer) {
-		Ok(size) => size,
-		Err(err) => err.raw_os_error().unwrap().try_into().unwrap(),
+	let result = if whence == AVSEEK_SIZE {
+		#[cfg(feature = "unstable")]
+		match proxy.as_seek().stream_len() {
+			Ok(size) => size,
+			Err(err) => err.raw_os_error().unwrap().try_into().unwrap(),
+		}
+
+		#[cfg(not(feature = "unstable"))]
+		0
+	}
+	else {
+		let whence = match whence {
+			SEEK_SET => SeekFrom::Start(offset.try_into().unwrap()),
+			SEEK_END => SeekFrom::End(offset.try_into().unwrap()),
+			SEEK_CUR => SeekFrom::Current(offset.try_into().unwrap()),
+			_ => unreachable!(),
+		};
+
+		match proxy.as_seek().seek(whence) {
+			Ok(size) => size,
+			Err(err) => err.raw_os_error().unwrap().try_into().unwrap(),
+		}
 	};
 
 	Box::into_raw(proxy);
 	result.try_into().unwrap()
 }
 
-#[no_mangle]
-unsafe extern fn seek(opaque: *mut c_void, offset: i64, whence: c_int) -> i64 {
-	let mut proxy = Box::<Box<dyn Stream>>::from_raw(opaque.cast());
-	let whence = match whence {
-		AVSEEK_SIZE => {
-			let result = match proxy.size() {
-				Ok(size) => size,
-				Err(err) => err.raw_os_error().unwrap().try_into().unwrap(),
-			};
-			Box::into_raw(proxy);
-			return result.try_into().unwrap();
-		}
+unsafe extern "C" fn write_packet(opaque: *mut c_void, buf: *mut u8, size: c_int) -> c_int {
+	let mut proxy = Box::<Proxy>::from_raw(opaque.cast());
+	let buffer = slice::from_raw_parts(buf, size.try_into().unwrap());
 
-		SEEK_SET => SeekFrom::Start(offset.try_into().unwrap()),
-		SEEK_END => SeekFrom::End(offset.try_into().unwrap()),
-		SEEK_CUR => SeekFrom::Current(offset.try_into().unwrap()),
-		_ => unreachable!(),
-	};
-
-	let result = match proxy.seek(whence) {
+	let result = match proxy.as_write().write(buffer) {
 		Ok(size) => size,
 		Err(err) => err.raw_os_error().unwrap().try_into().unwrap(),
 	};
@@ -88,15 +116,31 @@ unsafe extern fn seek(opaque: *mut c_void, offset: i64, whence: c_int) -> i64 {
 }
 
 impl Io {
-	pub fn new(proxy: Box<dyn Stream>) -> Self {
-		Io::with_capacity(4096, proxy)
+	pub fn input(value: impl Read + Seek + 'static) -> Self {
+		unsafe {
+			let proxy = Box::into_raw(Box::new(Proxy::Input(Box::new(value))));
+			let ptr = avio_alloc_context(ptr::null_mut(), 0, AVIO_FLAG_READ & AVIO_FLAG_DIRECT, proxy.cast(),
+				Some(read_packet), None, Some(seek));
+
+			Io { proxy, ptr }
+		}
 	}
 
-	pub fn with_capacity(size: usize, proxy: Box<dyn Stream>) -> Self {
+	pub fn stream(value: impl Read + 'static) -> Self {
 		unsafe {
-			let proxy = Box::into_raw(Box::new(proxy));
+			let proxy = Box::into_raw(Box::new(Proxy::Stream(Box::new(value))));
+			let ptr = avio_alloc_context(ptr::null_mut(), 0, AVIO_FLAG_READ & AVIO_FLAG_DIRECT, proxy.cast(),
+				Some(read_packet), None, None);
+
+			Io { proxy, ptr }
+		}
+	}
+
+	pub fn output(value: impl Write + 'static) -> Self {
+		unsafe {
+			let proxy = Box::into_raw(Box::new(Proxy::Output(Box::new(value))));
 			let ptr = avio_alloc_context(ptr::null_mut(), 0, AVIO_FLAG_WRITE & AVIO_FLAG_DIRECT, proxy.cast(),
-				Some(read_packet), Some(write_packet), Some(seek));
+				None, Some(write_packet), None);
 
 			Io { proxy, ptr }
 		}
@@ -107,75 +151,29 @@ impl Drop for Io {
 	fn drop(&mut self) {
 		unsafe {
 			avio_context_free(&mut self.ptr);
+			Box::from_raw(self.proxy);
 		}
 	}
 }
 
-pub fn open<I: Into<Io>>(io: I, format: &Format) -> Result<Context, Error> {
+pub fn input(io: impl Read + Seek + 'static) -> Result<context::Input, Error> {
 	unsafe {
 		let mut ps = avformat_alloc_context();
-		let mut io = io.into();
-		(*ps).pb = io.as_mut_ptr();
-
-		match *format {
-			Format::Input(ref format) => match avformat_open_input(
-				&mut ps,
-				ptr::null_mut(),
-				format.as_ptr() as *mut _,
-				ptr::null_mut(),
-			) {
-				0 => match avformat_find_stream_info(ps, ptr::null_mut()) {
-					r if r >= 0 => Ok(Context::Input(context::Input::wrap_with(ps, io))),
-					e => {
-						avformat_close_input(&mut ps);
-						Err(Error::from(e))
-					}
-				},
-
-				e => Err(Error::from(e)),
-			},
-
-			Format::Output(ref format) => match avformat_alloc_output_context2(
-				&mut ps,
-				format.as_ptr() as *mut _,
-				ptr::null(),
-				ptr::null(),
-			) {
-				0 => Ok(Context::Output(context::Output::wrap_with(ps, io))),
-				e => Err(Error::from(e)),
-			},
-		}
-	}
-}
-
-pub fn input<I: Into<Io>>(io: I) -> Result<context::Input, Error> {
-	unsafe {
-		let mut ps = avformat_alloc_context();
-		let mut io = io.into();
+		let mut io = Io::input(io);
 		(*ps).pb = io.as_mut_ptr();
 
 		match avformat_open_input(&mut ps, ptr::null_mut(), ptr::null_mut(), ptr::null_mut()) {
 			0 => match avformat_find_stream_info(ps, ptr::null_mut()) {
-				r if r >= 0 => Ok(context::Input::wrap_with(ps, io)),
+				r if r >= 0 => {
+					Ok(context::Input::wrap_with(ps, io))
+				}
+
 				e => {
 					avformat_close_input(&mut ps);
 					Err(Error::from(e))
 				}
 			},
 
-			e => Err(Error::from(e)),
-		}
-	}
-}
-
-pub fn output<I: Into<Io>>(io: I) -> Result<context::Output, Error> {
-	unsafe {
-		let mut ps = avformat_alloc_context();
-		let mut io = io.into();
-		(*ps).pb = io.as_mut_ptr();
-
-		match avformat_alloc_output_context2(&mut ps, ptr::null_mut(), ptr::null(), ptr::null_mut()) {
-			0 => Ok(context::Output::wrap_with(ps, io)),
 			e => Err(Error::from(e)),
 		}
 	}

@@ -1,4 +1,5 @@
 #![allow(non_camel_case_types)]
+#![cfg_attr(feature = "unstable", feature(seek_stream_len))]
 #![cfg_attr(feature = "cargo-clippy", allow(inline_always))]
 
 #[macro_use]

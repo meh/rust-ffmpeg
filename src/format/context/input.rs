@@ -11,7 +11,7 @@ use crate::{ffi::*, format::{self, io::Io}, util::range::Range, Codec, Error, Pa
 pub struct Input {
 	ptr: *mut AVFormatContext,
 	ctx: Context,
-	io: Option<Io>
+	_io: Option<Io>
 }
 
 unsafe impl Send for Input {}
@@ -21,7 +21,7 @@ impl Input {
 		Input {
 			ptr,
 			ctx: Context::wrap(ptr, destructor::Mode::Input),
-			io: None,
+			_io: None,
 		}
 	}
 
@@ -29,7 +29,7 @@ impl Input {
 		Input {
 			ptr,
 			ctx: Context::wrap(ptr, destructor::Mode::Input),
-			io: Some(io),
+			_io: Some(io),
 		}
 	}
 

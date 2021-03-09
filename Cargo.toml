@@ -13,6 +13,7 @@ keywords    = ["audio", "video"]
 
 [features]
 default = ["codec", "device", "filter", "format", "resampling", "software-scaling"]
+unstable = []
 
 static = ["ffmpeg-sys/static"]
 # Currently the version built by ffmpeg-sys is 4.1

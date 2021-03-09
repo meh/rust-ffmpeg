@@ -11,7 +11,7 @@ mkShell {
 
   buildInputs = [
     # For building.
-    clang rustChannels.stable.rust pkg-config ffmpeg
+    clang rustChannels.nightly.rust pkg-config ffmpeg
   ];
 
   RUST_BACKTRACE = 1;

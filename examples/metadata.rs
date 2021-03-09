@@ -1,11 +1,11 @@
-extern crate ffmpeg;
-
-use std::env;
+use std::{env, fs::File};
 
 fn main() {
+	env_logger::init();
 	ffmpeg::init().unwrap();
 
-	match ffmpeg::format::input(&env::args().nth(1).expect("missing file")) {
+	let file = File::open(&env::args().nth(1).expect("missing file")).unwrap();
+	match ffmpeg::format::io::input(file) {
 		Ok(context) => {
 			for (k, v) in context.metadata().iter() {
 				println!("{}: {}", k, v);
