@@ -16,16 +16,16 @@ keywords    = ["audio", "video"]
 doctest = false
 
 [dependencies]
-libc = "0.2"
+libc = "0.2.88"
 
 [build-dependencies]
-num_cpus   = "1.11"
-cc         = "1.0"
-pkg-config = "0.3"
-bindgen    = "0.56"
+num_cpus   = "1.13.0"
+cc         = "1.0.67"
+pkg-config = "0.3.19"
+bindgen    = "0.57.0"
 
 [target.'cfg(target_env = "msvc")'.build-dependencies]
-vcpkg = "0.2"
+vcpkg = "0.2.11"
 
 [features]
 default  = ["avcodec", "avdevice", "avfilter", "avformat", "swresample", "swscale"]
