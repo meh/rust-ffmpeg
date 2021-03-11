@@ -86,8 +86,8 @@ unsafe extern "C" fn seek(opaque: *mut c_void, offset: i64, whence: c_int) -> i6
 	let result: i64 = if whence == AVSEEK_SIZE {
 		#[cfg(feature = "unstable")]
 		match proxy.as_seek().stream_len() {
-			Ok(size) => size,
-			Err(err) => as_error(err),
+			Ok(size) => size.try_into().unwrap(),
+			Err(err) => as_error(err).into(),
 		}
 
 		#[cfg(not(feature = "unstable"))]
