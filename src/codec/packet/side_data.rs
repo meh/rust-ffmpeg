@@ -4,6 +4,8 @@ use super::Packet;
 use crate::ffi::{AVPacketSideDataType::*, *};
 
 #[derive(Eq, PartialEq, Copy, Clone, Debug)]
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
+#[cfg_attr(feature = "serde", serde(rename_all = "kebab-case"))]
 pub enum Type {
 	Palette,
 	NewExtraData,
