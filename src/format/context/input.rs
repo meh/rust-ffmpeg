@@ -6,12 +6,17 @@ use std::{
 };
 
 use super::{common::Context, destructor};
-use crate::{ffi::*, format::{self, io::Io}, util::range::Range, Codec, Error, Packet, Stream};
+use crate::{
+	ffi::*,
+	format::{self, io::Io},
+	util::range::Range,
+	Codec, Error, Packet, Stream,
+};
 
 pub struct Input {
 	ptr: *mut AVFormatContext,
 	ctx: Context,
-	_io: Option<Io>
+	_io: Option<Io>,
 }
 
 unsafe impl Send for Input {}

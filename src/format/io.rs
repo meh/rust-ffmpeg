@@ -1,5 +1,11 @@
-use std::{slice, convert::TryInto, io::{self, Read, Write, Seek, SeekFrom}, ptr};
-use libc::{c_void, c_int, SEEK_CUR, SEEK_END, SEEK_SET, EINVAL};
+use std::{
+	convert::TryInto,
+	io::{self, Read, Seek, SeekFrom, Write},
+	ptr, slice,
+};
+
+use libc::{c_int, c_void, EINVAL, SEEK_CUR, SEEK_END, SEEK_SET};
+
 use crate::{ffi::*, format::context, Error};
 
 pub enum Proxy {
@@ -38,14 +44,14 @@ pub struct Io {
 	proxy: *mut Proxy,
 }
 
-pub trait InputIo: Read + Seek { }
-impl<T: Read + Seek> InputIo for T { }
+pub trait InputIo: Read + Seek {}
+impl<T: Read + Seek> InputIo for T {}
 
-pub trait StreamIo: Read { }
-impl<T: Read> StreamIo for T { }
+pub trait StreamIo: Read {}
+impl<T: Read> StreamIo for T {}
 
-pub trait OutputIo: Write { }
-impl<T: Write> OutputIo for T { }
+pub trait OutputIo: Write {}
+impl<T: Write> OutputIo for T {}
 
 impl Io {
 	pub unsafe fn as_ptr(&self) -> *const AVIOContext {
@@ -128,8 +134,15 @@ impl Io {
 	pub fn input(value: impl Read + Seek + 'static) -> Self {
 		unsafe {
 			let proxy = Box::into_raw(Box::new(Proxy::Input(Box::new(value))));
-			let ptr = avio_alloc_context(ptr::null_mut(), 0, AVIO_FLAG_READ & AVIO_FLAG_DIRECT, proxy.cast(),
-				Some(read_packet), None, Some(seek));
+			let ptr = avio_alloc_context(
+				ptr::null_mut(),
+				0,
+				AVIO_FLAG_READ & AVIO_FLAG_DIRECT,
+				proxy.cast(),
+				Some(read_packet),
+				None,
+				Some(seek),
+			);
 
 			Io { proxy, ptr }
 		}
@@ -138,8 +151,15 @@ impl Io {
 	pub fn stream(value: impl Read + 'static) -> Self {
 		unsafe {
 			let proxy = Box::into_raw(Box::new(Proxy::Stream(Box::new(value))));
-			let ptr = avio_alloc_context(ptr::null_mut(), 0, AVIO_FLAG_READ & AVIO_FLAG_DIRECT, proxy.cast(),
-				Some(read_packet), None, None);
+			let ptr = avio_alloc_context(
+				ptr::null_mut(),
+				0,
+				AVIO_FLAG_READ & AVIO_FLAG_DIRECT,
+				proxy.cast(),
+				Some(read_packet),
+				None,
+				None,
+			);
 
 			Io { proxy, ptr }
 		}
@@ -148,8 +168,15 @@ impl Io {
 	pub fn output(value: impl Write + 'static) -> Self {
 		unsafe {
 			let proxy = Box::into_raw(Box::new(Proxy::Output(Box::new(value))));
-			let ptr = avio_alloc_context(ptr::null_mut(), 0, AVIO_FLAG_WRITE & AVIO_FLAG_DIRECT, proxy.cast(),
-				None, Some(write_packet), None);
+			let ptr = avio_alloc_context(
+				ptr::null_mut(),
+				0,
+				AVIO_FLAG_WRITE & AVIO_FLAG_DIRECT,
+				proxy.cast(),
+				None,
+				Some(write_packet),
+				None,
+			);
 
 			Io { proxy, ptr }
 		}
@@ -173,9 +200,7 @@ pub fn input(io: impl Read + Seek + 'static) -> Result<context::Input, Error> {
 
 		match avformat_open_input(&mut ps, ptr::null_mut(), ptr::null_mut(), ptr::null_mut()) {
 			0 => match avformat_find_stream_info(ps, ptr::null_mut()) {
-				r if r >= 0 => {
-					Ok(context::Input::wrap_with(ps, io))
-				}
+				r if r >= 0 => Ok(context::Input::wrap_with(ps, io)),
 
 				e => {
 					avformat_close_input(&mut ps);

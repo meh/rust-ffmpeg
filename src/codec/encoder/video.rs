@@ -424,11 +424,7 @@ pub struct Encoder(pub Video);
 
 impl Encoder {
 	#[inline]
-	pub fn encode<P: packet::Mut>(
-		&mut self,
-		frame: &frame::Video,
-		out: &mut P,
-	) -> Result<(), Error> {
+	pub fn encode<P: packet::Mut>(&mut self, frame: &frame::Video, out: &mut P) -> Result<(), Error> {
 		unsafe {
 			if self.format() != frame.format()
 				|| self.width() != frame.width()
@@ -456,7 +452,7 @@ impl Encoder {
 		unsafe {
 			match avcodec_receive_packet(self.0.as_mut_ptr(), out.as_mut_ptr()) {
 				e if e < 0 => Err(Error::from(e)),
-				_ => Ok(())
+				_ => Ok(()),
 			}
 		}
 	}

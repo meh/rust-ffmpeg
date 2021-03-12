@@ -82,11 +82,9 @@ impl Into<c_int> for Error {
 impl From<Error> for io::Error {
 	fn from(value: Error) -> io::Error {
 		match value {
-			Error::Io(err) =>
-				err,
+			Error::Io(err) => err,
 
-			value =>
-				io::Error::new(io::ErrorKind::Other, value)
+			value => io::Error::new(io::ErrorKind::Other, value),
 		}
 	}
 }
@@ -94,12 +92,11 @@ impl From<Error> for io::Error {
 impl fmt::Display for Error {
 	fn fmt(&self, f: &mut fmt::Formatter) -> Result<(), fmt::Error> {
 		match self {
-			Error::Io(err) =>
-				err.fmt(f),
+			Error::Io(err) => err.fmt(f),
 
 			err => f.write_str(unsafe {
 				from_utf8_unchecked(CStr::from_ptr(STRINGS[index(err)].as_ptr()).to_bytes())
-			})
+			}),
 		}
 	}
 }
