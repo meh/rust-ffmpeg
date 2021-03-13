@@ -1,4 +1,3 @@
-extern crate ffmpeg;
 
 use std::env;
 

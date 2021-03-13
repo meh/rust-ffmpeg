@@ -214,7 +214,7 @@ impl DerefMut for Audio {
 }
 
 impl ::std::fmt::Debug for Audio {
-	fn fmt(&self, f: &mut ::std::fmt::Formatter) -> Result<(), ::std::fmt::Error> {
+	fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> Result<(), ::std::fmt::Error> {
 		f.write_str("ffmpeg::frame::Audio { ")?;
 		f.write_str(&format!("format: {:?}, ", self.format()))?;
 		f.write_str(&format!("channels: {:?}, ", self.channels()))?;

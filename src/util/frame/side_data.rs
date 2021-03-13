@@ -159,7 +159,7 @@ impl<'a> SideData<'a> {
 	}
 
 	#[inline]
-	pub fn metadata(&self) -> DictionaryRef {
+	pub fn metadata(&self) -> DictionaryRef<'_> {
 		unsafe { DictionaryRef::wrap((*self.as_ptr()).metadata) }
 	}
 }

@@ -92,7 +92,7 @@ pub fn open<P: AsRef<OsStr>>(path_or_url: P, format: &Format) -> Result<Context,
 pub fn open_with<P: AsRef<OsStr>>(
 	path_or_url: P,
 	format: &Format,
-	options: Dictionary,
+	options: Dictionary<'_>,
 ) -> Result<Context, Error> {
 	unsafe {
 		let mut ps = ptr::null_mut();
@@ -153,7 +153,7 @@ pub fn input<P: AsRef<OsStr>>(path_or_url: P) -> Result<context::Input, Error> {
 
 pub fn input_with_dictionary<P: AsRef<OsStr>>(
 	path_or_url: P,
-	options: Dictionary,
+	options: Dictionary<'_>,
 ) -> Result<context::Input, Error> {
 	unsafe {
 		let mut ps = ptr::null_mut();
@@ -216,7 +216,7 @@ pub fn output<P: AsRef<OsStr>>(path_or_url: P) -> Result<context::Output, Error>
 	}
 }
 
-pub fn output_with<P: AsRef<OsStr>>(path_or_url: P, options: Dictionary) -> Result<context::Output, Error> {
+pub fn output_with<P: AsRef<OsStr>>(path_or_url: P, options: Dictionary<'_>) -> Result<context::Output, Error> {
 	unsafe {
 		let mut ps = ptr::null_mut();
 		let path = from_os_str(path_or_url);
@@ -265,7 +265,7 @@ pub fn output_as<P: AsRef<OsStr>>(path_or_url: P, format: &str) -> Result<contex
 pub fn output_as_with<P: AsRef<OsStr>>(
 	path_or_url: P,
 	format: &str,
-	options: Dictionary,
+	options: Dictionary<'_>,
 ) -> Result<context::Output, Error> {
 	unsafe {
 		let mut ps = ptr::null_mut();

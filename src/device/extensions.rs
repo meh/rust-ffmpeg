@@ -5,7 +5,7 @@ use libc::c_int;
 use crate::{device, ffi::*, format::context::common::Context, Error};
 
 impl Context {
-	pub fn devices(&self) -> Result<DeviceIter, Error> {
+	pub fn devices(&self) -> Result<DeviceIter<'_>, Error> {
 		unsafe { DeviceIter::wrap(self.as_ptr()) }
 	}
 }

@@ -181,13 +181,13 @@ impl Div for Rational {
 }
 
 impl fmt::Display for Rational {
-	fn fmt(&self, f: &mut fmt::Formatter) -> Result<(), fmt::Error> {
+	fn fmt(&self, f: &mut fmt::Formatter<'_>) -> Result<(), fmt::Error> {
 		f.write_str(&format!("{}/{}", self.numerator(), self.denominator()))
 	}
 }
 
 impl fmt::Debug for Rational {
-	fn fmt(&self, f: &mut fmt::Formatter) -> Result<(), fmt::Error> {
+	fn fmt(&self, f: &mut fmt::Formatter<'_>) -> Result<(), fmt::Error> {
 		f.write_str(&format!(
 			"Rational({}/{})",
 			self.numerator(),

@@ -39,7 +39,7 @@ impl Filter {
 		}
 	}
 
-	pub fn inputs(&self) -> Option<PadIter> {
+	pub fn inputs(&self) -> Option<PadIter<'_>> {
 		unsafe {
 			let ptr = (*self.as_ptr()).inputs;
 
@@ -52,7 +52,7 @@ impl Filter {
 		}
 	}
 
-	pub fn outputs(&self) -> Option<PadIter> {
+	pub fn outputs(&self) -> Option<PadIter<'_>> {
 		unsafe {
 			let ptr = (*self.as_ptr()).outputs;
 

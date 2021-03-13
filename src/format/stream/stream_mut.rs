@@ -11,7 +11,7 @@ pub struct StreamMut<'a> {
 }
 
 impl<'a> StreamMut<'a> {
-	pub unsafe fn wrap(context: &mut Context, index: usize) -> StreamMut {
+	pub unsafe fn wrap(context: &mut Context, index: usize) -> StreamMut<'_> {
 		StreamMut {
 			context: mem::transmute_copy(&context),
 			index,
@@ -61,7 +61,7 @@ impl<'a> StreamMut<'a> {
 		}
 	}
 
-	pub fn set_metadata(&mut self, metadata: Dictionary) {
+	pub fn set_metadata(&mut self, metadata: Dictionary<'_>) {
 		unsafe {
 			let metadata = metadata.disown();
 			(*self.as_mut_ptr()).metadata = metadata;

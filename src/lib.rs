@@ -7,7 +7,6 @@ extern crate bitflags;
 pub extern crate ffmpeg_sys as sys;
 #[cfg(feature = "image")]
 extern crate image;
-extern crate libc;
 
 pub use crate::sys as ffi;
 

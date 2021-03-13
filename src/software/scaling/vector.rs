@@ -82,19 +82,19 @@ impl<'a> Vector<'a> {
 		}
 	}
 
-	pub fn conv(&mut self, other: &Vector) {
+	pub fn conv(&mut self, other: &Vector<'_>) {
 		unsafe {
 			sws_convVec(self.as_mut_ptr(), other.as_ptr() as *mut _);
 		}
 	}
 
-	pub fn add(&mut self, other: &Vector) {
+	pub fn add(&mut self, other: &Vector<'_>) {
 		unsafe {
 			sws_addVec(self.as_mut_ptr(), other.as_ptr() as *mut _);
 		}
 	}
 
-	pub fn sub(&mut self, other: &Vector) {
+	pub fn sub(&mut self, other: &Vector<'_>) {
 		unsafe {
 			sws_subVec(self.as_mut_ptr(), other.as_ptr() as *mut _);
 		}

@@ -45,7 +45,7 @@ impl<'a> Ref<'a> {
 		}
 	}
 
-	pub fn iter(&self) -> Iter {
+	pub fn iter(&self) -> Iter<'_> {
 		unsafe { Iter::new(self.as_ptr()) }
 	}
 
@@ -64,7 +64,7 @@ impl<'a> IntoIterator for &'a Ref<'a> {
 }
 
 impl<'a> fmt::Debug for Ref<'a> {
-	fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+	fn fmt(&self, fmt: &mut fmt::Formatter<'_>) -> fmt::Result {
 		fmt.debug_map().entries(self.iter()).finish()
 	}
 }

@@ -62,11 +62,11 @@ impl Context {
 		}
 	}
 
-	pub fn streams(&self) -> StreamIter {
+	pub fn streams(&self) -> StreamIter<'_> {
 		StreamIter::new(self)
 	}
 
-	pub fn streams_mut(&mut self) -> StreamIterMut {
+	pub fn streams_mut(&mut self) -> StreamIterMut<'_> {
 		StreamIterMut::new(self)
 	}
 
@@ -116,15 +116,15 @@ impl Context {
 		}
 	}
 
-	pub fn chapters(&self) -> ChapterIter {
+	pub fn chapters(&self) -> ChapterIter<'_> {
 		ChapterIter::new(self)
 	}
 
-	pub fn chapters_mut(&mut self) -> ChapterIterMut {
+	pub fn chapters_mut(&mut self) -> ChapterIterMut<'_> {
 		ChapterIterMut::new(self)
 	}
 
-	pub fn metadata(&self) -> DictionaryRef {
+	pub fn metadata(&self) -> DictionaryRef<'_> {
 		unsafe { DictionaryRef::wrap((*self.as_ptr()).metadata) }
 	}
 }
@@ -146,7 +146,7 @@ impl<'a> Best<'a> {
 		}
 	}
 
-	pub fn wanted<'b>(mut self, stream: &'b Stream) -> Best<'a>
+	pub fn wanted<'b>(mut self, stream: &'b Stream<'_>) -> Best<'a>
 	where
 		'a: 'b,
 	{
@@ -154,7 +154,7 @@ impl<'a> Best<'a> {
 		self
 	}
 
-	pub fn related<'b>(mut self, stream: &'b Stream) -> Best<'a>
+	pub fn related<'b>(mut self, stream: &'b Stream<'_>) -> Best<'a>
 	where
 		'a: 'b,
 	{
@@ -202,7 +202,7 @@ impl<'a> StreamIter<'a> {
 }
 
 impl<'a> StreamIter<'a> {
-	pub fn wanted<'b, 'c>(&self, stream: &'b Stream) -> Best<'c>
+	pub fn wanted<'b, 'c>(&self, stream: &'b Stream<'_>) -> Best<'c>
 	where
 		'a: 'b,
 		'a: 'c,
@@ -210,7 +210,7 @@ impl<'a> StreamIter<'a> {
 		unsafe { Best::new(self.context).wanted(stream) }
 	}
 
-	pub fn related<'b, 'c>(&self, stream: &'b Stream) -> Best<'c>
+	pub fn related<'b, 'c>(&self, stream: &'b Stream<'_>) -> Best<'c>
 	where
 		'a: 'b,
 		'a: 'c,
@@ -386,7 +386,7 @@ impl<'a> Iterator for ChapterIterMut<'a> {
 impl<'a> ExactSizeIterator for ChapterIterMut<'a> {}
 
 impl fmt::Debug for Context {
-	fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+	fn fmt(&self, fmt: &mut fmt::Formatter<'_>) -> fmt::Result {
 		let mut s = fmt.debug_struct("AVFormatContext");
 		s.field("bit_rate", &self.bit_rate());
 		s.field("duration", &self.duration());
