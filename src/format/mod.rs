@@ -216,7 +216,10 @@ pub fn output<P: AsRef<OsStr>>(path_or_url: P) -> Result<context::Output, Error>
 	}
 }
 
-pub fn output_with<P: AsRef<OsStr>>(path_or_url: P, options: Dictionary<'_>) -> Result<context::Output, Error> {
+pub fn output_with<P: AsRef<OsStr>>(
+	path_or_url: P,
+	options: Dictionary<'_>,
+) -> Result<context::Output, Error> {
 	unsafe {
 		let mut ps = ptr::null_mut();
 		let path = from_os_str(path_or_url);
@@ -295,7 +298,6 @@ pub fn output_as_with<P: AsRef<OsStr>>(
 		}
 	}
 }
-
 
 #[cfg(unix)]
 fn from_os_str(path_or_url: impl AsRef<OsStr>) -> CString {

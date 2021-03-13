@@ -1,5 +1,6 @@
-use crate::ffi::{AVColorTransferCharacteristic::*, *};
 use std::ffi::CStr;
+
+use crate::ffi::{AVColorTransferCharacteristic::*, *};
 
 #[derive(Eq, PartialEq, Clone, Copy, Debug)]
 #[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
@@ -27,15 +28,17 @@ pub enum TransferCharacteristic {
 }
 
 impl TransferCharacteristic {
-    pub fn name(&self) -> Option<&'static str> {
-        if *self == TransferCharacteristic::Unspecified {
-            return None;
-        }
-        unsafe {
-            let ptr = av_color_transfer_name((*self).into());
-            ptr.as_ref().map(|ptr| std::str::from_utf8_unchecked(CStr::from_ptr(ptr).to_bytes()))
-        }
-    }
+	pub fn name(&self) -> Option<&'static str> {
+		if *self == TransferCharacteristic::Unspecified {
+			return None;
+		}
+		unsafe {
+			let ptr = av_color_transfer_name((*self).into());
+			ptr
+				.as_ref()
+				.map(|ptr| std::str::from_utf8_unchecked(CStr::from_ptr(ptr).to_bytes()))
+		}
+	}
 }
 
 impl From<AVColorTransferCharacteristic> for TransferCharacteristic {

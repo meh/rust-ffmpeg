@@ -1,5 +1,6 @@
-use crate::ffi::{AVColorPrimaries::*, *};
 use std::ffi::CStr;
+
+use crate::ffi::{AVColorPrimaries::*, *};
 
 #[derive(Eq, PartialEq, Clone, Copy, Debug)]
 #[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
@@ -25,15 +26,17 @@ pub enum Primaries {
 }
 
 impl Primaries {
-    pub fn name(&self) -> Option<&'static str> {
-        if *self == Primaries::Unspecified {
-            return None;
-        }
-        unsafe {
-            let ptr = av_color_primaries_name((*self).into());
-            ptr.as_ref().map(|ptr| std::str::from_utf8_unchecked(CStr::from_ptr(ptr).to_bytes()))
-        }
-    }
+	pub fn name(&self) -> Option<&'static str> {
+		if *self == Primaries::Unspecified {
+			return None;
+		}
+		unsafe {
+			let ptr = av_color_primaries_name((*self).into());
+			ptr
+				.as_ref()
+				.map(|ptr| std::str::from_utf8_unchecked(CStr::from_ptr(ptr).to_bytes()))
+		}
+	}
 }
 
 impl From<AVColorPrimaries> for Primaries {

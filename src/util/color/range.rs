@@ -1,5 +1,6 @@
-use crate::ffi::{AVColorRange::*, *};
 use std::ffi::CStr;
+
+use crate::ffi::{AVColorRange::*, *};
 
 #[derive(Eq, PartialEq, Clone, Copy, Debug)]
 #[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
@@ -11,15 +12,17 @@ pub enum Range {
 }
 
 impl Range {
-    pub fn name(&self) -> Option<&'static str> {
-        if *self == Range::Unspecified {
-            return None;
-        }
-        unsafe {
-            let ptr = av_color_range_name((*self).into());
-            ptr.as_ref().map(|ptr| std::str::from_utf8_unchecked(CStr::from_ptr(ptr).to_bytes()))
-        }
-    }
+	pub fn name(&self) -> Option<&'static str> {
+		if *self == Range::Unspecified {
+			return None;
+		}
+		unsafe {
+			let ptr = av_color_range_name((*self).into());
+			ptr
+				.as_ref()
+				.map(|ptr| std::str::from_utf8_unchecked(CStr::from_ptr(ptr).to_bytes()))
+		}
+	}
 }
 
 impl From<AVColorRange> for Range {

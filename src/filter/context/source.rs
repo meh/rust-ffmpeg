@@ -31,12 +31,12 @@ impl<'a> Source<'a> {
 		unsafe { self.add(&Frame::wrap(ptr::null_mut())) }
 	}
 
-    pub fn close(&mut self, pts: i64) -> Result<(), Error> {
-        unsafe {
-            match av_buffersrc_close(self.ctx.as_mut_ptr(), pts, 0) {
-                0 => Ok(()),
-                e => Err(Error::from(e)),
-            }
-        }
-    }
+	pub fn close(&mut self, pts: i64) -> Result<(), Error> {
+		unsafe {
+			match av_buffersrc_close(self.ctx.as_mut_ptr(), pts, 0) {
+				0 => Ok(()),
+				e => Err(Error::from(e)),
+			}
+		}
+	}
 }
