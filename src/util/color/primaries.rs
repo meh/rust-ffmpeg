@@ -1,4 +1,5 @@
 use crate::ffi::{AVColorPrimaries::*, *};
+use std::ffi::CStr;
 
 #[derive(Eq, PartialEq, Clone, Copy, Debug)]
 #[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
@@ -30,7 +31,7 @@ impl Primaries {
         }
         unsafe {
             let ptr = av_color_primaries_name((*self).into());
-            ptr.as_ref().map(|ptr| from_utf8_unchecked(CStr::from_ptr(ptr).to_bytes()))
+            ptr.as_ref().map(|ptr| std::str::from_utf8_unchecked(CStr::from_ptr(ptr).to_bytes()))
         }
     }
 }
