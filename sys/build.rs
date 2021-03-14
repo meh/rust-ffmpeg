@@ -31,15 +31,42 @@ impl Library {
 }
 
 static LIBRARIES: &[Library] = &[
-    Library {name: "avcodec", is_feature: true},
-    Library {name: "avdevice", is_feature: true},
-    Library {name: "avfilter", is_feature: true},
-    Library {name: "avformat", is_feature: true},
-    Library {name: "avresample", is_feature: true},
-    Library {name: "avutil", is_feature: false},
-    Library {name: "postproc", is_feature: true},
-    Library {name: "swresample", is_feature: true},
-    Library {name: "swscale", is_feature: true},
+    Library {
+        name: "avcodec",
+        is_feature: true,
+    },
+    Library {
+        name: "avdevice",
+        is_feature: true,
+    },
+    Library {
+        name: "avfilter",
+        is_feature: true,
+    },
+    Library {
+        name: "avformat",
+        is_feature: true,
+    },
+    Library {
+        name: "avresample",
+        is_feature: true,
+    },
+    Library {
+        name: "avutil",
+        is_feature: false,
+    },
+    Library {
+        name: "postproc",
+        is_feature: true,
+    },
+    Library {
+        name: "swresample",
+        is_feature: true,
+    },
+    Library {
+        name: "swscale",
+        is_feature: true,
+    },
 ];
 
 #[derive(Debug)]
@@ -137,14 +164,14 @@ fn fetch() -> io::Result<()> {
     let clone_dest_dir = format!("ffmpeg-{}", version());
     let _ = std::fs::remove_dir_all(output_base_path.join(&clone_dest_dir));
     let status = Command::new("git")
-            .current_dir(&output_base_path)
-            .arg("clone")
-            .arg("--depth=1")
-            .arg("-b")
-            .arg(format!("release/{}", version()))
-            .arg("https://github.com/FFmpeg/FFmpeg")
-            .arg(&clone_dest_dir)
-            .status()?;
+        .current_dir(&output_base_path)
+        .arg("clone")
+        .arg("--depth=1")
+        .arg("-b")
+        .arg(format!("release/{}", version()))
+        .arg("https://github.com/FFmpeg/FFmpeg")
+        .arg(&clone_dest_dir)
+        .status()?;
 
     if status.success() {
         Ok(())
@@ -156,8 +183,7 @@ fn fetch() -> io::Result<()> {
 fn switch(configure: &mut Command, feature: &str, name: &str) {
     let arg = if env::var("CARGO_FEATURE_".to_string() + feature).is_ok() {
         "--enable-"
-    }
-    else {
+    } else {
         "--disable-"
     };
     configure.arg(arg.to_string() + name);
@@ -180,14 +206,19 @@ fn build() -> io::Result<()> {
         // and this is a messy way of reusing that logic.
         let cc = cc::Build::new();
         let compiler = cc.get_compiler();
-        let compiler = compiler.path()
-            .file_stem().unwrap().to_str().unwrap();
+        let compiler = compiler.path().file_stem().unwrap().to_str().unwrap();
         let suffix_pos = compiler.rfind('-').unwrap(); // cut off "-gcc"
         let prefix = compiler[0..suffix_pos].trim_end_matches("-wr"); // "wr-c++" compiler
 
         configure.arg(format!("--cross-prefix={}-", prefix));
-        configure.arg(format!("--arch={}", env::var("CARGO_CFG_TARGET_ARCH").unwrap()));
-        configure.arg(format!("--target_os={}", env::var("CARGO_CFG_TARGET_OS").unwrap()));
+        configure.arg(format!(
+            "--arch={}",
+            env::var("CARGO_CFG_TARGET_ARCH").unwrap()
+        ));
+        configure.arg(format!(
+            "--target_os={}",
+            env::var("CARGO_CFG_TARGET_OS").unwrap()
+        ));
     }
 
     // control debug build
@@ -213,11 +244,11 @@ fn build() -> io::Result<()> {
     configure.arg("--disable-programs");
 
     macro_rules! enable {
-        ($conf:expr, $feat:expr, $name:expr) => (
+        ($conf:expr, $feat:expr, $name:expr) => {
             if env::var(concat!("CARGO_FEATURE_", $feat)).is_ok() {
                 $conf.arg(concat!("--enable-", $name));
             }
-        )
+        };
     }
 
     // macro_rules! disable {
@@ -322,21 +353,21 @@ fn build() -> io::Result<()> {
 
     // run make
     if !Command::new("make")
-            .arg("-j")
-            .arg(num_cpus::get().to_string())
-            .current_dir(&source())
-            .status()?
-            .success()
+        .arg("-j")
+        .arg(num_cpus::get().to_string())
+        .current_dir(&source())
+        .status()?
+        .success()
     {
         return Err(io::Error::new(io::ErrorKind::Other, "make failed"));
     }
 
     // run make install
     if !Command::new("make")
-            .current_dir(&source())
-            .arg("install")
-            .status()?
-            .success()
+        .current_dir(&source())
+        .arg("install")
+        .status()?
+        .success()
     {
         return Err(io::Error::new(io::ErrorKind::Other, "make install failed"));
     }
@@ -398,7 +429,8 @@ fn check_features(
 
         main_code.push_str(&format!(
             r#"printf("[{var}]%d%d\n", {var}, {var}_is_defined);
-            "#, var = var
+            "#,
+            var = var
         ));
     }
 
@@ -435,12 +467,14 @@ fn check_features(
            "#,
         includes_code = includes_code,
         main_code = main_code
-    ).expect("Write failed");
+    )
+    .expect("Write failed");
 
     let executable = out_dir.join(if cfg!(windows) { "check.exe" } else { "check" });
     let mut compiler = cc::Build::new()
         .target(&env::var("HOST").unwrap()) // don't cross-compile this
-        .get_compiler().to_command();
+        .get_compiler()
+        .to_command();
 
     for dir in include_paths {
         compiler.arg("-I");
@@ -463,7 +497,12 @@ fn check_features(
         .output()
         .expect("Check failed");
     if !check_output.status.success() {
-        panic!("{} failed: {}\n{}", executable.display(), String::from_utf8_lossy(&check_output.stdout), String::from_utf8_lossy(&check_output.stderr));
+        panic!(
+            "{} failed: {}\n{}",
+            executable.display(),
+            String::from_utf8_lossy(&check_output.stdout),
+            String::from_utf8_lossy(&check_output.stderr)
+        );
     }
 
     let stdout = str::from_utf8(&check_output.stdout).unwrap();
@@ -478,8 +517,10 @@ fn check_features(
         }
 
         let var_str = format!("[{var}]", var = var);
-        let pos = var_str.len() + stdout.find(&var_str)
-            .unwrap_or_else(|| panic!("Variable '{}' not found in stdout output", var_str));
+        let pos = var_str.len()
+            + stdout
+                .find(&var_str)
+                .unwrap_or_else(|| panic!("Variable '{}' not found in stdout output", var_str));
         if &stdout[pos..pos + 1] == "1" {
             println!(r#"cargo:rustc-cfg=feature="{}""#, var.to_lowercase());
             println!(r#"cargo:{}=true"#, var.to_lowercase());
@@ -565,8 +606,7 @@ fn search_include(include_paths: &[PathBuf], header: &str) -> String {
 fn link_to_libraries(statik: bool) {
     let ffmpeg_ty = if statik { "static" } else { "dylib" };
     for lib in LIBRARIES {
-        let feat_is_enabled =
-            lib.feature_name().and_then(|f| env::var(&f).ok()).is_some();
+        let feat_is_enabled = lib.feature_name().and_then(|f| env::var(&f).ok()).is_some();
         if !lib.is_feature || feat_is_enabled {
             println!("cargo:rustc-link-lib={}={}", ffmpeg_ty, lib.name);
         }
@@ -579,7 +619,9 @@ fn link_to_libraries(statik: bool) {
 fn main() {
     // The long chain of `header` method calls for `bindgen::Builder` seems to be overflowing the default stack size on Windows.
     // The main thread appears to have a hardcoded stack size which is unaffected by `RUST_MIN_STACK`. As a workaround, spawn a thread here with a stack size that works expermentally, and allow overriding it with `FFMPEG_SYS_BUILD_STACK_SIZE` just in case.
-    let stack_size = std::env::var("FFMPEG_SYS_BUILD_STACK_SIZE").map(|s| s.parse()).unwrap_or(Ok(3 * 1024 * 1024));
+    let stack_size = std::env::var("FFMPEG_SYS_BUILD_STACK_SIZE")
+        .map(|s| s.parse())
+        .unwrap_or(Ok(3 * 1024 * 1024));
     eprintln!("Using stack size: {:?}", stack_size);
 
     std::thread::Builder::new()
@@ -677,11 +719,14 @@ fn thread_main() {
 
         for (lib_name, env_variable_name) in libs.iter() {
             if env::var(format!("CARGO_FEATURE_{}", env_variable_name)).is_ok() {
-                print_pkg_config_libs(statik, &pkg_config::Config::new()
-                    .cargo_metadata(false)
-                    .statik(statik)
-                    .probe(lib_name)
-                    .unwrap());
+                print_pkg_config_libs(
+                    statik,
+                    &pkg_config::Config::new()
+                        .cargo_metadata(false)
+                        .statik(statik)
+                        .probe(lib_name)
+                        .unwrap(),
+                );
             }
         }
 
@@ -1229,9 +1274,10 @@ fn thread_main() {
     }
 
     // Finish the builder and generate the bindings.
-    let bindings = builder.generate()
-    // Unwrap the Result and panic on failure.
-    .expect("Unable to generate bindings");
+    let bindings = builder
+        .generate()
+        // Unwrap the Result and panic on failure.
+        .expect("Unable to generate bindings");
 
     // Write the bindings to the $OUT_DIR/bindings.rs file.
     bindings
@@ -1273,7 +1319,9 @@ fn print_pkg_config_libs(statik: bool, lib: &pkg_config::Library) {
 
 fn is_static_available(lib: &str, dirs: &[PathBuf]) -> bool {
     let libname = format!("lib{}.a", lib);
-    let has = dirs.iter().map(|d| d.as_path())
+    let has = dirs
+        .iter()
+        .map(|d| d.as_path())
         .chain([Path::new("/usr/local/lib")].iter().copied())
         .any(|dir| dir.join(&libname).exists());
     if !has {
