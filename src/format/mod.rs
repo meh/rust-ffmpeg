@@ -302,7 +302,6 @@ pub fn output_as_with<P: AsRef<OsStr>>(
 #[cfg(unix)]
 fn from_os_str(path_or_url: impl AsRef<OsStr>) -> CString {
 	use std::os::unix::ffi::OsStrExt;
-
 	CString::new(path_or_url.as_ref().as_bytes()).unwrap()
 }
 
