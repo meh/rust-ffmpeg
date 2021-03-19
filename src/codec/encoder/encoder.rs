@@ -1,9 +1,11 @@
-use std::ops::{Deref, DerefMut};
-
-use libc::c_int;
+use std::{
+	ops::{Deref, DerefMut},
+	os::raw::c_int,
+	ptr,
+};
 
 use super::{audio, subtitle, video};
-use crate::{codec::Context, media, Error, Rational};
+use crate::{codec::Context, ffi::*, media, packet, Error, Frame, Rational};
 
 pub struct Encoder(pub Context);
 
@@ -53,6 +55,30 @@ impl Encoder {
 			media::Type::Subtitle => Ok(subtitle::Subtitle(self)),
 
 			_ => Err(Error::InvalidData),
+		}
+	}
+
+	pub fn send_frame(&mut self, frame: &Frame) -> Result<(), Error> {
+		unsafe {
+			match avcodec_send_frame(self.as_mut_ptr(), frame.as_ptr()) {
+				e if e < 0 => Err(Error::from(e)),
+				_ => Ok(()),
+			}
+		}
+	}
+
+	/// Sends a NULL packet to the encoder to signal end of stream and enter
+	/// draining mode.
+	pub fn send_eof(&mut self) -> Result<(), Error> {
+		unsafe { self.send_frame(&Frame::wrap(ptr::null_mut())) }
+	}
+
+	pub fn receive_packet<P: packet::Mut>(&mut self, packet: &mut P) -> Result<(), Error> {
+		unsafe {
+			match avcodec_receive_packet(self.as_mut_ptr(), packet.as_mut_ptr()) {
+				e if e < 0 => Err(Error::from(e)),
+				_ => Ok(()),
+			}
 		}
 	}
 
