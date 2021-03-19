@@ -13,6 +13,9 @@ pub struct Output {
 	ptr: *mut AVOutputFormat,
 }
 
+unsafe impl Send for Output { }
+unsafe impl Sync for Output { }
+
 impl Output {
 	pub unsafe fn wrap(ptr: *mut AVOutputFormat) -> Self {
 		Output { ptr }

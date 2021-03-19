@@ -7,6 +7,9 @@ pub struct Input {
 	ptr: *mut AVInputFormat,
 }
 
+unsafe impl Send for Input { }
+unsafe impl Sync for Input { }
+
 impl Input {
 	pub unsafe fn wrap(ptr: *mut AVInputFormat) -> Self {
 		Input { ptr }
