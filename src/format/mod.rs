@@ -10,17 +10,17 @@ pub mod context;
 pub use self::context::Context;
 
 pub mod format;
-pub use self::format::{flag, list, Flags, Input, Output};
+pub use self::format::{all, flag, input, output, Flags, Input, Output};
 
 pub mod network;
 
 use std::{
-	ffi::{CStr, CString, OsStr},
+	ffi::{CStr, OsStr},
 	ptr,
 	str::from_utf8_unchecked,
 };
 
-use crate::{ffi::*, Dictionary, Error, Format};
+use crate::{ffi::*, util::from_os_str, Dictionary, Error, Format};
 
 pub fn register_all() {
 	unsafe {
@@ -52,7 +52,7 @@ pub fn license() -> &'static str {
 	unsafe { from_utf8_unchecked(CStr::from_ptr(avformat_license()).to_bytes()) }
 }
 
-pub fn open<P: AsRef<OsStr>>(path_or_url: P, format: &Format) -> Result<Context, Error> {
+pub fn open(path_or_url: impl AsRef<OsStr>, format: &Format) -> Result<Context, Error> {
 	unsafe {
 		let mut ps = ptr::null_mut();
 		let path = from_os_str(path_or_url);
@@ -89,8 +89,8 @@ pub fn open<P: AsRef<OsStr>>(path_or_url: P, format: &Format) -> Result<Context,
 	}
 }
 
-pub fn open_with<P: AsRef<OsStr>>(
-	path_or_url: P,
+pub fn open_with(
+	path_or_url: impl AsRef<OsStr>,
 	format: &Format,
 	options: Dictionary<'_>,
 ) -> Result<Context, Error> {
@@ -132,7 +132,7 @@ pub fn open_with<P: AsRef<OsStr>>(
 	}
 }
 
-pub fn input<P: AsRef<OsStr>>(path_or_url: P) -> Result<context::Input, Error> {
+pub fn input(path_or_url: impl AsRef<OsStr>) -> Result<context::Input, Error> {
 	unsafe {
 		let mut ps = ptr::null_mut();
 		let path = from_os_str(path_or_url);
@@ -151,8 +151,8 @@ pub fn input<P: AsRef<OsStr>>(path_or_url: P) -> Result<context::Input, Error> {
 	}
 }
 
-pub fn input_with_dictionary<P: AsRef<OsStr>>(
-	path_or_url: P,
+pub fn input_with_dictionary(
+	path_or_url: impl AsRef<OsStr>,
 	options: Dictionary<'_>,
 ) -> Result<context::Input, Error> {
 	unsafe {
@@ -200,7 +200,7 @@ pub fn input_with_interrupt<P: AsRef<OsStr>>(
 	}
 }
 
-pub fn output<P: AsRef<OsStr>>(path_or_url: P) -> Result<context::Output, Error> {
+pub fn output(path_or_url: impl AsRef<OsStr>) -> Result<context::Output, Error> {
 	unsafe {
 		let mut ps = ptr::null_mut();
 		let path = from_os_str(path_or_url);
@@ -216,8 +216,8 @@ pub fn output<P: AsRef<OsStr>>(path_or_url: P) -> Result<context::Output, Error>
 	}
 }
 
-pub fn output_with<P: AsRef<OsStr>>(
-	path_or_url: P,
+pub fn output_with(
+	path_or_url: impl AsRef<OsStr>,
 	options: Dictionary<'_>,
 ) -> Result<context::Output, Error> {
 	unsafe {
@@ -248,13 +248,20 @@ pub fn output_with<P: AsRef<OsStr>>(
 	}
 }
 
-pub fn output_as<P: AsRef<OsStr>>(path_or_url: P, format: &str) -> Result<context::Output, Error> {
+pub fn output_as(
+	path_or_url: impl AsRef<OsStr>,
+	mut format: format::Output,
+) -> Result<context::Output, Error> {
 	unsafe {
 		let mut ps = ptr::null_mut();
 		let path = from_os_str(path_or_url);
-		let format = CString::new(format).unwrap();
 
-		match avformat_alloc_output_context2(&mut ps, ptr::null_mut(), format.as_ptr(), path.as_ptr()) {
+		match avformat_alloc_output_context2(
+			&mut ps,
+			format.as_mut_ptr(),
+			ptr::null_mut(),
+			path.as_ptr(),
+		) {
 			0 => match avio_open(&mut (*ps).pb, path.as_ptr(), AVIO_FLAG_WRITE) {
 				0 => Ok(context::Output::wrap(ps)),
 				e => Err(Error::from(e)),
@@ -265,18 +272,22 @@ pub fn output_as<P: AsRef<OsStr>>(path_or_url: P, format: &str) -> Result<contex
 	}
 }
 
-pub fn output_as_with<P: AsRef<OsStr>>(
-	path_or_url: P,
-	format: &str,
+pub fn output_as_with(
+	path_or_url: impl AsRef<OsStr>,
+	mut format: format::Output,
 	options: Dictionary<'_>,
 ) -> Result<context::Output, Error> {
 	unsafe {
 		let mut ps = ptr::null_mut();
 		let path = from_os_str(path_or_url);
-		let format = CString::new(format).unwrap();
 		let mut opts = options.disown();
 
-		match avformat_alloc_output_context2(&mut ps, ptr::null_mut(), format.as_ptr(), path.as_ptr()) {
+		match avformat_alloc_output_context2(
+			&mut ps,
+			format.as_mut_ptr(),
+			ptr::null_mut(),
+			path.as_ptr(),
+		) {
 			0 => {
 				let res = avio_open2(
 					&mut (*ps).pb,
@@ -297,15 +308,4 @@ pub fn output_as_with<P: AsRef<OsStr>>(
 			e => Err(Error::from(e)),
 		}
 	}
-}
-
-#[cfg(unix)]
-fn from_os_str(path_or_url: impl AsRef<OsStr>) -> CString {
-	use std::os::unix::ffi::OsStrExt;
-	CString::new(path_or_url.as_ref().as_bytes()).unwrap()
-}
-
-#[cfg(not(unix))]
-fn from_os_str(path_or_url: impl AsRef<OsStr>) -> CString {
-	CString::new(path_or_url.as_ref().to_str().unwrap()).unwrap()
 }

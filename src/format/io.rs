@@ -6,7 +6,11 @@ use std::{
 
 use libc::{c_int, c_void, EINVAL, SEEK_CUR, SEEK_END, SEEK_SET};
 
-use crate::{ffi::*, format::context, Error};
+use crate::{
+	ffi::*,
+	format::{context, format},
+	Error,
+};
 
 pub enum Proxy {
 	Input(Box<dyn InputIo>),
@@ -207,6 +211,59 @@ pub fn input(io: impl Read + Seek + 'static) -> Result<context::Input, Error> {
 					Err(Error::from(e))
 				}
 			},
+
+			e => Err(Error::from(e)),
+		}
+	}
+}
+
+pub fn input_as(
+	io: impl Read + Seek + 'static,
+	mut format: format::Input,
+) -> Result<context::Input, Error> {
+	unsafe {
+		let mut ps = avformat_alloc_context();
+		let mut io = Io::input(io);
+		(*ps).pb = io.as_mut_ptr();
+
+		match avformat_open_input(
+			&mut ps,
+			ptr::null_mut(),
+			format.as_mut_ptr(),
+			ptr::null_mut(),
+		) {
+			0 => match avformat_find_stream_info(ps, ptr::null_mut()) {
+				r if r >= 0 => Ok(context::Input::wrap_with(ps, io)),
+
+				e => {
+					avformat_close_input(&mut ps);
+					Err(Error::from(e))
+				}
+			},
+
+			e => Err(Error::from(e)),
+		}
+	}
+}
+
+pub fn output(
+	io: impl Write + 'static,
+	mut format: format::Output,
+) -> Result<context::Output, Error> {
+	unsafe {
+		let mut ps = ptr::null_mut();
+		let mut io = Io::output(io);
+
+		match avformat_alloc_output_context2(
+			&mut ps,
+			format.as_mut_ptr(),
+			ptr::null_mut(),
+			ptr::null_mut(),
+		) {
+			n if n >= 0 => {
+				(*ps).pb = io.as_mut_ptr();
+				Ok(context::Output::wrap_with(ps, io))
+			}
 
 			e => Err(Error::from(e)),
 		}

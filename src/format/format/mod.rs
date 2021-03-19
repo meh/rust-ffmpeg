@@ -1,15 +1,13 @@
 pub mod flag;
 pub use self::flag::Flags;
 
-mod input;
+pub mod input;
 pub use self::input::Input;
 
-mod output;
+pub mod output;
 pub use self::output::Output;
 
-mod iter;
-pub use self::iter::Iter;
-
+#[derive(Copy, Clone)]
 pub enum Format {
 	Input(Input),
 	Output(Output),
@@ -45,6 +43,8 @@ impl Format {
 	}
 }
 
-pub fn list() -> Iter {
-	Iter::new()
+pub fn all() -> impl Iterator<Item = Format> {
+	input::all()
+		.map(|i| Format::Input(i))
+		.chain(output::all().map(|o| Format::Output(o)))
 }

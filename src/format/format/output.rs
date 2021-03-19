@@ -8,6 +8,7 @@ use std::{
 use super::Flags;
 use crate::{codec, ffi::*, media};
 
+#[derive(Copy, Clone)]
 pub struct Output {
 	ptr: *mut AVOutputFormat,
 }
@@ -83,4 +84,59 @@ impl Output {
 	pub fn flags(&self) -> Flags {
 		unsafe { Flags::from_bits_truncate((*self.as_ptr()).flags) }
 	}
+}
+
+pub struct Iter {
+	output: *mut AVOutputFormat,
+}
+
+impl Iter {
+	pub fn new() -> Self {
+		Iter {
+			output: ptr::null_mut(),
+		}
+	}
+}
+
+impl Default for Iter {
+	fn default() -> Self {
+		Self::new()
+	}
+}
+
+impl Iterator for Iter {
+	type Item = Output;
+
+	fn next(&mut self) -> Option<<Self as Iterator>::Item> {
+		unsafe {
+			let ptr = av_oformat_next(self.output);
+
+			if ptr.is_null() && !self.output.is_null() {
+				None
+			}
+			else {
+				self.output = ptr;
+				Some(Output::wrap(ptr))
+			}
+		}
+	}
+}
+
+pub fn all() -> Iter {
+	Iter::new()
+}
+
+pub fn by_name(name: impl Into<String>) -> impl Iterator<Item = Output> {
+	let name = name.into();
+	all().filter(move |i| i.name() == name)
+}
+
+pub fn by_mime(mime: impl Into<String>) -> impl Iterator<Item = Output> {
+	let mime = mime.into();
+	all().filter(move |i| i.mime_types().contains(&mime.as_ref()))
+}
+
+pub fn by_extension(ext: impl Into<String>) -> impl Iterator<Item = Output> {
+	let ext = ext.into();
+	all().filter(move |i| i.extensions().contains(&ext.as_ref()))
 }

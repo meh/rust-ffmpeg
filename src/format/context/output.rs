@@ -8,11 +8,17 @@ use std::{
 use libc;
 
 use super::{common::Context, destructor};
-use crate::{codec::traits, ffi::*, format, ChapterMut, Dictionary, Error, Rational, StreamMut};
+use crate::{
+	codec::traits,
+	ffi::*,
+	format::{self, io::Io},
+	ChapterMut, Dictionary, Error, Rational, StreamMut,
+};
 
 pub struct Output {
 	ptr: *mut AVFormatContext,
 	ctx: Context,
+	_io: Option<Io>,
 }
 
 unsafe impl Send for Output {}
@@ -22,6 +28,15 @@ impl Output {
 		Output {
 			ptr,
 			ctx: Context::wrap(ptr, destructor::Mode::Output),
+			_io: None,
+		}
+	}
+
+	pub unsafe fn wrap_with(ptr: *mut AVFormatContext, io: Io) -> Self {
+		Output {
+			ptr,
+			ctx: Context::wrap(ptr, destructor::Mode::Output),
+			_io: Some(io),
 		}
 	}
 

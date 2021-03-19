@@ -1,7 +1,8 @@
-use std::{ffi::CStr, str::from_utf8_unchecked};
+use std::{ffi::CStr, ptr, str::from_utf8_unchecked};
 
 use crate::ffi::*;
 
+#[derive(Copy, Clone)]
 pub struct Input {
 	ptr: *mut AVInputFormat,
 }
@@ -58,4 +59,59 @@ impl Input {
 			}
 		}
 	}
+}
+
+pub struct Iter {
+	input: *mut AVInputFormat,
+}
+
+impl Iter {
+	pub fn new() -> Self {
+		Iter {
+			input: ptr::null_mut(),
+		}
+	}
+}
+
+impl Default for Iter {
+	fn default() -> Self {
+		Self::new()
+	}
+}
+
+impl Iterator for Iter {
+	type Item = Input;
+
+	fn next(&mut self) -> Option<<Self as Iterator>::Item> {
+		unsafe {
+			let ptr = av_iformat_next(self.input);
+
+			if ptr.is_null() && !self.input.is_null() {
+				None
+			}
+			else {
+				self.input = ptr;
+				Some(Input::wrap(ptr))
+			}
+		}
+	}
+}
+
+pub fn all() -> Iter {
+	Iter::new()
+}
+
+pub fn by_name(name: impl Into<String>) -> impl Iterator<Item = Input> {
+	let name = name.into();
+	all().filter(move |i| i.name() == name)
+}
+
+pub fn by_mime(mime: impl Into<String>) -> impl Iterator<Item = Input> {
+	let mime = mime.into();
+	all().filter(move |i| i.mime_types().contains(&mime.as_ref()))
+}
+
+pub fn by_extension(ext: impl Into<String>) -> impl Iterator<Item = Input> {
+	let ext = ext.into();
+	all().filter(move |i| i.extensions().contains(&ext.as_ref()))
 }

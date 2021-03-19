@@ -18,7 +18,10 @@ pub mod time;
 #[cfg(feature = "log")]
 pub mod log;
 
-use std::{ffi::CStr, str::from_utf8_unchecked};
+use std::{
+	ffi::{CStr, CString, OsStr},
+	str::from_utf8_unchecked,
+};
 
 use crate::ffi::*;
 
@@ -35,4 +38,15 @@ pub fn configuration() -> &'static str {
 #[inline(always)]
 pub fn license() -> &'static str {
 	unsafe { from_utf8_unchecked(CStr::from_ptr(avutil_license()).to_bytes()) }
+}
+
+#[cfg(unix)]
+pub fn from_os_str(path_or_url: impl AsRef<OsStr>) -> CString {
+	use std::os::unix::ffi::OsStrExt;
+	CString::new(path_or_url.as_ref().as_bytes()).unwrap()
+}
+
+#[cfg(not(unix))]
+pub fn from_os_str(path_or_url: impl AsRef<OsStr>) -> CString {
+	CString::new(path_or_url.as_ref().to_str().unwrap()).unwrap()
 }
