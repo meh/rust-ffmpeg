@@ -4,14 +4,16 @@ use crate::{ffi::*, media};
 
 pub struct Pad<'a> {
 	ptr: *const AVFilterPad,
+	idx: isize,
 
 	_marker: PhantomData<&'a ()>,
 }
 
 impl<'a> Pad<'a> {
-	pub unsafe fn wrap(ptr: *const AVFilterPad) -> Self {
+	pub unsafe fn wrap(ptr: *const AVFilterPad, idx: isize) -> Self {
 		Pad {
 			ptr,
+			idx,
 			_marker: PhantomData,
 		}
 	}
@@ -28,7 +30,7 @@ impl<'a> Pad<'a> {
 impl<'a> Pad<'a> {
 	pub fn name(&self) -> Option<&str> {
 		unsafe {
-			let ptr = avfilter_pad_get_name(self.ptr, 0);
+			let ptr = avfilter_pad_get_name(self.ptr, self.idx as i32);
 
 			if ptr.is_null() {
 				None
@@ -40,6 +42,6 @@ impl<'a> Pad<'a> {
 	}
 
 	pub fn medium(&self) -> media::Type {
-		unsafe { media::Type::from(avfilter_pad_get_type(self.ptr, 0)) }
+		unsafe { media::Type::from(avfilter_pad_get_type(self.ptr, self.idx as i32)) }
 	}
 }
