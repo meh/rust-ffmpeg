@@ -71,7 +71,7 @@ impl Context {
 	}
 
 	#[inline]
-	fn nb_streams(&self) -> u32 {
+	pub fn nb_streams(&self) -> u32 {
 		unsafe { (*self.as_ptr()).nb_streams }
 	}
 
