@@ -131,7 +131,7 @@ impl<'a> Drop for Owned<'a> {
 }
 
 impl<'a> fmt::Debug for Owned<'a> {
-	fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+	fn fmt(&self, fmt: &mut fmt::Formatter<'_>) -> fmt::Result {
 		self.inner.fmt(fmt)
 	}
 }

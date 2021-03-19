@@ -1,5 +1,3 @@
-extern crate ffmpeg;
-
 use std::{env, path::Path};
 
 use ffmpeg::{codec, filter, format, frame, media, rescale, Rescale};

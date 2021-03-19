@@ -139,19 +139,19 @@ impl Frame {
 	}
 
 	#[inline]
-	pub fn metadata(&self) -> DictionaryRef {
+	pub fn metadata(&self) -> DictionaryRef<'_> {
 		unsafe { DictionaryRef::wrap(av_frame_get_metadata(self.as_ptr())) }
 	}
 
 	#[inline]
-	pub fn set_metadata(&mut self, value: Dictionary) {
+	pub fn set_metadata(&mut self, value: Dictionary<'_>) {
 		unsafe {
 			av_frame_set_metadata(self.as_mut_ptr(), value.disown());
 		}
 	}
 
 	#[inline]
-	pub fn side_data(&self, kind: side_data::Type) -> Option<SideData> {
+	pub fn side_data(&self, kind: side_data::Type) -> Option<SideData<'_>> {
 		unsafe {
 			let ptr = av_frame_get_side_data(self.as_ptr(), kind.into());
 
@@ -165,7 +165,7 @@ impl Frame {
 	}
 
 	#[inline]
-	pub fn new_side_data(&mut self, kind: side_data::Type, size: usize) -> Option<SideData> {
+	pub fn new_side_data(&mut self, kind: side_data::Type, size: usize) -> Option<SideData<'_>> {
 		unsafe {
 			let ptr = av_frame_new_side_data(self.as_mut_ptr(), kind.into(), size as c_int);
 

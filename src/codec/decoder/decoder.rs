@@ -39,7 +39,7 @@ impl Decoder {
 	pub fn open_as_with<D: traits::Decoder>(
 		mut self,
 		codec: D,
-		options: Dictionary,
+		options: Dictionary<'_>,
 	) -> Result<Opened, Error> {
 		unsafe {
 			if let Some(codec) = codec.decoder() {

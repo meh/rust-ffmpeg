@@ -119,7 +119,7 @@ impl<'a> Picture<'a> {
 		}
 	}
 
-	pub fn crop(&self, source: &mut Picture, top: u32, left: u32) -> Result<(), Error> {
+	pub fn crop(&self, source: &mut Picture<'_>, top: u32, left: u32) -> Result<(), Error> {
 		if self.format != source.format {
 			return Err(Error::Bug);
 		}
