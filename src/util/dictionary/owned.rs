@@ -7,6 +7,8 @@ pub struct Owned {
 	ptr: *mut AVDictionary,
 }
 
+unsafe impl Send for Owned {}
+
 impl Default for Owned {
 	fn default() -> Self {
 		Self::new()
