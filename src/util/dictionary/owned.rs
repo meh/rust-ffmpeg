@@ -1,111 +1,103 @@
-use std::{
-	fmt,
-	iter::FromIterator,
-	ops::{Deref, DerefMut},
-	ptr,
-};
+use std::{fmt, iter::FromIterator, ptr};
 
-use super::mutable;
+use super::{immutable, mutable};
 use crate::ffi::*;
 
-pub struct Owned<'a> {
-	inner: mutable::Ref<'a>,
+pub struct Owned {
+	ptr: *mut AVDictionary,
 }
 
-impl<'a> Default for Owned<'a> {
+impl Default for Owned {
 	fn default() -> Self {
 		Self::new()
 	}
 }
 
-impl<'a> Owned<'a> {
+impl Owned {
 	pub unsafe fn own(ptr: *mut AVDictionary) -> Self {
-		Owned {
-			inner: mutable::Ref::wrap(ptr),
-		}
+		Owned { ptr }
 	}
 
 	pub unsafe fn disown(mut self) -> *mut AVDictionary {
-		let result = self.inner.as_mut_ptr();
-		self.inner = mutable::Ref::wrap(ptr::null_mut());
-
+		let result = self.ptr;
+		self.ptr = ptr::null_mut();
 		result
 	}
-}
 
-impl<'a> Owned<'a> {
-	pub fn new() -> Self {
-		unsafe {
-			Owned {
-				inner: mutable::Ref::wrap(ptr::null_mut()),
-			}
-		}
+	pub fn as_ptr(&self) -> *const AVDictionary {
+		self.ptr
+	}
+
+	pub fn as_mut_ptr(&mut self) -> *mut AVDictionary {
+		self.ptr
 	}
 }
 
-impl<'a, 'b> FromIterator<(&'b str, &'b str)> for Owned<'a> {
-	fn from_iter<T: IntoIterator<Item = (&'b str, &'b str)>>(iterator: T) -> Self {
-		let mut result = Owned::new();
+impl Owned {
+	pub fn new() -> Self {
+		Owned {
+			ptr: ptr::null_mut(),
+		}
+	}
+
+	pub fn as_ref(&self) -> immutable::Ref {
+		unsafe { immutable::Ref::wrap(self.ptr) }
+	}
+
+	pub fn as_mut(&self) -> mutable::Ref {
+		unsafe { mutable::Ref::wrap(self.ptr) }
+	}
+}
+
+impl<'a> FromIterator<(&'a str, &'a str)> for Owned {
+	fn from_iter<T: IntoIterator<Item = (&'a str, &'a str)>>(iterator: T) -> Self {
+		let result = Owned::new();
 
 		for (key, value) in iterator {
-			result.set(key, value);
+			result.as_mut().set(key, value);
 		}
 
 		result
 	}
 }
 
-impl<'a, 'b> FromIterator<&'b (&'b str, &'b str)> for Owned<'a> {
-	fn from_iter<T: IntoIterator<Item = &'b (&'b str, &'b str)>>(iterator: T) -> Self {
-		let mut result = Owned::new();
+impl<'a> FromIterator<&'a (&'a str, &'a str)> for Owned {
+	fn from_iter<T: IntoIterator<Item = &'a (&'a str, &'a str)>>(iterator: T) -> Self {
+		let result = Owned::new();
 
 		for &(key, value) in iterator {
-			result.set(key, value);
+			result.as_mut().set(key, value);
 		}
 
 		result
 	}
 }
 
-impl<'a> FromIterator<(String, String)> for Owned<'a> {
+impl FromIterator<(String, String)> for Owned {
 	fn from_iter<T: IntoIterator<Item = (String, String)>>(iterator: T) -> Self {
-		let mut result = Owned::new();
+		let result = Owned::new();
 
 		for (key, value) in iterator {
-			result.set(&key, &value);
+			result.as_mut().set(&key, &value);
 		}
 
 		result
 	}
 }
 
-impl<'a, 'b> FromIterator<&'b (String, String)> for Owned<'a> {
-	fn from_iter<T: IntoIterator<Item = &'b (String, String)>>(iterator: T) -> Self {
-		let mut result = Owned::new();
+impl<'a> FromIterator<&'a (String, String)> for Owned {
+	fn from_iter<T: IntoIterator<Item = &'a (String, String)>>(iterator: T) -> Self {
+		let result = Owned::new();
 
 		for &(ref key, ref value) in iterator {
-			result.set(key, value);
+			result.as_mut().set(key, value);
 		}
 
 		result
 	}
 }
 
-impl<'a> Deref for Owned<'a> {
-	type Target = mutable::Ref<'a>;
-
-	fn deref(&self) -> &Self::Target {
-		&self.inner
-	}
-}
-
-impl<'a> DerefMut for Owned<'a> {
-	fn deref_mut(&mut self) -> &mut Self::Target {
-		&mut self.inner
-	}
-}
-
-impl<'a> Clone for Owned<'a> {
+impl Clone for Owned {
 	fn clone(&self) -> Self {
 		let mut dictionary = Owned::new();
 		dictionary.clone_from(self);
@@ -115,23 +107,23 @@ impl<'a> Clone for Owned<'a> {
 
 	fn clone_from(&mut self, source: &Self) {
 		unsafe {
-			let mut ptr = self.as_mut_ptr();
-			av_dict_copy(&mut ptr, source.as_ptr(), 0);
-			self.inner = mutable::Ref::wrap(ptr);
+			av_dict_copy(&mut self.ptr, source.as_ptr(), 0);
 		}
 	}
 }
 
-impl<'a> Drop for Owned<'a> {
+impl Drop for Owned {
 	fn drop(&mut self) {
 		unsafe {
-			av_dict_free(&mut self.inner.as_mut_ptr());
+			if !self.ptr.is_null() {
+				av_dict_free(&mut self.ptr);
+			}
 		}
 	}
 }
 
-impl<'a> fmt::Debug for Owned<'a> {
+impl fmt::Debug for Owned {
 	fn fmt(&self, fmt: &mut fmt::Formatter<'_>) -> fmt::Result {
-		self.inner.fmt(fmt)
+		unsafe { mutable::Ref::wrap(self.ptr) }.fmt(fmt)
 	}
 }

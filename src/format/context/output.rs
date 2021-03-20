@@ -63,7 +63,7 @@ impl Output {
 		}
 	}
 
-	pub fn write_header_with(&mut self, options: Dictionary<'_>) -> Result<Dictionary<'_>, Error> {
+	pub fn write_header_with(&mut self, options: Dictionary) -> Result<Dictionary, Error> {
 		unsafe {
 			let mut opts = options.disown();
 			let res = avformat_write_header(self.as_mut_ptr(), &mut opts);
@@ -161,7 +161,7 @@ impl Output {
 		Ok(chapter)
 	}
 
-	pub fn set_metadata(&mut self, dictionary: Dictionary<'_>) {
+	pub fn set_metadata(&mut self, dictionary: Dictionary) {
 		unsafe {
 			(*self.as_mut_ptr()).metadata = dictionary.disown();
 		}

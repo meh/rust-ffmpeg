@@ -40,7 +40,7 @@ impl Audio {
 		}
 	}
 
-	pub fn open_with(mut self, options: Dictionary<'_>) -> Result<Encoder, Error> {
+	pub fn open_with(mut self, options: Dictionary) -> Result<Encoder, Error> {
 		unsafe {
 			let mut opts = options.disown();
 			let res = avcodec_open2(self.as_mut_ptr(), ptr::null(), &mut opts);
@@ -57,7 +57,7 @@ impl Audio {
 	pub fn open_as_with<E: traits::Encoder>(
 		mut self,
 		codec: E,
-		options: Dictionary<'_>,
+		options: Dictionary,
 	) -> Result<Encoder, Error> {
 		unsafe {
 			if let Some(codec) = codec.encoder() {

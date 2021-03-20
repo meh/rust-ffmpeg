@@ -144,7 +144,7 @@ impl Frame {
 	}
 
 	#[inline]
-	pub fn set_metadata(&mut self, value: Dictionary<'_>) {
+	pub fn set_metadata(&mut self, value: Dictionary) {
 		unsafe {
 			av_frame_set_metadata(self.as_mut_ptr(), value.disown());
 		}
