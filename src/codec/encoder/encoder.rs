@@ -56,6 +56,12 @@ impl Encoder {
 		}
 	}
 
+	pub fn set_strict_std_compliance(&mut self, value: i32) {
+		unsafe {
+			(*self.as_mut_ptr()).strict_std_compliance = value as c_int;
+		}
+	}
+
 	pub fn set_bit_rate(&mut self, value: usize) {
 		unsafe {
 			(*self.as_mut_ptr()).bit_rate = value as i64;
