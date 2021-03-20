@@ -54,12 +54,22 @@ impl<'a> Stream<'a> {
 		unsafe { Rational::from((*self.as_ptr()).time_base) }
 	}
 
-	pub fn start_time(&self) -> i64 {
-		unsafe { (*self.as_ptr()).start_time }
+	pub fn start_time(&self) -> Option<i64> {
+		unsafe {
+			match (*self.as_ptr()).start_time {
+				AV_NOPTS_VALUE => None,
+				value => Some(value),
+			}
+		}
 	}
 
-	pub fn duration(&self) -> i64 {
-		unsafe { (*self.as_ptr()).duration }
+	pub fn duration(&self) -> Option<i64> {
+		unsafe {
+			match (*self.as_ptr()).duration {
+				AV_NOPTS_VALUE => None,
+				value => Some(value),
+			}
+		}
 	}
 
 	pub fn frames(&self) -> i64 {

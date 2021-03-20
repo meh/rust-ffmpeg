@@ -147,13 +147,16 @@ impl Packet {
 	}
 
 	#[inline]
-	pub fn duration(&self) -> i64 {
-		self.0.duration as i64
+	pub fn duration(&self) -> Option<i64> {
+		match self.0.duration as i64 {
+			AV_NOPTS_VALUE => None,
+			value => Some(value),
+		}
 	}
 
 	#[inline]
-	pub fn set_duration(&mut self, value: i64) {
-		self.0.duration = value;
+	pub fn set_duration(&mut self, value: Option<i64>) {
+		self.0.duration = value.unwrap_or(AV_NOPTS_VALUE);
 	}
 
 	#[inline]
