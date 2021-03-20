@@ -24,11 +24,11 @@ impl Owned {
 		result
 	}
 
-	pub fn as_ptr(&self) -> *const AVDictionary {
+	pub unsafe fn as_ptr(&self) -> *const AVDictionary {
 		self.ptr
 	}
 
-	pub fn as_mut_ptr(&mut self) -> *mut AVDictionary {
+	pub unsafe fn as_mut_ptr(&mut self) -> *mut AVDictionary {
 		self.ptr
 	}
 }
@@ -46,6 +46,15 @@ impl Owned {
 
 	pub fn as_mut(&self) -> mutable::Ref {
 		unsafe { mutable::Ref::wrap(self.ptr) }
+	}
+
+	pub fn iter(&self) -> Iter<'_> {
+		unsafe { Iter::new(self.as_ptr()) }
+	}
+
+	pub fn set(&mut self, key: &str, value: &str) -> &mut Self {
+		self.as_mut().set(key, value);
+		self
 	}
 }
 
