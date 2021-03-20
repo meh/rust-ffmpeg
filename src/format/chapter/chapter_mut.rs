@@ -56,8 +56,8 @@ impl<'a> ChapterMut<'a> {
 		// dictionary.set() allocates the AVDictionary the first time a key/value is
 		// inserted so we want to update the metadata dictionary afterwards
 		unsafe {
-			let dictionary = Dictionary::own(self.metadata().as_mut_ptr());
-			dictionary.as_mut().set(key.as_ref(), value.as_ref());
+			let mut dictionary = Dictionary::own(self.metadata().as_mut_ptr());
+			dictionary.set(key.as_ref(), value.as_ref());
 			(*self.as_mut_ptr()).metadata = dictionary.disown();
 		}
 	}
