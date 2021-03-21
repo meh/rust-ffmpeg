@@ -15,7 +15,7 @@ impl Audio {
 }
 
 impl Audio {
-	pub fn rates(&self) -> Option<RateIter> {
+	pub fn sample_rates(&self) -> Option<RateIter> {
 		unsafe {
 			if (*self.as_ptr()).supported_samplerates.is_null() {
 				None

@@ -12,7 +12,7 @@ fn filter(
 	let args = format!(
 		"time_base={}:sample_rate={}:sample_fmt={}:channel_layout=0x{:x}",
 		decoder.time_base(),
-		decoder.rate(),
+		decoder.sample_rate(),
 		decoder.format().name(),
 		decoder.channel_layout().bits()
 	);
@@ -25,7 +25,7 @@ fn filter(
 
 		out.set_sample_format(encoder.format());
 		out.set_channel_layout(encoder.channel_layout());
-		out.set_sample_rate(encoder.rate());
+		out.set_sample_rate(encoder.sample_rate());
 	}
 
 	filter.output("in", 0)?.input("out", 0)?.parse(spec)?;
@@ -89,7 +89,7 @@ fn transcoder<P: AsRef<Path>>(
 		encoder.set_flags(ffmpeg::codec::flag::Flags::GLOBAL_HEADER);
 	}
 
-	encoder.set_rate(decoder.rate() as i32);
+	encoder.set_sample_rate(decoder.sample_rate() as i32);
 	encoder.set_channel_layout(channel_layout);
 	encoder.set_channels(channel_layout.channels());
 	encoder.set_format(
@@ -102,8 +102,8 @@ fn transcoder<P: AsRef<Path>>(
 	encoder.set_bit_rate(decoder.bit_rate());
 	encoder.set_max_bit_rate(decoder.max_bit_rate());
 
-	encoder.set_time_base((1, decoder.rate() as i32));
-	output.set_time_base((1, decoder.rate() as i32));
+	encoder.set_time_base((1, decoder.sample_rate() as i32));
+	output.set_time_base((1, decoder.sample_rate() as i32));
 
 	let encoder = encoder.open_as(codec)?;
 	output.set_parameters(&encoder);

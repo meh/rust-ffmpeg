@@ -44,7 +44,7 @@ fn main() {
 				println!("\tframes: {}", stream.frames());
 				println!("\tdisposition: {:?}", stream.disposition());
 				println!("\tdiscard: {:?}", stream.discard());
-				println!("\trate: {}", stream.rate());
+				println!("\tframe rate: {}", stream.frame_rate());
 
 				let codec = stream.codec();
 				println!("\tmedium: {:?}", codec.medium());
@@ -77,7 +77,7 @@ fn main() {
 						println!("\tbit_rate: {}", audio.bit_rate());
 						println!("\tmax_rate: {}", audio.max_bit_rate());
 						println!("\tdelay: {}", audio.delay());
-						println!("\taudio.rate: {}", audio.rate());
+						println!("\taudio.sample_rate: {}", audio.sample_rate());
 						println!("\taudio.channels: {}", audio.channels());
 						println!("\taudio.format: {:?}", audio.format());
 						println!("\taudio.frames: {}", audio.frames());

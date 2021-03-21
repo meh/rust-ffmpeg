@@ -77,13 +77,13 @@ impl Audio {
 		}
 	}
 
-	pub fn set_rate(&mut self, rate: i32) {
+	pub fn set_sample_rate(&mut self, rate: i32) {
 		unsafe {
 			(*self.as_mut_ptr()).sample_rate = rate;
 		}
 	}
 
-	pub fn rate(&self) -> u32 {
+	pub fn sample_rate(&self) -> u32 {
 		unsafe { (*self.as_ptr()).sample_rate as u32 }
 	}
 

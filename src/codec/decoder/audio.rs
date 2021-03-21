@@ -30,7 +30,7 @@ impl Audio {
 		}
 	}
 
-	pub fn rate(&self) -> u32 {
+	pub fn sample_rate(&self) -> u32 {
 		unsafe { (*self.as_ptr()).sample_rate as u32 }
 	}
 

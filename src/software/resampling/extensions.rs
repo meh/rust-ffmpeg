@@ -12,7 +12,7 @@ impl frame::Audio {
 		Context::get(
 			self.format(),
 			self.channel_layout(),
-			self.rate(),
+			self.sample_rate(),
 			format,
 			channel_layout,
 			rate,
@@ -31,7 +31,7 @@ impl decoder::Audio {
 		Context::get(
 			self.format(),
 			self.channel_layout(),
-			self.rate(),
+			self.sample_rate(),
 			format,
 			channel_layout,
 			rate,

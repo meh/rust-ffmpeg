@@ -15,7 +15,7 @@ impl Video {
 }
 
 impl Video {
-	pub fn rates(&self) -> Option<RateIter> {
+	pub fn frame_rates(&self) -> Option<RateIter> {
 		unsafe {
 			if (*self.codec.as_ptr()).supported_framerates.is_null() {
 				None
