@@ -78,7 +78,13 @@ impl Encoder {
 			match avcodec_receive_packet(self.as_mut_ptr(), packet.as_mut_ptr()) {
 				e if e < 0 => Err(Error::from(e)),
 				_ => Ok(()),
-			}
+      }   
+    }
+  }
+
+	pub fn set_strict_std_compliance(&mut self, value: i32) {
+		unsafe {
+			(*self.as_mut_ptr()).strict_std_compliance = value as c_int;
 		}
 	}
 

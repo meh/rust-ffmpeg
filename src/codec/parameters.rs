@@ -38,8 +38,33 @@ impl Parameters {
 		unsafe { media::Type::from((*self.as_ptr()).codec_type) }
 	}
 
+	pub fn set_medium(&mut self, value: media::Type) -> &mut Self {
+		unsafe {
+			(*self.as_mut_ptr()).codec_type = value.into();
+		}
+		self
+	}
+
 	pub fn id(&self) -> Id {
 		unsafe { Id::from((*self.as_ptr()).codec_id) }
+	}
+
+	pub fn set_id(&mut self, value: Id) -> &mut Self {
+		unsafe {
+			(*self.as_mut_ptr()).codec_id = value.into();
+		}
+		self
+	}
+
+	pub fn tag(&self) -> u32 {
+		unsafe { (*self.as_ptr()).codec_tag }
+	}
+
+	pub fn set_tag(&mut self, value: u32) -> &mut Self {
+		unsafe {
+			(*self.as_mut_ptr()).codec_tag = value;
+		}
+		self
 	}
 }
 

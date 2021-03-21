@@ -40,7 +40,7 @@ impl Audio {
 		}
 	}
 
-	pub fn open_with(mut self, options: Dictionary<'_>) -> Result<Encoder, Error> {
+	pub fn open_with(mut self, options: Dictionary) -> Result<Encoder, Error> {
 		unsafe {
 			let mut opts = options.disown();
 			let res = avcodec_open2(self.as_mut_ptr(), ptr::null(), &mut opts);
@@ -57,7 +57,7 @@ impl Audio {
 	pub fn open_as_with<E: traits::Encoder>(
 		mut self,
 		codec: E,
-		options: Dictionary<'_>,
+		options: Dictionary,
 	) -> Result<Encoder, Error> {
 		unsafe {
 			if let Some(codec) = codec.encoder() {
@@ -77,13 +77,13 @@ impl Audio {
 		}
 	}
 
-	pub fn set_rate(&mut self, rate: i32) {
+	pub fn set_sample_rate(&mut self, rate: u32) {
 		unsafe {
-			(*self.as_mut_ptr()).sample_rate = rate;
+			(*self.as_mut_ptr()).sample_rate = rate as c_int;
 		}
 	}
 
-	pub fn rate(&self) -> u32 {
+	pub fn sample_rate(&self) -> u32 {
 		unsafe { (*self.as_ptr()).sample_rate as u32 }
 	}
 

@@ -90,7 +90,7 @@ impl Audio {
 	}
 
 	#[inline]
-	pub fn rate(&self) -> u32 {
+	pub fn sample_rate(&self) -> u32 {
 		unsafe { av_frame_get_sample_rate(self.as_ptr()) as u32 }
 	}
 
@@ -213,7 +213,7 @@ impl ::std::fmt::Debug for Audio {
 		f.write_str("ffmpeg::frame::Audio { ")?;
 		f.write_str(&format!("format: {:?}, ", self.format()))?;
 		f.write_str(&format!("channels: {:?}, ", self.channels()))?;
-		f.write_str(&format!("rate: {:?}, ", self.rate()))?;
+		f.write_str(&format!("sample_rate: {:?}, ", self.sample_rate()))?;
 		f.write_str(&format!("samples: {:?} ", self.samples()))?;
 		f.write_str("}")
 	}

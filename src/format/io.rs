@@ -172,10 +172,11 @@ impl Io {
 	pub fn output(value: impl Write + 'static) -> Self {
 		unsafe {
 			let proxy = Box::into_raw(Box::new(Proxy::Output(Box::new(value))));
+			let buffer = av_malloc(4096);
 			let ptr = avio_alloc_context(
-				ptr::null_mut(),
-				0,
-				AVIO_FLAG_WRITE & AVIO_FLAG_DIRECT,
+				buffer.cast(),
+				4096,
+				AVIO_FLAG_WRITE,
 				proxy.cast(),
 				None,
 				Some(write_packet),
@@ -190,6 +191,10 @@ impl Io {
 impl Drop for Io {
 	fn drop(&mut self) {
 		unsafe {
+			if !(*self.ptr).buffer.is_null() {
+				av_free((*self.ptr).buffer.cast());
+			}
+
 			avio_context_free(&mut self.ptr);
 			Box::from_raw(self.proxy);
 		}

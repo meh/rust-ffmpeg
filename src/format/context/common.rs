@@ -79,8 +79,13 @@ impl Context {
 		unsafe { (*self.as_ptr()).bit_rate }
 	}
 
-	pub fn duration(&self) -> i64 {
-		unsafe { (*self.as_ptr()).duration }
+	pub fn duration(&self) -> Option<i64> {
+		unsafe {
+			match (*self.as_ptr()).duration {
+				AV_NOPTS_VALUE => None,
+				value => Some(value),
+			}
+		}
 	}
 
 	#[inline]

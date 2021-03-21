@@ -45,11 +45,15 @@ impl<'a> Ref<'a> {
 		}
 	}
 
+	pub fn len(&self) -> usize {
+		unsafe { av_dict_count(self.as_ptr()) as usize }
+	}
+
 	pub fn iter(&self) -> Iter<'_> {
 		unsafe { Iter::new(self.as_ptr()) }
 	}
 
-	pub fn to_owned<'b>(&self) -> Owned<'b> {
+	pub fn to_owned(&self) -> Owned {
 		self.iter().collect()
 	}
 }

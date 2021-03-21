@@ -20,11 +20,11 @@ fn main() {
 			}
 
 			if let Ok(video) = codec.video() {
-				if let Some(rates) = video.rates() {
-					println!("\t rates: {:?}", rates.collect::<Vec<_>>());
+				if let Some(rates) = video.frame_rates() {
+					println!("\t frame rates: {:?}", rates.collect::<Vec<_>>());
 				}
 				else {
-					println!("\t rates: any");
+					println!("\t frame rates: any");
 				}
 
 				if let Some(formats) = video.formats() {
@@ -36,11 +36,11 @@ fn main() {
 			}
 
 			if let Ok(audio) = codec.audio() {
-				if let Some(rates) = audio.rates() {
-					println!("\t rates: {:?}", rates.collect::<Vec<_>>());
+				if let Some(rates) = audio.sample_rates() {
+					println!("\t sample rates: {:?}", rates.collect::<Vec<_>>());
 				}
 				else {
-					println!("\t rates: any");
+					println!("\t sample rates: any");
 				}
 
 				if let Some(formats) = audio.formats() {
@@ -75,11 +75,11 @@ fn main() {
 			}
 
 			if let Ok(video) = codec.video() {
-				if let Some(rates) = video.rates() {
-					println!("\t rates: {:?}", rates.collect::<Vec<_>>());
+				if let Some(rates) = video.frame_rates() {
+					println!("\t frame rates: {:?}", rates.collect::<Vec<_>>());
 				}
 				else {
-					println!("\t rates: any");
+					println!("\t frame rates: any");
 				}
 
 				if let Some(formats) = video.formats() {
@@ -91,11 +91,11 @@ fn main() {
 			}
 
 			if let Ok(audio) = codec.audio() {
-				if let Some(rates) = audio.rates() {
-					println!("\t rates: {:?}", rates.collect::<Vec<_>>());
+				if let Some(rates) = audio.sample_rates() {
+					println!("\t sample rates: {:?}", rates.collect::<Vec<_>>());
 				}
 				else {
-					println!("\t rates: any");
+					println!("\t sample rates: any");
 				}
 
 				if let Some(formats) = audio.formats() {

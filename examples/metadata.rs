@@ -24,23 +24,27 @@ fn main() {
 			}
 
 			println!(
-				"duration (seconds): {:.2}",
-				context.duration() as f64 / f64::from(ffmpeg::ffi::AV_TIME_BASE)
+				"duration (seconds): {:?}",
+				context
+					.duration()
+					.map(|d| d as f64 / f64::from(ffmpeg::ffi::AV_TIME_BASE))
 			);
 
 			for stream in context.streams() {
 				println!("stream index {}:", stream.index());
 				println!("\ttime_base: {}", stream.time_base());
-				println!("\tstart_time: {}", stream.start_time());
-				println!("\tduration (stream timebase): {}", stream.duration());
+				println!("\tstart_time: {:?}", stream.start_time());
+				println!("\tduration (stream timebase): {:?}", stream.duration());
 				println!(
-					"\tduration (seconds): {:.2}",
-					stream.duration() as f64 * f64::from(stream.time_base())
+					"\tduration (seconds): {:?}",
+					stream
+						.duration()
+						.map(|d| d as f64 * f64::from(stream.time_base()))
 				);
 				println!("\tframes: {}", stream.frames());
 				println!("\tdisposition: {:?}", stream.disposition());
 				println!("\tdiscard: {:?}", stream.discard());
-				println!("\trate: {}", stream.rate());
+				println!("\tframe rate: {}", stream.frame_rate());
 
 				let codec = stream.codec();
 				println!("\tmedium: {:?}", codec.medium());
@@ -73,7 +77,7 @@ fn main() {
 						println!("\tbit_rate: {}", audio.bit_rate());
 						println!("\tmax_rate: {}", audio.max_bit_rate());
 						println!("\tdelay: {}", audio.delay());
-						println!("\taudio.rate: {}", audio.rate());
+						println!("\taudio.sample_rate: {}", audio.sample_rate());
 						println!("\taudio.channels: {}", audio.channels());
 						println!("\taudio.format: {:?}", audio.format());
 						println!("\taudio.frames: {}", audio.frames());

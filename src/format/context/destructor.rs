@@ -22,9 +22,17 @@ impl Drop for Destructor {
 		unsafe {
 			match self.mode {
 				Mode::Input => avformat_close_input(&mut self.ptr),
-
 				Mode::Output => {
-					avio_close((*self.ptr).pb);
+					if (*self.ptr).flags & AVFMT_NOFILE != 0
+						&& (*self.ptr)
+							.pb
+							.as_ref()
+							.map(|pb| !(*pb).av_class.is_null())
+							.unwrap_or(false)
+					{
+						avio_close((*self.ptr).pb);
+					}
+
 					avformat_free_context(self.ptr);
 				}
 			}

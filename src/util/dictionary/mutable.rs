@@ -25,7 +25,7 @@ impl<'a> Ref<'a> {
 }
 
 impl<'a> Ref<'a> {
-	pub fn set(&mut self, key: &str, value: &str) {
+	pub fn set(&mut self, key: &str, value: &str) -> &mut Self {
 		unsafe {
 			let key = CString::new(key).unwrap();
 			let value = CString::new(value).unwrap();
@@ -38,6 +38,8 @@ impl<'a> Ref<'a> {
 			self.ptr = ptr;
 			self.imm = immutable::Ref::wrap(ptr);
 		}
+
+		self
 	}
 }
 

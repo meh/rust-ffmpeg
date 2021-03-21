@@ -1,50 +1,72 @@
-use std::{
-	fmt,
-	iter::FromIterator,
-	ops::{Deref, DerefMut},
-	ptr,
-};
+use std::{fmt, iter::FromIterator, ptr};
 
-use super::mutable;
+use super::{immutable, mutable, Iter};
 use crate::ffi::*;
 
-pub struct Owned<'a> {
-	inner: mutable::Ref<'a>,
+pub struct Owned {
+	ptr: *mut AVDictionary,
 }
 
-impl<'a> Default for Owned<'a> {
+unsafe impl Send for Owned {}
+
+impl Default for Owned {
 	fn default() -> Self {
 		Self::new()
 	}
 }
 
-impl<'a> Owned<'a> {
+impl Owned {
 	pub unsafe fn own(ptr: *mut AVDictionary) -> Self {
-		Owned {
-			inner: mutable::Ref::wrap(ptr),
-		}
+		Owned { ptr }
 	}
 
 	pub unsafe fn disown(mut self) -> *mut AVDictionary {
-		let result = self.inner.as_mut_ptr();
-		self.inner = mutable::Ref::wrap(ptr::null_mut());
-
+		let result = self.ptr;
+		self.ptr = ptr::null_mut();
 		result
 	}
-}
 
-impl<'a> Owned<'a> {
-	pub fn new() -> Self {
-		unsafe {
-			Owned {
-				inner: mutable::Ref::wrap(ptr::null_mut()),
-			}
-		}
+	pub unsafe fn as_ptr(&self) -> *const AVDictionary {
+		self.ptr
+	}
+
+	pub unsafe fn as_mut_ptr(&mut self) -> *mut AVDictionary {
+		self.ptr
 	}
 }
 
-impl<'a, 'b> FromIterator<(&'b str, &'b str)> for Owned<'a> {
-	fn from_iter<T: IntoIterator<Item = (&'b str, &'b str)>>(iterator: T) -> Self {
+impl Owned {
+	pub fn new() -> Self {
+		Owned {
+			ptr: ptr::null_mut(),
+		}
+	}
+
+	pub fn as_ref(&self) -> immutable::Ref {
+		unsafe { immutable::Ref::wrap(self.ptr) }
+	}
+
+	pub fn len(&self) -> usize {
+		self.as_ref().len()
+	}
+
+	pub fn iter(&self) -> Iter<'_> {
+		unsafe { Iter::new(self.as_ptr()) }
+	}
+
+	pub fn set(&mut self, key: &str, value: &str) -> &mut Self {
+		unsafe {
+			let mut mutable = mutable::Ref::wrap(self.ptr);
+			mutable.set(key, value);
+			self.ptr = mutable.as_mut_ptr();
+		}
+
+		self
+	}
+}
+
+impl<'a> FromIterator<(&'a str, &'a str)> for Owned {
+	fn from_iter<T: IntoIterator<Item = (&'a str, &'a str)>>(iterator: T) -> Self {
 		let mut result = Owned::new();
 
 		for (key, value) in iterator {
@@ -55,8 +77,8 @@ impl<'a, 'b> FromIterator<(&'b str, &'b str)> for Owned<'a> {
 	}
 }
 
-impl<'a, 'b> FromIterator<&'b (&'b str, &'b str)> for Owned<'a> {
-	fn from_iter<T: IntoIterator<Item = &'b (&'b str, &'b str)>>(iterator: T) -> Self {
+impl<'a> FromIterator<&'a (&'a str, &'a str)> for Owned {
+	fn from_iter<T: IntoIterator<Item = &'a (&'a str, &'a str)>>(iterator: T) -> Self {
 		let mut result = Owned::new();
 
 		for &(key, value) in iterator {
@@ -67,7 +89,7 @@ impl<'a, 'b> FromIterator<&'b (&'b str, &'b str)> for Owned<'a> {
 	}
 }
 
-impl<'a> FromIterator<(String, String)> for Owned<'a> {
+impl FromIterator<(String, String)> for Owned {
 	fn from_iter<T: IntoIterator<Item = (String, String)>>(iterator: T) -> Self {
 		let mut result = Owned::new();
 
@@ -79,8 +101,8 @@ impl<'a> FromIterator<(String, String)> for Owned<'a> {
 	}
 }
 
-impl<'a, 'b> FromIterator<&'b (String, String)> for Owned<'a> {
-	fn from_iter<T: IntoIterator<Item = &'b (String, String)>>(iterator: T) -> Self {
+impl<'a> FromIterator<&'a (String, String)> for Owned {
+	fn from_iter<T: IntoIterator<Item = &'a (String, String)>>(iterator: T) -> Self {
 		let mut result = Owned::new();
 
 		for &(ref key, ref value) in iterator {
@@ -91,21 +113,7 @@ impl<'a, 'b> FromIterator<&'b (String, String)> for Owned<'a> {
 	}
 }
 
-impl<'a> Deref for Owned<'a> {
-	type Target = mutable::Ref<'a>;
-
-	fn deref(&self) -> &Self::Target {
-		&self.inner
-	}
-}
-
-impl<'a> DerefMut for Owned<'a> {
-	fn deref_mut(&mut self) -> &mut Self::Target {
-		&mut self.inner
-	}
-}
-
-impl<'a> Clone for Owned<'a> {
+impl Clone for Owned {
 	fn clone(&self) -> Self {
 		let mut dictionary = Owned::new();
 		dictionary.clone_from(self);
@@ -115,23 +123,78 @@ impl<'a> Clone for Owned<'a> {
 
 	fn clone_from(&mut self, source: &Self) {
 		unsafe {
-			let mut ptr = self.as_mut_ptr();
-			av_dict_copy(&mut ptr, source.as_ptr(), 0);
-			self.inner = mutable::Ref::wrap(ptr);
+			av_dict_copy(&mut self.ptr, source.as_ptr(), 0);
 		}
 	}
 }
 
-impl<'a> Drop for Owned<'a> {
+impl Drop for Owned {
 	fn drop(&mut self) {
 		unsafe {
-			av_dict_free(&mut self.inner.as_mut_ptr());
+			if !self.ptr.is_null() {
+				av_dict_free(&mut self.ptr);
+			}
 		}
 	}
 }
 
-impl<'a> fmt::Debug for Owned<'a> {
+impl fmt::Debug for Owned {
 	fn fmt(&self, fmt: &mut fmt::Formatter<'_>) -> fmt::Result {
-		self.inner.fmt(fmt)
+		unsafe { mutable::Ref::wrap(self.ptr) }.fmt(fmt)
+	}
+}
+
+#[cfg(feature = "serde")]
+mod serde {
+	use std::fmt;
+
+	use serde::{
+		de::{Deserialize, Deserializer, MapAccess, Visitor},
+		ser::{Serialize, SerializeMap, Serializer},
+	};
+
+	impl Serialize for super::Owned {
+		fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+		where
+			S: Serializer,
+		{
+			let mut map = serializer.serialize_map(Some(self.len()))?;
+			for (k, v) in self.iter() {
+				map.serialize_entry(k, v)?;
+			}
+			map.end()
+		}
+	}
+
+	struct DictionaryVisitor;
+
+	impl<'de> Visitor<'de> for DictionaryVisitor {
+		type Value = super::Owned;
+
+		fn expecting(&self, formatter: &mut fmt::Formatter) -> fmt::Result {
+			formatter.write_str("an ffmpeg dictionary")
+		}
+
+		fn visit_map<M>(self, mut access: M) -> Result<Self::Value, M::Error>
+		where
+			M: MapAccess<'de>,
+		{
+			let mut map = super::Owned::new();
+
+			while let Some((key, value)) = access.next_entry()? {
+				map.set(key, value);
+			}
+
+			Ok(map)
+		}
+	}
+
+	impl<'de> Deserialize<'de> for super::Owned {
+		fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+		where
+			D: Deserializer<'de>,
+		{
+			deserializer.deserialize_map(DictionaryVisitor)
+		}
 	}
 }
