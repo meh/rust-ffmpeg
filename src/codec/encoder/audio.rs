@@ -77,9 +77,9 @@ impl Audio {
 		}
 	}
 
-	pub fn set_sample_rate(&mut self, rate: i32) {
+	pub fn set_sample_rate(&mut self, rate: u32) {
 		unsafe {
-			(*self.as_mut_ptr()).sample_rate = rate;
+			(*self.as_mut_ptr()).sample_rate = rate as c_int;
 		}
 	}
 

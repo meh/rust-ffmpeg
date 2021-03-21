@@ -89,7 +89,7 @@ fn transcoder<P: AsRef<Path>>(
 		encoder.set_flags(ffmpeg::codec::flag::Flags::GLOBAL_HEADER);
 	}
 
-	encoder.set_sample_rate(decoder.sample_rate() as i32);
+	encoder.set_sample_rate(decoder.sample_rate());
 	encoder.set_channel_layout(channel_layout);
 	encoder.set_channels(channel_layout.channels());
 	encoder.set_format(
