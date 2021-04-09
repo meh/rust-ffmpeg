@@ -19,7 +19,7 @@ use std::{fs::File};
 fn main() {
     ffmpeg::init().unwrap();
     let file = File::open("path/to/your/video/file.mkv").unwrap();
-    match ffmpeg::format::io::input(file) {
+    match ffmpeg::format::input(file) {
         Ok(context) => {
             for (k, v) in context.metadata().iter() {
                 println!("{}: {}", k, v);
