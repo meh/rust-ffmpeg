@@ -24,6 +24,8 @@ pub use crate::util::{
 	time,
 };
 
+pub type Result<T> = ::std::result::Result<T, Error>;
+
 #[cfg(feature = "format")]
 pub mod format;
 #[cfg(feature = "format")]
@@ -94,7 +96,7 @@ fn init_filter() {
 #[cfg(not(feature = "filter"))]
 fn init_filter() {}
 
-pub fn init() -> Result<(), Error> {
+pub fn init() -> Result<()> {
 	init_util();
 	init_format();
 	init_device();

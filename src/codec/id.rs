@@ -419,7 +419,6 @@ pub enum Id {
 	DST,
 
 	// subtitle codecs
-	// DVD_SUBTITLE,
 	DVB_SUBTITLE,
 	TEXT,
 	XSUB,
