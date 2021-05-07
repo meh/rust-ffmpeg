@@ -6,8 +6,7 @@
 #![allow(clippy::redundant_static_lifetimes)]
 #![allow(clippy::too_many_arguments)]
 #![allow(clippy::type_complexity)]
-
-extern crate libc;
+#![allow(clippy::upper_case_acronyms)]
 
 include!(concat!(env!("OUT_DIR"), "/bindings.rs"));
 
