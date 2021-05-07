@@ -1297,7 +1297,7 @@ fn print_pkg_config_libs(statik: bool, lib: &pkg_config::Library) {
         println!("cargo:rustc-link-search=framework={}", val.display());
     }
     for val in &lib.frameworks {
-        println!("cargo:rustc-link=framework={}", val);
+        println!("cargo:rustc-link-lib=framework={}", val);
     }
 
     for val in &lib.libs {
