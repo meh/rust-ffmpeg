@@ -1,5 +1,5 @@
-use libc::{c_double, c_int};
-use AVRational;
+use crate::AVRational;
+use std::os::raw::c_int;
 
 #[inline(always)]
 pub unsafe fn av_make_q(num: c_int, den: c_int) -> AVRational {
@@ -22,7 +22,7 @@ pub unsafe fn av_cmp_q(a: AVRational, b: AVRational) -> c_int {
 }
 
 #[inline(always)]
-pub unsafe fn av_q2d(a: AVRational) -> c_double {
+pub unsafe fn av_q2d(a: AVRational) -> f64 {
     f64::from(a.num) / f64::from(a.den)
 }
 
