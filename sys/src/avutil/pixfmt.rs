@@ -1,5 +1,5 @@
-use AVPixelFormat;
-use AVPixelFormat::*;
+use crate::AVPixelFormat;
+use crate::AVPixelFormat::*;
 
 #[cfg(target_endian = "little")]
 pub const AV_PIX_FMT_RGB32: AVPixelFormat = AV_PIX_FMT_BGRA;

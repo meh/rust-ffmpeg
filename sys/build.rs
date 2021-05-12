@@ -1,7 +1,3 @@
-extern crate bindgen;
-extern crate cc;
-extern crate num_cpus;
-extern crate pkg_config;
 
 use std::env;
 use std::fs::{self, File};

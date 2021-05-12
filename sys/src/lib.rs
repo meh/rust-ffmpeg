@@ -12,4 +12,4 @@ include!(concat!(env!("OUT_DIR"), "/bindings.rs"));
 
 #[macro_use]
 mod avutil;
-pub use avutil::*;
+pub use crate::avutil::*;

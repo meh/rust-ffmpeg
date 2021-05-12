@@ -6,6 +6,7 @@ links   = "ffmpeg"
 readme = "README.md"
 authors = ["meh. <meh@schizofreni.co>"]
 license = "WTFPL"
+edition = "2018"
 
 description = "FFI bindings to FFmpeg"
 repository  = "https://github.com/meh/rust-ffmpeg-sys"
