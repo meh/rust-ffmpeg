@@ -6,7 +6,8 @@ rust:
   - nightly
 os:
   - linux
-  - osx
+  - os: osx
+    osx_image: xcode12.5
 matrix:
   allow_failures:
     - rust: nightly
