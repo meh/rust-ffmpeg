@@ -11,6 +11,7 @@ use crate::{
 #[cfg_attr(feature = "serde", serde(rename_all = "kebab-case"))]
 pub enum Id {
 	None,
+	Unknown(AVCodecID),
 
 	// video codecs
 	MPEG1VIDEO,
@@ -1019,7 +1020,7 @@ impl From<AVCodecID> for Id {
 			#[cfg(feature = "ffmpeg_4_1")]
 			AV_CODEC_ID_TTML => Id::TTML,
 
-			_ => unimplemented!(),
+			e => Id::Unknown(e),
 		}
 	}
 }
@@ -1028,6 +1029,7 @@ impl Into<AVCodecID> for Id {
 	fn into(self) -> AVCodecID {
 		match self {
 			Id::None => AV_CODEC_ID_NONE,
+			Id::Unknown(id) => id,
 
 			// video codecs
 			Id::MPEG1VIDEO => AV_CODEC_ID_MPEG1VIDEO,
