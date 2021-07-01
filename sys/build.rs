@@ -1076,6 +1076,9 @@ fn thread_main() {
         .ctypes_prefix("libc")
         // https://github.com/rust-lang/rust-bindgen/issues/550
         .blocklist_type("max_align_t")
+        // Issue on aligned and packed struct. Related to:
+        // https://github.com/rust-lang/rust-bindgen/issues/1538
+        .opaque_type("__mingw_ldbl_type_t")
         // these are never part of ffmpeg API
         .blocklist_function("_.*")
         // Rust doesn't support long double, and bindgen can't skip it
