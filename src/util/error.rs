@@ -1,4 +1,5 @@
 use std::{error, ffi::CStr, fmt, io, os::raw::c_char, str::from_utf8_unchecked};
+use std::hash::{Hash, Hasher};
 
 use libc::c_int;
 
@@ -327,3 +328,23 @@ pub fn register_all() {
 }
 
 impl error::Error for Error {}
+
+impl Clone for Error {
+    fn clone(&self) -> Error {
+        self.as_raw_error().into()
+    }
+}
+
+impl PartialEq for Error {
+    fn eq(&self, other: &Self) -> bool {
+        self.as_raw_error() == other.as_raw_error()
+    }
+}
+
+impl Eq for Error {}
+
+impl Hash for Error {
+    fn hash<H: Hasher>(&self, state: &mut H) {
+        self.as_raw_error().hash(state);
+    }
+}
