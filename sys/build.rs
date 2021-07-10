@@ -1,4 +1,3 @@
-
 use std::env;
 use std::fs::{self, File};
 use std::io::{self, BufRead, BufReader, Write};
@@ -9,6 +8,7 @@ use std::str;
 use bindgen::callbacks::{
     EnumVariantCustomBehavior, EnumVariantValue, IntKind, MacroParsingBehavior, ParseCallbacks,
 };
+use regex::Regex;
 
 #[derive(Debug)]
 struct Library {
@@ -1273,14 +1273,28 @@ fn thread_main() {
     }
 
     // Finish the builder and generate the bindings.
-    let bindings = builder
+    let mut bindings = builder
         .generate()
         // Unwrap the Result and panic on failure.
-        .expect("Unable to generate bindings");
+        .expect("Unable to generate bindings")
+        .to_string();
+
+    if env::var("CARGO_FEATURE_SERDE").is_ok() {
+        bindings = Regex::new(
+            r"#\s*\[\s*derive\s*\((?P<d>[^)]+)\)\s*\]\s*pub\s*(?P<s>enum)"
+        )
+        .unwrap()
+        .replace_all(&bindings, r#"
+            #[derive($d)]
+            #[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
+            #[cfg_attr(feature = "serde", serde(rename_all = "kebab-case"))]
+            pub $s
+        "#)
+        .into();
+    }
 
     // Write the bindings to the $OUT_DIR/bindings.rs file.
-    bindings
-        .write_to_file(output().join("bindings.rs"))
+    fs::write(output().join("bindings.rs"), &bindings)
         .expect("Couldn't write bindings!");
 }
 
