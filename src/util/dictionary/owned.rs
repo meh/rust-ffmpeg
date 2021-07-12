@@ -148,7 +148,7 @@ impl fmt::Debug for Owned {
 mod serde {
 	use std::fmt;
 
-	use serde::{
+	use ::serde_::{
 		de::{Deserialize, Deserializer, MapAccess, Visitor},
 		ser::{Serialize, SerializeMap, Serializer},
 	};

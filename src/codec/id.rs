@@ -7,8 +7,8 @@ use crate::{
 
 #[allow(non_camel_case_types)]
 #[derive(Eq, PartialEq, Clone, Copy, Debug)]
-#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
-#[cfg_attr(feature = "serde", serde(rename_all = "kebab-case"))]
+#[cfg_attr(feature = "serde", derive(serde_derive::Serialize, serde_derive::Deserialize))]
+#[cfg_attr(feature = "serde", serde(crate = "serde_", rename_all = "kebab-case"))]
 pub enum Id {
 	None,
 	Unknown(AVCodecID),

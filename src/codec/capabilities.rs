@@ -3,8 +3,8 @@ use libc::c_uint;
 use crate::ffi::*;
 
 bitflags! {
-	#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
-	#[cfg_attr(feature = "serde", serde(rename_all = "kebab-case"))]
+	#[cfg_attr(feature = "serde", derive(serde_derive::Serialize, serde_derive::Deserialize))]
+	#[cfg_attr(feature = "serde", serde(crate = "serde_", rename_all = "kebab-case"))]
 	pub struct Capabilities: c_uint {
 		const DRAW_HORIZ_BAND     = AV_CODEC_CAP_DRAW_HORIZ_BAND;
 		const DR1                 = AV_CODEC_CAP_DR1;

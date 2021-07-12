@@ -8,8 +8,8 @@ use thiserror::Error;
 use crate::ffi::{AVPixelFormat::*, *};
 
 #[derive(Eq, PartialEq, Copy, Clone, Debug)]
-#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
-#[cfg_attr(feature = "serde", serde(rename_all = "kebab-case"))]
+#[cfg_attr(feature = "serde", derive(serde_derive::Serialize, serde_derive::Deserialize))]
+#[cfg_attr(feature = "serde", serde(crate = "serde_", rename_all = "kebab-case"))]
 pub enum Pixel {
 	None,
 

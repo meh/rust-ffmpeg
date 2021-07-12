@@ -3,8 +3,8 @@ use libc::c_int;
 use crate::ffi::*;
 
 bitflags! {
-	#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
-	#[cfg_attr(feature = "serde", serde(rename_all = "kebab-case"))]
+	#[cfg_attr(feature = "serde", derive(serde_derive::Serialize, serde_derive::Deserialize))]
+	#[cfg_attr(feature = "serde", serde(crate = "serde_", rename_all = "kebab-case"))]
 	pub struct Flags: c_int {
 		const DYNAMIC_INPUTS            = AVFILTER_FLAG_DYNAMIC_INPUTS;
 		const DYNAMIC_OUTPUTS           = AVFILTER_FLAG_DYNAMIC_OUTPUTS;
