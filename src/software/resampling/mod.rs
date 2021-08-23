@@ -1,4 +1,5 @@
 pub mod flag;
+#[cfg(feature = "serde")]
 pub use self::flag::Flags;
 
 pub mod dither;
