@@ -17,5 +17,5 @@ mkShell {
   RUST_BACKTRACE = 1;
   RUSTFLAGS = "-C target-cpu=native";
 
-  LIBCLANG_PATH = "${llvmPackages.libclang}/lib";
+  LIBCLANG_PATH = "${llvmPackages.libclang.lib}/lib";
 }
