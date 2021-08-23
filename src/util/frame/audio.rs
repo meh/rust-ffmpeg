@@ -149,7 +149,13 @@ impl Audio {
 			panic!("unsupported type");
 		}
 
-		unsafe { slice::from_raw_parts((*self.as_ptr()).data[index] as *const T, self.samples()) }
+		let len = if self.is_packed() {
+			self.samples() * self.channels() as usize
+		}
+		else {
+			self.samples()
+		};
+		unsafe { slice::from_raw_parts((*self.as_ptr()).data[index] as *const T, len) }
 	}
 
 	#[inline]
@@ -162,7 +168,13 @@ impl Audio {
 			panic!("unsupported type");
 		}
 
-		unsafe { slice::from_raw_parts_mut((*self.as_mut_ptr()).data[index] as *mut T, self.samples()) }
+		let len = if self.is_packed() {
+			self.samples() * self.channels() as usize
+		}
+		else {
+			self.samples()
+		};
+		unsafe { slice::from_raw_parts_mut((*self.as_mut_ptr()).data[index] as *mut T, len) }
 	}
 
 	#[inline]
