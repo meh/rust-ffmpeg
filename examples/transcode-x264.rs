@@ -138,12 +138,14 @@ impl Transcoder {
 	}
 }
 
-fn parse_opts<'a>(s: String) -> Option<Dictionary<'a>> {
+fn parse_opts<'a>(s: String) -> Option<Dictionary> {
 	let mut dict = Dictionary::new();
 	for keyval in s.split_terminator(',') {
 		let tokens: Vec<&str> = keyval.split('=').collect();
 		match tokens[..] {
-			[key, val] => dict.set(key, val),
+			[key, val] => {
+				dict.set(key, val);
+			}
 			_ => return None,
 		}
 	}
@@ -202,8 +204,7 @@ fn main() {
 				)
 				.unwrap(),
 			);
-		}
-		else {
+		} else {
 			// Set up for stream copy for non-video stream.
 			let mut ost = octx.add_stream(encoder::find(codec::Id::None)).unwrap();
 			ost.set_parameters(ist.parameters());
