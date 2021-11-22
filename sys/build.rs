@@ -196,7 +196,11 @@ fn build(target_os: &str) -> io::Result<()> {
 
     configure.arg(format!("--prefix={}", search().to_string_lossy()));
 
-    if env::var("TARGET").unwrap() != env::var("HOST").unwrap() {
+    let target = env::var("TARGET").unwrap();
+    let host = env::var("HOST").unwrap();
+    if target != host {
+        configure.arg("--enable-cross-compile");
+
         // Rust targets are subtly different than naming scheme for compiler prefixes.
         // The cc crate has the messy logic of guessing a working prefix,
         // and this is a messy way of reusing that logic.
