@@ -203,10 +203,12 @@ fn build() -> io::Result<()> {
         let cc = cc::Build::new();
         let compiler = cc.get_compiler();
         let compiler = compiler.path().file_stem().unwrap().to_str().unwrap();
-        let suffix_pos = compiler.rfind('-').unwrap(); // cut off "-gcc"
-        let prefix = compiler[0..suffix_pos].trim_end_matches("-wr"); // "wr-c++" compiler
+        if let Some(suffix_pos) = compiler.rfind('-') {
+            // cut off "-gcc"
+            let prefix = compiler[0..suffix_pos].trim_end_matches("-wr"); // "wr-c++" compiler
+            configure.arg(format!("--cross-prefix={}-", prefix));
+        }
 
-        configure.arg(format!("--cross-prefix={}-", prefix));
         configure.arg(format!(
             "--arch={}",
             env::var("CARGO_CFG_TARGET_ARCH").unwrap()
