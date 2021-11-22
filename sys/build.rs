@@ -205,6 +205,14 @@ fn build(target_os: &str) -> io::Result<()> {
         // The cc crate has the messy logic of guessing a working prefix,
         // and this is a messy way of reusing that logic.
         let cc = cc::Build::new();
+
+        // Apple-clang needs this, -arch is not enough.
+        let target_flag = format!("--target={}", target);
+        if cc.is_flag_supported(&target_flag).unwrap_or(false) {
+            configure.arg(format!("--extra-cflags={}", target_flag));
+            configure.arg(format!("--extra-ldflags={}", target_flag));
+        }
+
         let compiler = cc.get_compiler();
         let compiler = compiler.path().file_stem().unwrap().to_str().unwrap();
         if let Some(suffix_pos) = compiler.rfind('-') {
@@ -333,6 +341,8 @@ fn build(target_os: &str) -> io::Result<()> {
 
     // configure misc build options
     enable!(configure, "BUILD_PIC", "pic");
+
+    println!("configure cmd: {:?}", configure);
 
     // run ./configure
     let output = configure
@@ -655,11 +665,11 @@ fn thread_main() {
             "cargo:rustc-link-search=native={}",
             search().join("lib").to_string_lossy()
         );
-        link_to_libraries(statik, &target_os);
+        link_to_libraries(statik, target_os);
         if fs::metadata(&search().join("lib").join("libavutil.a")).is_err() {
             fs::create_dir_all(&output()).expect("failed to create build directory");
             fetch().unwrap();
-            build(&target_os).unwrap();
+            build(target_os).unwrap();
         }
 
         // Check additional required libraries.
@@ -692,7 +702,7 @@ fn thread_main() {
             "cargo:rustc-link-search=native={}",
             ffmpeg_dir.join("lib").to_string_lossy()
         );
-        link_to_libraries(statik, &target_os);
+        link_to_libraries(statik, target_os);
         vec![ffmpeg_dir.join("include")]
     } else if let Some(paths) = try_vcpkg(statik) {
         // vcpkg doesn't detect the "system" dependencies
