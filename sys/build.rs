@@ -185,7 +185,7 @@ fn switch(configure: &mut Command, feature: &str, name: &str) {
     configure.arg(arg.to_string() + name);
 }
 
-fn build() -> io::Result<()> {
+fn build(target_os: &str) -> io::Result<()> {
     let source_dir = source();
 
     // Command's path is not relative to command's current_dir
@@ -213,10 +213,7 @@ fn build() -> io::Result<()> {
             "--arch={}",
             env::var("CARGO_CFG_TARGET_ARCH").unwrap()
         ));
-        configure.arg(format!(
-            "--target_os={}",
-            env::var("CARGO_CFG_TARGET_OS").unwrap()
-        ));
+        configure.arg(format!("--target_os={}", target_os));
     }
 
     // control debug build
@@ -371,6 +368,19 @@ fn build() -> io::Result<()> {
     }
 
     Ok(())
+}
+
+fn os_from_triple(triple: &str) -> &str {
+    let platform = triple.splitn(2, '-').nth(1).expect("bad triple");
+    platform
+        .trim_start_matches("unknown-")
+        .trim_start_matches("pc-")
+        .trim_start_matches("wrs-")
+        .trim_start_matches("apple-")
+        .trim_start_matches("uwp-")
+        .split('-')
+        .next()
+        .unwrap()
 }
 
 #[cfg(not(target_env = "msvc"))]
@@ -633,7 +643,8 @@ fn main() {
 
 fn thread_main() {
     let statik = env::var("CARGO_FEATURE_STATIC").is_ok();
-    let target_os = env::var("CARGO_CFG_TARGET_OS").unwrap();
+    let target = env::var("TARGET").unwrap();
+    let target_os = os_from_triple(&target); // it's different than Rust's target_os! but ./configure likes these better
 
     let include_paths: Vec<PathBuf> = if env::var("CARGO_FEATURE_BUILD").is_ok() {
         println!(
@@ -644,7 +655,7 @@ fn thread_main() {
         if fs::metadata(&search().join("lib").join("libavutil.a")).is_err() {
             fs::create_dir_all(&output()).expect("failed to create build directory");
             fetch().unwrap();
-            build().unwrap();
+            build(&target_os).unwrap();
         }
 
         // Check additional required libraries.
@@ -741,7 +752,7 @@ fn thread_main() {
         paths
     };
 
-    if statik && target_os == "macos" {
+    if statik && target_os == "darwin" {
         let frameworks = vec![
             "AppKit",
             "AudioToolbox",
