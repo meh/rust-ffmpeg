@@ -601,7 +601,7 @@ fn search_include(include_paths: &[PathBuf], header: &str) -> String {
     format!("/usr/include/{}", header)
 }
 
-fn link_to_libraries(statik: bool) {
+fn link_to_libraries(statik: bool, target_os: &str) {
     let ffmpeg_ty = if statik { "static" } else { "dylib" };
     for lib in LIBRARIES {
         let feat_is_enabled = lib.feature_name().and_then(|f| env::var(&f).ok()).is_some();
@@ -609,7 +609,7 @@ fn link_to_libraries(statik: bool) {
             println!("cargo:rustc-link-lib={}={}", ffmpeg_ty, lib.name);
         }
     }
-    if env::var("CARGO_FEATURE_BUILD_ZLIB").is_ok() && cfg!(target_os = "linux") {
+    if env::var("CARGO_FEATURE_BUILD_ZLIB").is_ok() && target_os == "linux" {
         println!("cargo:rustc-link-lib=z");
     }
 }
@@ -633,13 +633,14 @@ fn main() {
 
 fn thread_main() {
     let statik = env::var("CARGO_FEATURE_STATIC").is_ok();
+    let target_os = env::var("CARGO_CFG_TARGET_OS").unwrap();
 
     let include_paths: Vec<PathBuf> = if env::var("CARGO_FEATURE_BUILD").is_ok() {
         println!(
             "cargo:rustc-link-search=native={}",
             search().join("lib").to_string_lossy()
         );
-        link_to_libraries(statik);
+        link_to_libraries(statik, &target_os);
         if fs::metadata(&search().join("lib").join("libavutil.a")).is_err() {
             fs::create_dir_all(&output()).expect("failed to create build directory");
             fetch().unwrap();
@@ -676,7 +677,7 @@ fn thread_main() {
             "cargo:rustc-link-search=native={}",
             ffmpeg_dir.join("lib").to_string_lossy()
         );
-        link_to_libraries(statik);
+        link_to_libraries(statik, &target_os);
         vec![ffmpeg_dir.join("include")]
     } else if let Some(paths) = try_vcpkg(statik) {
         // vcpkg doesn't detect the "system" dependencies
@@ -740,7 +741,7 @@ fn thread_main() {
         paths
     };
 
-    if statik && cfg!(target_os = "macos") {
+    if statik && target_os == "macos" {
         let frameworks = vec![
             "AppKit",
             "AudioToolbox",
