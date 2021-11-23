@@ -1,6 +1,6 @@
 [package]
 name    = "ffmpeg-sys"
-version = "4.3.3"
+version = "4.3.4"
 build   = "build.rs"
 links   = "ffmpeg"
 readme = "README.md"
@@ -28,7 +28,7 @@ features = ["derive"]
 num_cpus   = "1.13.0"
 cc         = "1.0.67"
 pkg-config = "0.3.19"
-bindgen    = "0.58.1"
+bindgen    = "0.59.1"
 regex      = "1"
 
 [target.'cfg(target_env = "msvc")'.build-dependencies]
