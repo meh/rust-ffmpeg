@@ -76,8 +76,7 @@ impl Context {
 						},
 					}),
 				}
-			}
-			else {
+			} else {
 				Err(Error::InvalidData)
 			}
 		}
@@ -133,7 +132,9 @@ impl Context {
 
 	/// Convert one of the remaining internal frames.
 	///
-	/// When there are no more internal frames `Ok(None)` will be returned.
+	/// Must be called with a valid non-Empty [Audio](frame::Audio) (rate, format, and
+	/// channel_layout correctly set).
+	/// When there are no more internal frames, `output.samples() == 0`.
 	pub fn flush(&mut self, output: &mut frame::Audio) -> Result<Option<Delay>, Error> {
 		output.set_rate(self.output.rate);
 
