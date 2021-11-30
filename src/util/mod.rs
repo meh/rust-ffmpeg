@@ -14,6 +14,7 @@ pub mod picture;
 pub mod range;
 pub mod rational;
 pub mod time;
+pub mod image;
 
 #[cfg(feature = "log")]
 pub mod log;
