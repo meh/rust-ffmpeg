@@ -52,12 +52,7 @@ impl Graph {
 		}
 	}
 
-	pub fn add<'a, 'b>(
-		&'a mut self,
-		filter: &Filter,
-		name: &str,
-		args: &str,
-	) -> Result<Context<'b>, Error>
+	pub fn add<'a, 'b>(&'a mut self, filter: &Filter, name: &str, args: &str) -> Result<Context<'b>, Error>
 	where
 		'a: 'b,
 	{

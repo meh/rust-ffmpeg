@@ -38,9 +38,7 @@ impl<'a> Ref<'a> {
 				None
 			}
 			else {
-				Some(from_utf8_unchecked(
-					CStr::from_ptr((*entry).value).to_bytes(),
-				))
+				Some(from_utf8_unchecked(CStr::from_ptr((*entry).value).to_bytes()))
 			}
 		}
 	}

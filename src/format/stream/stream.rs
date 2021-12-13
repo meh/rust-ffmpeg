@@ -132,9 +132,7 @@ impl<'a> Iterator for SideDataIter<'a> {
 			self.current += 1;
 
 			Some(packet::SideData::wrap(
-				(*self.stream.as_ptr())
-					.side_data
-					.offset((self.current - 1) as isize),
+				(*self.stream.as_ptr()).side_data.offset((self.current - 1) as isize),
 			))
 		}
 	}
@@ -143,10 +141,7 @@ impl<'a> Iterator for SideDataIter<'a> {
 		unsafe {
 			let length = (*self.stream.as_ptr()).nb_side_data as usize;
 
-			(
-				length - self.current as usize,
-				Some(length - self.current as usize),
-			)
+			(length - self.current as usize, Some(length - self.current as usize))
 		}
 	}
 }

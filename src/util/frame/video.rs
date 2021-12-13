@@ -318,6 +318,10 @@ impl Video {
 			)
 		}
 	}
+
+	pub fn as_image(&self) -> crate::util::Image {
+		crate::util::Image(self)
+	}
 }
 
 impl Deref for Video {

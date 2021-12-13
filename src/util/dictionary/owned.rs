@@ -37,9 +37,7 @@ impl Owned {
 
 impl Owned {
 	pub fn new() -> Self {
-		Owned {
-			ptr: ptr::null_mut(),
-		}
+		Owned { ptr: ptr::null_mut() }
 	}
 
 	pub fn as_ref(&self) -> immutable::Ref {

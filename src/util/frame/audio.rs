@@ -65,9 +65,7 @@ impl Audio {
 
 	#[inline]
 	pub fn channel_layout(&self) -> ChannelLayout {
-		unsafe {
-			ChannelLayout::from_bits_truncate(av_frame_get_channel_layout(self.as_ptr()) as c_ulonglong)
-		}
+		unsafe { ChannelLayout::from_bits_truncate(av_frame_get_channel_layout(self.as_ptr()) as c_ulonglong) }
 	}
 
 	#[inline]
@@ -183,12 +181,7 @@ impl Audio {
 			panic!("out of bounds");
 		}
 
-		unsafe {
-			slice::from_raw_parts(
-				(*self.as_ptr()).data[index],
-				(*self.as_ptr()).linesize[index] as usize,
-			)
-		}
+		unsafe { slice::from_raw_parts((*self.as_ptr()).data[index], (*self.as_ptr()).linesize[index] as usize) }
 	}
 
 	#[inline]

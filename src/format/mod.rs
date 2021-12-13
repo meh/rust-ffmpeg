@@ -58,42 +58,32 @@ pub fn open(path_or_url: impl AsRef<OsStr>, format: &Format) -> Result<Context, 
 		let path = from_os_str(path_or_url);
 
 		match *format {
-			Format::Input(ref format) => match avformat_open_input(
-				&mut ps,
-				path.as_ptr(),
-				format.as_ptr() as *mut _,
-				ptr::null_mut(),
-			) {
-				0 => match avformat_find_stream_info(ps, ptr::null_mut()) {
-					r if r >= 0 => Ok(Context::Input(context::Input::wrap(ps))),
+			Format::Input(ref format) => {
+				match avformat_open_input(&mut ps, path.as_ptr(), format.as_ptr() as *mut _, ptr::null_mut()) {
+					0 => match avformat_find_stream_info(ps, ptr::null_mut()) {
+						r if r >= 0 => Ok(Context::Input(context::Input::wrap(ps))),
+						e => Err(Error::from(e)),
+					},
+
 					e => Err(Error::from(e)),
-				},
+				}
+			}
 
-				e => Err(Error::from(e)),
-			},
+			Format::Output(ref format) => {
+				match avformat_alloc_output_context2(&mut ps, format.as_ptr() as *mut _, ptr::null(), path.as_ptr()) {
+					0 => match avio_open(&mut (*ps).pb, path.as_ptr(), AVIO_FLAG_WRITE) {
+						0 => Ok(Context::Output(context::Output::wrap(ps))),
+						e => Err(Error::from(e)),
+					},
 
-			Format::Output(ref format) => match avformat_alloc_output_context2(
-				&mut ps,
-				format.as_ptr() as *mut _,
-				ptr::null(),
-				path.as_ptr(),
-			) {
-				0 => match avio_open(&mut (*ps).pb, path.as_ptr(), AVIO_FLAG_WRITE) {
-					0 => Ok(Context::Output(context::Output::wrap(ps))),
 					e => Err(Error::from(e)),
-				},
-
-				e => Err(Error::from(e)),
-			},
+				}
+			}
 		}
 	}
 }
 
-pub fn open_with(
-	path_or_url: impl AsRef<OsStr>,
-	format: &Format,
-	options: Dictionary,
-) -> Result<Context, Error> {
+pub fn open_with(path_or_url: impl AsRef<OsStr>, format: &Format, options: Dictionary) -> Result<Context, Error> {
 	unsafe {
 		let mut ps = ptr::null_mut();
 		let path = from_os_str(path_or_url);
@@ -115,19 +105,16 @@ pub fn open_with(
 				}
 			}
 
-			Format::Output(ref format) => match avformat_alloc_output_context2(
-				&mut ps,
-				format.as_ptr() as *mut _,
-				ptr::null(),
-				path.as_ptr(),
-			) {
-				0 => match avio_open(&mut (*ps).pb, path.as_ptr(), AVIO_FLAG_WRITE) {
-					0 => Ok(Context::Output(context::Output::wrap(ps))),
-					e => Err(Error::from(e)),
-				},
+			Format::Output(ref format) => {
+				match avformat_alloc_output_context2(&mut ps, format.as_ptr() as *mut _, ptr::null(), path.as_ptr()) {
+					0 => match avio_open(&mut (*ps).pb, path.as_ptr(), AVIO_FLAG_WRITE) {
+						0 => Ok(Context::Output(context::Output::wrap(ps))),
+						e => Err(Error::from(e)),
+					},
 
-				e => Err(Error::from(e)),
-			},
+					e => Err(Error::from(e)),
+				}
+			}
 		}
 	}
 }
@@ -151,10 +138,7 @@ pub fn input(path_or_url: impl AsRef<OsStr>) -> Result<context::Input, Error> {
 	}
 }
 
-pub fn input_with_dictionary(
-	path_or_url: impl AsRef<OsStr>,
-	options: Dictionary,
-) -> Result<context::Input, Error> {
+pub fn input_with_dictionary(path_or_url: impl AsRef<OsStr>, options: Dictionary) -> Result<context::Input, Error> {
 	unsafe {
 		let mut ps = ptr::null_mut();
 		let path = from_os_str(path_or_url);
@@ -216,10 +200,7 @@ pub fn output(path_or_url: impl AsRef<OsStr>) -> Result<context::Output, Error> 
 	}
 }
 
-pub fn output_with(
-	path_or_url: impl AsRef<OsStr>,
-	options: Dictionary,
-) -> Result<context::Output, Error> {
+pub fn output_with(path_or_url: impl AsRef<OsStr>, options: Dictionary) -> Result<context::Output, Error> {
 	unsafe {
 		let mut ps = ptr::null_mut();
 		let path = from_os_str(path_or_url);
@@ -227,13 +208,7 @@ pub fn output_with(
 
 		match avformat_alloc_output_context2(&mut ps, ptr::null_mut(), ptr::null(), path.as_ptr()) {
 			0 => {
-				let res = avio_open2(
-					&mut (*ps).pb,
-					path.as_ptr(),
-					AVIO_FLAG_WRITE,
-					ptr::null(),
-					&mut opts,
-				);
+				let res = avio_open2(&mut (*ps).pb, path.as_ptr(), AVIO_FLAG_WRITE, ptr::null(), &mut opts);
 
 				Dictionary::own(opts);
 
@@ -248,20 +223,12 @@ pub fn output_with(
 	}
 }
 
-pub fn output_as(
-	path_or_url: impl AsRef<OsStr>,
-	mut format: format::Output,
-) -> Result<context::Output, Error> {
+pub fn output_as(path_or_url: impl AsRef<OsStr>, mut format: format::Output) -> Result<context::Output, Error> {
 	unsafe {
 		let mut ps = ptr::null_mut();
 		let path = from_os_str(path_or_url);
 
-		match avformat_alloc_output_context2(
-			&mut ps,
-			format.as_mut_ptr(),
-			ptr::null_mut(),
-			path.as_ptr(),
-		) {
+		match avformat_alloc_output_context2(&mut ps, format.as_mut_ptr(), ptr::null_mut(), path.as_ptr()) {
 			0 => match avio_open(&mut (*ps).pb, path.as_ptr(), AVIO_FLAG_WRITE) {
 				0 => Ok(context::Output::wrap(ps)),
 				e => Err(Error::from(e)),
@@ -282,20 +249,9 @@ pub fn output_as_with(
 		let path = from_os_str(path_or_url);
 		let mut opts = options.disown();
 
-		match avformat_alloc_output_context2(
-			&mut ps,
-			format.as_mut_ptr(),
-			ptr::null_mut(),
-			path.as_ptr(),
-		) {
+		match avformat_alloc_output_context2(&mut ps, format.as_mut_ptr(), ptr::null_mut(), path.as_ptr()) {
 			0 => {
-				let res = avio_open2(
-					&mut (*ps).pb,
-					path.as_ptr(),
-					AVIO_FLAG_WRITE,
-					ptr::null(),
-					&mut opts,
-				);
+				let res = avio_open2(&mut (*ps).pb, path.as_ptr(), AVIO_FLAG_WRITE, ptr::null(), &mut opts);
 
 				Dictionary::own(opts);
 

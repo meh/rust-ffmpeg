@@ -16,10 +16,7 @@ fn main() {
 	let mut ost_index = 0;
 	for (ist_index, ist) in ictx.streams().enumerate() {
 		let ist_medium = ist.codec().medium();
-		if ist_medium != media::Type::Audio
-			&& ist_medium != media::Type::Video
-			&& ist_medium != media::Type::Subtitle
-		{
+		if ist_medium != media::Type::Audio && ist_medium != media::Type::Video && ist_medium != media::Type::Subtitle {
 			stream_mapping[ist_index] = -1;
 			continue;
 		}

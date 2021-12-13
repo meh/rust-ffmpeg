@@ -38,11 +38,7 @@ fn filter(
 			.capabilities()
 			.contains(ffmpeg::codec::capabilities::Capabilities::VARIABLE_FRAME_SIZE)
 		{
-			filter
-				.get("out")
-				.unwrap()
-				.sink()
-				.set_frame_size(encoder.frame_size());
+			filter.get("out").unwrap().sink().set_frame_size(encoder.frame_size());
 		}
 	}
 
@@ -94,13 +90,7 @@ fn transcoder<P: AsRef<Path>>(
 	encoder.set_sample_rate(decoder.sample_rate());
 	encoder.set_channel_layout(channel_layout);
 	encoder.set_channels(channel_layout.channels());
-	encoder.set_format(
-		codec
-			.formats()
-			.expect("unknown supported formats")
-			.next()
-			.unwrap(),
-	);
+	encoder.set_format(codec.formats().expect("unknown supported formats").next().unwrap());
 	encoder.set_bit_rate(decoder.bit_rate());
 	encoder.set_max_bit_rate(decoder.max_bit_rate());
 
@@ -153,14 +143,7 @@ impl Transcoder {
 
 	fn get_and_process_filtered_frames(&mut self, octx: &mut format::context::Output) {
 		let mut filtered = frame::Audio::empty();
-		while self
-			.filter
-			.get("out")
-			.unwrap()
-			.sink()
-			.frame(&mut filtered)
-			.is_ok()
-		{
+		while self.filter.get("out").unwrap().sink().frame(&mut filtered).is_ok() {
 			self.send_frame_to_encoder(&filtered);
 			self.receive_and_process_encoded_packets(octx);
 		}

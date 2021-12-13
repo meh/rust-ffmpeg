@@ -43,9 +43,7 @@ impl Audio {
 				None
 			}
 			else {
-				Some(ChannelLayoutIter::new(
-					(*self.codec.as_ptr()).channel_layouts,
-				))
+				Some(ChannelLayoutIter::new((*self.codec.as_ptr()).channel_layouts))
 			}
 		}
 	}

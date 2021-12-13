@@ -20,13 +20,7 @@ impl<T: Into<i64> + Clone> Rescale for T {
 		S: Into<Rational>,
 		D: Into<Rational>,
 	{
-		unsafe {
-			av_rescale_q(
-				self.clone().into(),
-				source.into().into(),
-				destination.into().into(),
-			)
-		}
+		unsafe { av_rescale_q(self.clone().into(), source.into().into(), destination.into().into()) }
 	}
 
 	fn rescale_with<S, D>(&self, source: S, destination: D, rounding: Rounding) -> i64

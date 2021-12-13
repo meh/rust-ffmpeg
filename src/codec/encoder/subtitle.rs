@@ -38,11 +38,7 @@ impl Subtitle {
 		}
 	}
 
-	pub fn open_as_with<E: traits::Encoder>(
-		mut self,
-		codec: E,
-		options: Dictionary,
-	) -> Result<Encoder, Error> {
+	pub fn open_as_with<E: traits::Encoder>(mut self, codec: E, options: Dictionary) -> Result<Encoder, Error> {
 		unsafe {
 			if let Some(codec) = codec.encoder() {
 				let mut opts = options.disown();

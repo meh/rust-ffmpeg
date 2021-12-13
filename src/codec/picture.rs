@@ -97,13 +97,7 @@ impl<'a> Picture<'a> {
 		}
 	}
 
-	pub fn layout_as(
-		&self,
-		format: format::Pixel,
-		width: u32,
-		height: u32,
-		out: &mut [u8],
-	) -> Result<usize, Error> {
+	pub fn layout_as(&self, format: format::Pixel, width: u32, height: u32, out: &mut [u8]) -> Result<usize, Error> {
 		unsafe {
 			match avpicture_layout(
 				self.as_ptr(),
@@ -142,12 +136,7 @@ impl<'a> Picture<'a> {
 		let mut result = Vec::new();
 
 		unsafe {
-			for (i, length) in (*self.as_ptr())
-				.linesize
-				.iter()
-				.take_while(|l| **l > 0)
-				.enumerate()
-			{
+			for (i, length) in (*self.as_ptr()).linesize.iter().take_while(|l| **l > 0).enumerate() {
 				result.push(slice::from_raw_parts(
 					(*self.as_ptr()).data[i],
 					(*length as usize) * (self.height as usize),
@@ -162,12 +151,7 @@ impl<'a> Picture<'a> {
 		let mut result = Vec::new();
 
 		unsafe {
-			for (i, length) in (*self.as_ptr())
-				.linesize
-				.iter()
-				.take_while(|l| **l > 0)
-				.enumerate()
-			{
+			for (i, length) in (*self.as_ptr()).linesize.iter().take_while(|l| **l > 0).enumerate() {
 				result.push(slice::from_raw_parts_mut(
 					(*self.as_ptr()).data[i],
 					(*length as usize) * (self.height as usize),

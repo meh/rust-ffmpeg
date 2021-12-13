@@ -107,20 +107,12 @@ impl Context {
 	///
 	/// When there are internal frames to process it will return `Ok(Some(Delay {
 	/// .. }))`.
-	pub fn run(
-		&mut self,
-		input: &frame::Audio,
-		output: &mut frame::Audio,
-	) -> Result<Option<Delay>, Error> {
+	pub fn run(&mut self, input: &frame::Audio, output: &mut frame::Audio) -> Result<Option<Delay>, Error> {
 		output.set_rate(self.output.rate);
 
 		unsafe {
 			if output.is_empty() {
-				output.alloc(
-					self.output.format,
-					input.samples(),
-					self.output.channel_layout,
-				);
+				output.alloc(self.output.format, input.samples(), self.output.channel_layout);
 			}
 
 			match swr_convert_frame(self.as_mut_ptr(), output.as_mut_ptr(), input.as_ptr()) {

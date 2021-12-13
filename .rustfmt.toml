@@ -1,6 +1,6 @@
 unstable_features = true
 
-max_width = 100
+max_width = 120
 hard_tabs = true
 tab_spaces = 2
 

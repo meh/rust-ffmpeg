@@ -41,9 +41,7 @@ pub enum Type {
 impl Type {
 	#[inline]
 	pub fn name(&self) -> &'static str {
-		unsafe {
-			from_utf8_unchecked(CStr::from_ptr(av_frame_side_data_name((*self).into())).to_bytes())
-		}
+		unsafe { from_utf8_unchecked(CStr::from_ptr(av_frame_side_data_name((*self).into())).to_bytes()) }
 	}
 }
 

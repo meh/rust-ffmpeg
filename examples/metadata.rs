@@ -37,9 +37,7 @@ fn main() {
 				println!("\tduration (stream timebase): {:?}", stream.duration());
 				println!(
 					"\tduration (seconds): {:?}",
-					stream
-						.duration()
-						.map(|d| d as f64 * f64::from(stream.time_base()))
+					stream.duration().map(|d| d as f64 * f64::from(stream.time_base()))
 				);
 				println!("\tframes: {}", stream.frames());
 				println!("\tdisposition: {:?}", stream.disposition());

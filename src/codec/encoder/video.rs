@@ -57,11 +57,7 @@ impl Video {
 	}
 
 	#[inline]
-	pub fn open_as_with<E: traits::Encoder>(
-		mut self,
-		codec: E,
-		options: Dictionary,
-	) -> Result<Encoder, Error> {
+	pub fn open_as_with<E: traits::Encoder>(mut self, codec: E, options: Dictionary) -> Result<Encoder, Error> {
 		unsafe {
 			if let Some(codec) = codec.encoder() {
 				let mut opts = options.disown();
@@ -426,10 +422,7 @@ impl Encoder {
 	#[inline]
 	pub fn encode<P: packet::Mut>(&mut self, frame: &frame::Video, out: &mut P) -> Result<(), Error> {
 		unsafe {
-			if self.format() != frame.format()
-				|| self.width() != frame.width()
-				|| self.height() != frame.height()
-			{
+			if self.format() != frame.format() || self.width() != frame.width() || self.height() != frame.height() {
 				return Err(Error::InvalidData);
 			}
 

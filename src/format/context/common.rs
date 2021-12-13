@@ -199,10 +199,7 @@ pub struct StreamIter<'a> {
 
 impl<'a> StreamIter<'a> {
 	pub fn new<'s, 'c: 's>(context: &'c Context) -> StreamIter<'s> {
-		StreamIter {
-			context,
-			current: 0,
-		}
+		StreamIter { context, current: 0 }
 	}
 }
 
@@ -249,10 +246,7 @@ impl<'a> Iterator for StreamIter<'a> {
 	fn size_hint(&self) -> (usize, Option<usize>) {
 		let length = self.context.nb_streams() as usize;
 
-		(
-			length - self.current as usize,
-			Some(length - self.current as usize),
-		)
+		(length - self.current as usize, Some(length - self.current as usize))
 	}
 }
 
@@ -265,10 +259,7 @@ pub struct StreamIterMut<'a> {
 
 impl<'a> StreamIterMut<'a> {
 	pub fn new<'s, 'c: 's>(context: &'c mut Context) -> StreamIterMut<'s> {
-		StreamIterMut {
-			context,
-			current: 0,
-		}
+		StreamIterMut { context, current: 0 }
 	}
 }
 
@@ -292,10 +283,7 @@ impl<'a> Iterator for StreamIterMut<'a> {
 	fn size_hint(&self) -> (usize, Option<usize>) {
 		let length = self.context.nb_streams() as usize;
 
-		(
-			length - self.current as usize,
-			Some(length - self.current as usize),
-		)
+		(length - self.current as usize, Some(length - self.current as usize))
 	}
 }
 
@@ -308,10 +296,7 @@ pub struct ChapterIter<'a> {
 
 impl<'a> ChapterIter<'a> {
 	pub fn new<'s, 'c: 's>(context: &'c Context) -> ChapterIter<'s> {
-		ChapterIter {
-			context,
-			current: 0,
-		}
+		ChapterIter { context, current: 0 }
 	}
 }
 
@@ -334,10 +319,7 @@ impl<'a> Iterator for ChapterIter<'a> {
 		unsafe {
 			let length = (*self.context.as_ptr()).nb_chapters as usize;
 
-			(
-				length - self.current as usize,
-				Some(length - self.current as usize),
-			)
+			(length - self.current as usize, Some(length - self.current as usize))
 		}
 	}
 }
@@ -351,10 +333,7 @@ pub struct ChapterIterMut<'a> {
 
 impl<'a> ChapterIterMut<'a> {
 	pub fn new<'s, 'c: 's>(context: &'c mut Context) -> ChapterIterMut<'s> {
-		ChapterIterMut {
-			context,
-			current: 0,
-		}
+		ChapterIterMut { context, current: 0 }
 	}
 }
 
@@ -380,10 +359,7 @@ impl<'a> Iterator for ChapterIterMut<'a> {
 		unsafe {
 			let length = (*self.context.as_ptr()).nb_chapters as usize;
 
-			(
-				length - self.current as usize,
-				Some(length - self.current as usize),
-			)
+			(length - self.current as usize, Some(length - self.current as usize))
 		}
 	}
 }

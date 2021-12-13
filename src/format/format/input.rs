@@ -41,9 +41,7 @@ impl Input {
 				Vec::new()
 			}
 			else {
-				from_utf8_unchecked(CStr::from_ptr(ptr).to_bytes())
-					.split(',')
-					.collect()
+				from_utf8_unchecked(CStr::from_ptr(ptr).to_bytes()).split(',').collect()
 			}
 		}
 	}
@@ -56,9 +54,7 @@ impl Input {
 				Vec::new()
 			}
 			else {
-				from_utf8_unchecked(CStr::from_ptr(ptr).to_bytes())
-					.split(',')
-					.collect()
+				from_utf8_unchecked(CStr::from_ptr(ptr).to_bytes()).split(',').collect()
 			}
 		}
 	}
@@ -70,9 +66,7 @@ pub struct Iter {
 
 impl Iter {
 	pub fn new() -> Self {
-		Iter {
-			input: ptr::null_mut(),
-		}
+		Iter { input: ptr::null_mut() }
 	}
 }
 

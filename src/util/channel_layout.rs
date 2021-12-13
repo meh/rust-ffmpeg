@@ -71,8 +71,6 @@ impl ChannelLayout {
 	}
 
 	pub fn default(number: i32) -> ChannelLayout {
-		unsafe {
-			ChannelLayout::from_bits_truncate(av_get_default_channel_layout(number) as c_ulonglong)
-		}
+		unsafe { ChannelLayout::from_bits_truncate(av_get_default_channel_layout(number) as c_ulonglong) }
 	}
 }

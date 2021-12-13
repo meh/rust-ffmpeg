@@ -128,10 +128,7 @@ impl Context {
 	}
 
 	pub fn run(&mut self, input: &frame::Video, output: &mut frame::Video) -> Result<(), Error> {
-		if input.format() != self.input.format
-			|| input.width() != self.input.width
-			|| input.height() != self.input.height
-		{
+		if input.format() != self.input.format || input.width() != self.input.width || input.height() != self.input.height {
 			return Err(Error::InputChanged);
 		}
 

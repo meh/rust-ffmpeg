@@ -1,5 +1,12 @@
-use std::{error, ffi::CStr, fmt, io, os::raw::c_char, str::from_utf8_unchecked};
-use std::hash::{Hash, Hasher};
+use std::{
+	error,
+	ffi::CStr,
+	fmt,
+	hash::{Hash, Hasher},
+	io,
+	os::raw::c_char,
+	str::from_utf8_unchecked,
+};
 
 use libc::c_int;
 
@@ -95,9 +102,7 @@ impl fmt::Display for Error {
 		match self {
 			Error::Io(err) => err.fmt(f),
 
-			err => f.write_str(unsafe {
-				from_utf8_unchecked(CStr::from_ptr(STRINGS[index(err)].as_ptr()).to_bytes())
-			}),
+			err => f.write_str(unsafe { from_utf8_unchecked(CStr::from_ptr(STRINGS[index(err)].as_ptr()).to_bytes()) }),
 		}
 	}
 }
@@ -181,8 +186,7 @@ fn index(error: &Error) -> usize {
 }
 
 // XXX: the length has to be synced with the number of errors
-static mut STRINGS: [[c_char; AV_ERROR_MAX_STRING_SIZE as usize]; 27] =
-	[[0; AV_ERROR_MAX_STRING_SIZE as usize]; 27];
+static mut STRINGS: [[c_char; AV_ERROR_MAX_STRING_SIZE as usize]; 27] = [[0; AV_ERROR_MAX_STRING_SIZE as usize]; 27];
 
 pub fn register_all() {
 	unsafe {
@@ -330,21 +334,21 @@ pub fn register_all() {
 impl error::Error for Error {}
 
 impl Clone for Error {
-    fn clone(&self) -> Error {
-        self.as_raw_error().into()
-    }
+	fn clone(&self) -> Error {
+		self.as_raw_error().into()
+	}
 }
 
 impl PartialEq for Error {
-    fn eq(&self, other: &Self) -> bool {
-        self.as_raw_error() == other.as_raw_error()
-    }
+	fn eq(&self, other: &Self) -> bool {
+		self.as_raw_error() == other.as_raw_error()
+	}
 }
 
 impl Eq for Error {}
 
 impl Hash for Error {
-    fn hash<H: Hasher>(&self, state: &mut H) {
-        self.as_raw_error().hash(state);
-    }
+	fn hash<H: Hasher>(&self, state: &mut H) {
+		self.as_raw_error().hash(state);
+	}
 }

@@ -3,12 +3,7 @@ use crate::{decoder, frame, util::format, ChannelLayout, Error};
 
 impl frame::Audio {
 	#[inline]
-	pub fn resampler(
-		&self,
-		format: format::Sample,
-		channel_layout: ChannelLayout,
-		rate: u32,
-	) -> Result<Context, Error> {
+	pub fn resampler(&self, format: format::Sample, channel_layout: ChannelLayout, rate: u32) -> Result<Context, Error> {
 		Context::get(
 			self.format(),
 			self.channel_layout(),
@@ -22,12 +17,7 @@ impl frame::Audio {
 
 impl decoder::Audio {
 	#[inline]
-	pub fn resampler(
-		&self,
-		format: format::Sample,
-		channel_layout: ChannelLayout,
-		rate: u32,
-	) -> Result<Context, Error> {
+	pub fn resampler(&self, format: format::Sample, channel_layout: ChannelLayout, rate: u32) -> Result<Context, Error> {
 		Context::get(
 			self.format(),
 			self.channel_layout(),

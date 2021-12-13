@@ -77,11 +77,7 @@ impl Packet {
 		D: Into<Rational>,
 	{
 		unsafe {
-			av_packet_rescale_ts(
-				self.as_mut_ptr(),
-				source.into().into(),
-				destination.into().into(),
-			);
+			av_packet_rescale_ts(self.as_mut_ptr(), source.into().into(), destination.into().into());
 		}
 	}
 
@@ -308,9 +304,7 @@ impl<'a> Iterator for SideDataIter<'a> {
 			}
 			else {
 				self.cur += 1;
-				Some(SideData::wrap(
-					(*self.ptr).side_data.offset((self.cur - 1) as isize),
-				))
+				Some(SideData::wrap((*self.ptr).side_data.offset((self.cur - 1) as isize)))
 			}
 		}
 	}

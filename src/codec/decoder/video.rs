@@ -15,11 +15,7 @@ use crate::{
 pub struct Video(pub Opened);
 
 impl Video {
-	pub fn decode<P: packet::Ref>(
-		&mut self,
-		packet: &P,
-		out: &mut frame::Video,
-	) -> Result<(), Error> {
+	pub fn decode<P: packet::Ref>(&mut self, packet: &P, out: &mut frame::Video) -> Result<(), Error> {
 		unsafe {
 			match avcodec_send_packet(self.as_mut_ptr(), packet.as_ptr()) {
 				e if e < 0 => Err(Error::from(e))?,

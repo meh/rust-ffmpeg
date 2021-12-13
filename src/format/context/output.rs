@@ -125,9 +125,7 @@ impl Output {
 		let index = match existing {
 			Some(index) => index,
 			None => unsafe {
-				let ptr = av_mallocz(size_of::<AVChapter>())
-					.as_mut()
-					.ok_or(Error::Bug)?;
+				let ptr = av_mallocz(size_of::<AVChapter>()).as_mut().ok_or(Error::Bug)?;
 				let mut nb_chapters = (*self.as_ptr()).nb_chapters as i32;
 
 				// chapters array will be freed by `avformat_free_context`

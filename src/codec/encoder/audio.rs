@@ -54,11 +54,7 @@ impl Audio {
 		}
 	}
 
-	pub fn open_as_with<E: traits::Encoder>(
-		mut self,
-		codec: E,
-		options: Dictionary,
-	) -> Result<Encoder, Error> {
+	pub fn open_as_with<E: traits::Encoder>(mut self, codec: E, options: Dictionary) -> Result<Encoder, Error> {
 		unsafe {
 			if let Some(codec) = codec.encoder() {
 				let mut opts = options.disown();
@@ -147,11 +143,7 @@ impl AsMut<Context> for Audio {
 pub struct Encoder(pub Audio);
 
 impl Encoder {
-	pub fn encode<P: packet::Mut>(
-		&mut self,
-		frame: &frame::Audio,
-		out: &mut P,
-	) -> Result<bool, Error> {
+	pub fn encode<P: packet::Mut>(&mut self, frame: &frame::Audio, out: &mut P) -> Result<bool, Error> {
 		unsafe {
 			if self.format() != frame.format() {
 				return Err(Error::InvalidData);
@@ -159,12 +151,7 @@ impl Encoder {
 
 			let mut got: c_int = 0;
 
-			match avcodec_encode_audio2(
-				self.0.as_mut_ptr(),
-				out.as_mut_ptr(),
-				frame.as_ptr(),
-				&mut got,
-			) {
+			match avcodec_encode_audio2(self.0.as_mut_ptr(), out.as_mut_ptr(), frame.as_ptr(), &mut got) {
 				e if e < 0 => Err(Error::from(e)),
 				_ => Ok(got != 0),
 			}

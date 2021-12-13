@@ -47,9 +47,7 @@ impl Output {
 				Vec::new()
 			}
 			else {
-				from_utf8_unchecked(CStr::from_ptr(ptr).to_bytes())
-					.split(',')
-					.collect()
+				from_utf8_unchecked(CStr::from_ptr(ptr).to_bytes()).split(',').collect()
 			}
 		}
 	}
@@ -62,9 +60,7 @@ impl Output {
 				Vec::new()
 			}
 			else {
-				from_utf8_unchecked(CStr::from_ptr(ptr).to_bytes())
-					.split(',')
-					.collect()
+				from_utf8_unchecked(CStr::from_ptr(ptr).to_bytes()).split(',').collect()
 			}
 		}
 	}
