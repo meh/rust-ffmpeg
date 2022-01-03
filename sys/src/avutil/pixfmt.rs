@@ -35,6 +35,7 @@ pub const AV_PIX_FMT_BGR555: AVPixelFormat = AV_PIX_FMT_BGR555LE;
 #[cfg(target_endian = "little")]
 pub const AV_PIX_FMT_BGR444: AVPixelFormat = AV_PIX_FMT_BGR444LE;
 
+#[cfg(target_endian = "little")]
 pub const AV_PIX_FMT_YUV420P9: AVPixelFormat = AV_PIX_FMT_YUV420P9LE;
 #[cfg(target_endian = "little")]
 pub const AV_PIX_FMT_YUV422P9: AVPixelFormat = AV_PIX_FMT_YUV422P9LE;
