@@ -225,7 +225,13 @@ fn build(target_os: &str) -> io::Result<()> {
             "--arch={}",
             env::var("CARGO_CFG_TARGET_ARCH").unwrap()
         ));
-        configure.arg(format!("--target_os={}", target_os));
+        if target_os == "windows" {
+            // fix `configure: Unknown OS 'windows'`
+            configure.arg(format!("--target_os={}", "mingw32"));
+        } else {
+            configure.arg(format!("--target_os={}", target_os));
+        }
+
     }
 
     // control debug build
