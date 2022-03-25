@@ -19,6 +19,8 @@ pub struct Context {
 	output: Definition,
 }
 
+unsafe impl Send for Context {}
+
 impl Context {
 	#[inline(always)]
 	pub unsafe fn as_ptr(&self) -> *const SwsContext {
