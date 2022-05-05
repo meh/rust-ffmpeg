@@ -77,9 +77,16 @@ impl Output {
 
 	pub fn write_trailer(&mut self) -> Result<(), Error> {
 		unsafe {
+			// Although the documentation doesn't specify positive return values [0],
+			// av_write_trailer can return the positive avio position (from e.g.
+			// mov_write_mfra_tag), which ffmpeg usually ignores, and only tests for return
+			// values smaller than 0 instead [1].
+			//
+			// [0]: https://github.com/FFmpeg/FFmpeg/blob/3ac23440ef4a5a203f53b33325fa38b2e8afa219/libavformat/avformat.h#L2474
+			// [1]: https://github.com/FFmpeg/FFmpeg/search?q=av_write_trailer
 			match av_write_trailer(self.as_mut_ptr()) {
-				0 => Ok(()),
-				e => Err(Error::from(e)),
+				e if e < 0 => Err(Error::from(e)),
+				_ => Ok(()),
 			}
 		}
 	}
