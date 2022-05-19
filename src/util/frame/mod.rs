@@ -11,7 +11,7 @@ pub mod flag;
 use libc::c_int;
 
 pub use self::flag::Flags;
-use crate::{ffi::*, Dictionary, DictionaryRef};
+use crate::{ffi::*, Dictionary, DictionaryRef, Error};
 
 #[derive(PartialEq, Eq, Copy, Clone, Debug)]
 pub struct Packet {
@@ -182,6 +182,16 @@ impl Frame {
 	pub fn remove_side_data(&mut self, kind: side_data::Type) {
 		unsafe {
 			av_frame_remove_side_data(self.as_mut_ptr(), kind.into());
+		}
+	}
+
+	#[inline]
+	pub fn make_writable(&mut self) -> Result<(), Error> {
+		unsafe {
+			match av_frame_make_writable(self.as_mut_ptr()) {
+				0 => Ok(()),
+				e => Err(Error::from(e)),
+			}
 		}
 	}
 }
