@@ -6,6 +6,7 @@ pub mod color;
 pub mod error;
 pub mod format;
 pub mod frame;
+pub mod image;
 pub mod interrupt;
 pub mod mathematics;
 pub mod media;
@@ -14,7 +15,6 @@ pub mod picture;
 pub mod range;
 pub mod rational;
 pub mod time;
-pub mod image;
 
 #[cfg(feature = "log")]
 pub mod log;
