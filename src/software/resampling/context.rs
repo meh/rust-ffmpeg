@@ -3,7 +3,12 @@ use std::ptr;
 use libc::c_int;
 
 use super::Delay;
-use crate::{ffi::*, frame, util::format, ChannelLayout, Error};
+use crate::{
+	ffi::*,
+	frame,
+	util::{format, mathematics::rescale::TIME_BASE},
+	ChannelLayout, Error,
+};
 
 #[derive(Eq, PartialEq, Copy, Clone)]
 pub struct Definition {
@@ -96,7 +101,7 @@ impl Context {
 	/// Get the remaining delay.
 	pub fn delay(&self) -> Option<Delay> {
 		unsafe {
-			match swr_get_delay(self.as_ptr() as *mut _, 1) {
+			match swr_get_delay(self.as_ptr() as *mut _, TIME_BASE.1 as i64) {
 				0 => None,
 				_ => Some(Delay::from(self)),
 			}
