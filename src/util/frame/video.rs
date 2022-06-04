@@ -16,7 +16,7 @@ use crate::{
 };
 
 #[derive(PartialEq, Eq)]
-pub struct Video(Frame);
+pub struct Video(pub Frame);
 
 impl Video {
 	#[inline(always)]
