@@ -10,7 +10,7 @@ use super::Frame;
 use crate::{ffi::*, util::format, ChannelLayout};
 
 #[derive(PartialEq, Eq)]
-pub struct Audio(Frame);
+pub struct Audio(pub Frame);
 
 impl Audio {
 	#[inline(always)]
