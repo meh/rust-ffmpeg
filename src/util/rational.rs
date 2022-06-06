@@ -97,13 +97,6 @@ impl From<Rational> for f64 {
 	}
 }
 
-impl From<Rational> for u32 {
-	#[inline]
-	fn from(value: Rational) -> u32 {
-		unsafe { av_q2intfloat(value.into()) }
-	}
-}
-
 impl From<(i32, i32)> for Rational {
 	fn from((num, den): (i32, i32)) -> Rational {
 		Rational::new(num, den)
