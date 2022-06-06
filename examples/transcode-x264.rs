@@ -127,12 +127,14 @@ impl Transcoder {
 	}
 }
 
-fn parse_opts<'a>(s: String) -> Option<Dictionary<'a>> {
+fn parse_opts<'a>(s: String) -> Option<Dictionary> {
 	let mut dict = Dictionary::new();
 	for keyval in s.split_terminator(',') {
 		let tokens: Vec<&str> = keyval.split('=').collect();
 		match tokens[..] {
-			[key, val] => dict.set(key, val),
+			[key, val] => {
+				dict.set(key, val);
+			}
 			_ => return None,
 		}
 	}
@@ -145,7 +147,7 @@ fn main() {
 	let x264_opts = parse_opts(env::args().nth(3).unwrap_or_else(|| DEFAULT_X264_OPTS.to_string()))
 		.expect("invalid x264 options string");
 
-	eprintln!("x264 options: {:?}", x264_opts);
+	eprintln!("x264 options: {:?}", &x264_opts);
 
 	ffmpeg::init().unwrap();
 
@@ -176,7 +178,7 @@ fn main() {
 					&ist,
 					&mut octx,
 					ost_index as _,
-					x264_opts.to_owned(),
+					x264_opts.clone(),
 					Some(ist_index) == best_video_stream_index,
 				)
 				.unwrap(),
