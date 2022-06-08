@@ -144,6 +144,18 @@ impl Encoder {
 			}
 		}
 	}
+
+	pub fn frame_rate(&self) -> Option<Rational> {
+		unsafe {
+			let fr = Rational::from((*self.as_ptr()).framerate);
+			if fr == Rational(0, 1) {
+				None
+			}
+			else {
+				Some(fr)
+			}
+		}
+	}
 }
 
 impl Deref for Encoder {
