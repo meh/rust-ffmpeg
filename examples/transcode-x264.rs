@@ -183,8 +183,7 @@ fn main() {
 				)
 				.unwrap(),
 			);
-		}
-		else {
+		} else {
 			// Set up for stream copy for non-video stream.
 			let mut ost = octx.add_stream(encoder::find(codec::Id::None)).unwrap();
 			ost.set_parameters(ist.parameters());
