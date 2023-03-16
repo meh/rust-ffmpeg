@@ -5,11 +5,22 @@ use std::{
 };
 
 use super::{audio, subtitle, video};
-use crate::{codec::Context, ffi::*, media, packet, Error, Frame, Rational};
+use crate::{
+	codec::{traits, Context},
+	ffi::*,
+	media, packet, Error, Frame, Rational,
+};
 
 pub struct Encoder(pub Context);
 
 impl Encoder {
+	pub fn new<E: traits::Encoder>(codec: E) -> Result<Self, Error> {
+		let codec = codec.encoder().ok_or(Error::EncoderNotFound)?;
+		let context = Context::for_codec(&codec);
+
+		Ok(Encoder(context))
+	}
+
 	pub fn video(mut self) -> Result<video::Video, Error> {
 		match self.medium() {
 			media::Type::Unknown => {
