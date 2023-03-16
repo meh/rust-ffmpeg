@@ -13,6 +13,13 @@ use crate::{
 pub struct Decoder(pub Context);
 
 impl Decoder {
+	pub fn new<D: traits::Decoder>(codec: D) -> Result<Self, Error> {
+		let codec = codec.decoder().ok_or(Error::DecoderNotFound)?;
+		let context = Context::for_codec(&codec);
+
+		Ok(Decoder(context))
+	}
+
 	pub fn open(mut self) -> Result<Opened, Error> {
 		unsafe {
 			match avcodec_open2(self.as_mut_ptr(), ptr::null(), ptr::null_mut()) {
