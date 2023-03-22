@@ -40,26 +40,28 @@ impl Frame {
 	}
 
 	#[inline(always)]
-	pub unsafe fn empty() -> Self {
-		Frame {
-			ptr: av_frame_alloc(),
-			_own: true,
+	pub fn empty() -> Self {
+		unsafe {
+			Frame {
+				ptr: av_frame_alloc(),
+				_own: true,
+			}
 		}
 	}
 
 	#[inline(always)]
-	pub unsafe fn as_ptr(&self) -> *const AVFrame {
+	pub fn as_ptr(&self) -> *const AVFrame {
 		self.ptr as *const _
 	}
 
 	#[inline(always)]
-	pub unsafe fn as_mut_ptr(&mut self) -> *mut AVFrame {
+	pub fn as_mut_ptr(&mut self) -> *mut AVFrame {
 		self.ptr
 	}
 
 	#[inline(always)]
-	pub unsafe fn is_empty(&self) -> bool {
-		(*self.as_ptr()).data[0].is_null()
+	pub fn is_empty(&self) -> bool {
+		unsafe { (*self.as_ptr()).data[0].is_null() }
 	}
 }
 
