@@ -15,6 +15,7 @@ use crate::{
 pub struct Input {
 	ptr: *mut AVFormatContext,
 	ctx: Context,
+	// keeps IO proxy alive, no way to drop it otherwise
 	_io: Option<Io>,
 }
 
