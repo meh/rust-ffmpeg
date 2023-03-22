@@ -64,6 +64,11 @@ impl Rational {
 	pub fn invert(&self) -> Rational {
 		unsafe { Rational::from(av_inv_q((*self).into())) }
 	}
+
+	#[inline]
+	pub fn approx(&self) -> f64 {
+		self.0 as f64 / self.1 as f64
+	}
 }
 
 impl From<AVRational> for Rational {
