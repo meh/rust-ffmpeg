@@ -19,29 +19,29 @@ impl Audio {
 	}
 
 	#[inline]
-	pub unsafe fn alloc(&mut self, format: format::Sample, samples: usize, layout: ChannelLayout) {
-		self.set_format(format);
-		self.set_samples(samples);
-		self.set_channel_layout(layout);
+	pub fn alloc(&mut self, format: format::Sample, samples: usize, layout: ChannelLayout) {
+		unsafe {
+			self.set_format(format);
+			self.set_samples(samples);
+			self.set_channel_layout(layout);
 
-		av_frame_get_buffer(self.as_mut_ptr(), 0);
+			av_frame_get_buffer(self.as_mut_ptr(), 0);
+		}
 	}
 }
 
 impl Audio {
 	#[inline(always)]
 	pub fn empty() -> Self {
-		unsafe { Audio(Frame::empty()) }
+		Audio(Frame::empty())
 	}
 
 	#[inline]
 	pub fn new(format: format::Sample, samples: usize, layout: ChannelLayout) -> Self {
-		unsafe {
-			let mut frame = Audio::empty();
-			frame.alloc(format, samples, layout);
+		let mut frame = Audio::empty();
+		frame.alloc(format, samples, layout);
 
-			frame
-		}
+		frame
 	}
 
 	#[inline]

@@ -134,10 +134,8 @@ impl Context {
 			return Err(Error::InputChanged);
 		}
 
-		unsafe {
-			if output.is_empty() {
-				output.alloc(self.output.format, self.output.width, self.output.height);
-			}
+		if output.is_empty() {
+			output.alloc(self.output.format, self.output.width, self.output.height);
 		}
 
 		if output.format() != self.output.format

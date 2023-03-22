@@ -25,29 +25,29 @@ impl Video {
 	}
 
 	#[inline]
-	pub unsafe fn alloc(&mut self, format: format::Pixel, width: u32, height: u32) {
-		self.set_format(format);
-		self.set_width(width);
-		self.set_height(height);
+	pub fn alloc(&mut self, format: format::Pixel, width: u32, height: u32) {
+		unsafe {
+			self.set_format(format);
+			self.set_width(width);
+			self.set_height(height);
 
-		av_frame_get_buffer(self.as_mut_ptr(), 32);
+			av_frame_get_buffer(self.as_mut_ptr(), 32);
+		}
 	}
 }
 
 impl Video {
 	#[inline(always)]
 	pub fn empty() -> Self {
-		unsafe { Video(Frame::empty()) }
+		Video(Frame::empty())
 	}
 
 	#[inline]
 	pub fn new(format: format::Pixel, width: u32, height: u32) -> Self {
-		unsafe {
-			let mut frame = Video::empty();
-			frame.alloc(format, width, height);
+		let mut frame = Video::empty();
+		frame.alloc(format, width, height);
 
-			frame
-		}
+		frame
 	}
 
 	#[inline]
