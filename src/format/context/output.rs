@@ -110,7 +110,7 @@ impl Output {
 
 	pub fn add_chapter<R: Into<Rational>, S: AsRef<str>>(
 		&mut self,
-		id: i32,
+		id: i64,
 		time_base: R,
 		start: i64,
 		end: i64,

@@ -22,7 +22,7 @@ impl<'a> Chapter<'a> {
 		self.index
 	}
 
-	pub fn id(&self) -> i32 {
+	pub fn id(&self) -> i64 {
 		unsafe { (*self.as_ptr()).id }
 	}
 
