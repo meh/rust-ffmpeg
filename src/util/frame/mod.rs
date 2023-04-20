@@ -8,7 +8,6 @@ pub mod audio;
 pub use self::audio::Audio;
 
 pub mod flag;
-use libc::c_int;
 
 pub use self::flag::Flags;
 use crate::{ffi::*, Dictionary, DictionaryRef, Error};
@@ -169,7 +168,12 @@ impl Frame {
 	#[inline]
 	pub fn new_side_data(&mut self, kind: side_data::Type, size: usize) -> Option<SideData<'_>> {
 		unsafe {
-			let ptr = av_frame_new_side_data(self.as_mut_ptr(), kind.into(), size as c_int);
+			#[cfg(feature = "ffmpeg_5_0")]
+			let size = size as libc::size_t;
+			#[cfg(not(feature = "ffmpeg_5_0"))]
+			let size = size as libc::c_int;
+
+			let ptr = av_frame_new_side_data(self.as_mut_ptr(), kind.into(), size);
 
 			if ptr.is_null() {
 				None
