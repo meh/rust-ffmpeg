@@ -70,14 +70,6 @@ fn init_util() {
 	util::log::register();
 }
 
-#[cfg(feature = "format")]
-fn init_format() {
-	format::register_all();
-}
-
-#[cfg(not(feature = "format"))]
-fn init_format() {}
-
 #[cfg(feature = "device")]
 fn init_device() {
 	device::register_all();
@@ -86,19 +78,9 @@ fn init_device() {
 #[cfg(not(feature = "device"))]
 fn init_device() {}
 
-#[cfg(feature = "filter")]
-fn init_filter() {
-	filter::register_all();
-}
-
-#[cfg(not(feature = "filter"))]
-fn init_filter() {}
-
 pub fn init() -> Result<()> {
 	init_util();
-	init_format();
 	init_device();
-	init_filter();
 
 	Ok(())
 }

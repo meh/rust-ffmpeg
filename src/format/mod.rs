@@ -22,24 +22,6 @@ use std::{
 
 use crate::{ffi::*, util::from_os_str, Dictionary, Error, Format};
 
-pub fn register_all() {
-	unsafe {
-		av_register_all();
-	}
-}
-
-pub fn register(format: &Format) {
-	match *format {
-		Format::Input(ref format) => unsafe {
-			av_register_input_format(format.as_ptr() as *mut _);
-		},
-
-		Format::Output(ref format) => unsafe {
-			av_register_output_format(format.as_ptr() as *mut _);
-		},
-	}
-}
-
 pub fn version() -> u32 {
 	unsafe { avformat_version() }
 }

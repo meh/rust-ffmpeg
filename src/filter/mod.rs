@@ -17,22 +17,7 @@ use std::{
 };
 
 pub use self::graph::Graph;
-use crate::{ffi::*, Error};
-
-pub fn register_all() {
-	unsafe {
-		avfilter_register_all();
-	}
-}
-
-pub fn register(filter: &Filter) -> Result<(), Error> {
-	unsafe {
-		match avfilter_register(filter.as_ptr() as *mut _) {
-			0 => Ok(()),
-			_ => Err(Error::InvalidData),
-		}
-	}
-}
+use crate::ffi::*;
 
 pub fn version() -> u32 {
 	unsafe { avfilter_version() }
