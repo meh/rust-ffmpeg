@@ -4,7 +4,7 @@ use std::{
 	slice,
 };
 
-use libc::{c_int, c_ulonglong};
+use libc::c_int;
 
 use super::Frame;
 use crate::{ffi::*, util::format, ChannelLayout};
@@ -65,7 +65,7 @@ impl Audio {
 
 	#[inline]
 	pub fn channel_layout(&self) -> ChannelLayout {
-		unsafe { ChannelLayout::from_bits_truncate(av_frame_get_channel_layout(self.as_ptr()) as c_ulonglong) }
+		unsafe { ChannelLayout::from((*self.as_ptr()).ch_layout) }
 	}
 
 	#[inline]
