@@ -5,7 +5,7 @@ use libc::c_int;
 use super::Delay;
 use crate::{ffi::*, frame, util::format, ChannelLayout, Error};
 
-#[derive(Eq, PartialEq, Copy, Clone)]
+#[derive(Copy, Clone)]
 pub struct Definition {
 	pub format: format::Sample,
 	pub channel_layout: ChannelLayout,

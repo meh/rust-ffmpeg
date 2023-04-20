@@ -132,10 +132,10 @@ pub trait Settable: Target {
 		unsafe {
 			let name = CString::new(name).unwrap();
 
-			check!(av_opt_set_channel_layout(
+			check!(av_opt_set_chlayout(
 				self.as_mut_ptr(),
 				name.as_ptr(),
-				layout.bits() as i64,
+				layout.as_ptr(),
 				AV_OPT_SEARCH_CHILDREN
 			))
 		}

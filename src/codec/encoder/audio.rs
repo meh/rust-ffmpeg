@@ -95,12 +95,12 @@ impl Audio {
 
 	pub fn set_channel_layout(&mut self, value: ChannelLayout) {
 		unsafe {
-			(*self.as_mut_ptr()).channel_layout = value.bits();
+			(*self.as_mut_ptr()).ch_layout = value.into();
 		}
 	}
 
 	pub fn channel_layout(&self) -> ChannelLayout {
-		unsafe { ChannelLayout::from_bits_truncate((*self.as_ptr()).channel_layout) }
+		unsafe { (*self.as_ptr()).ch_layout.into() }
 	}
 
 	pub fn set_channels(&mut self, value: i32) {
