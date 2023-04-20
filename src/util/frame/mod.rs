@@ -81,9 +81,9 @@ impl Frame {
 		#[cfg(feature = "ffmpeg_3_2")]
 		unsafe {
 			Packet {
-				duration: av_frame_get_pkt_duration(self.as_ptr()) as i64,
-				position: av_frame_get_pkt_pos(self.as_ptr()) as i64,
-				size: av_frame_get_pkt_size(self.as_ptr()) as usize,
+				duration: (*self.as_ptr()).pkt_duration as i64,
+				position: (*self.as_ptr()).pkt_pos as i64,
+				size: (*self.as_ptr()).pkt_size as usize,
 
 				pts: (*self.as_ptr()).pts,
 				dts: (*self.as_ptr()).pkt_dts,
@@ -93,9 +93,9 @@ impl Frame {
 		#[cfg(not(feature = "ffmpeg_3_2"))]
 		unsafe {
 			Packet {
-				duration: av_frame_get_pkt_duration(self.as_ptr()) as i64,
-				position: av_frame_get_pkt_pos(self.as_ptr()) as i64,
-				size: av_frame_get_pkt_size(self.as_ptr()) as usize,
+				duration: (*self.as_ptr()).pkt_duration as i64,
+				position: (*self.as_ptr()).pkt_pos as i64,
+				size: (*self.as_ptr()).pkt_size as usize,
 
 				pts: (*self.as_ptr()).pkt_pts,
 				dts: (*self.as_ptr()).pkt_dts,
@@ -142,13 +142,13 @@ impl Frame {
 
 	#[inline]
 	pub fn metadata(&self) -> DictionaryRef<'_> {
-		unsafe { DictionaryRef::wrap(av_frame_get_metadata(self.as_ptr())) }
+		unsafe { DictionaryRef::wrap((*self.as_ptr()).metadata) }
 	}
 
 	#[inline]
 	pub fn set_metadata(&mut self, value: Dictionary) {
 		unsafe {
-			av_frame_set_metadata(self.as_mut_ptr(), value.disown());
+			(*self.as_mut_ptr()).metadata = value.disown();
 		}
 	}
 
