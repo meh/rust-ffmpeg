@@ -28,7 +28,7 @@ impl<'a> ChapterMut<'a> {
 }
 
 impl<'a> ChapterMut<'a> {
-	pub fn set_id(&mut self, value: i32) {
+	pub fn set_id(&mut self, value: i64) {
 		unsafe {
 			(*self.as_mut_ptr()).id = value;
 		}
