@@ -51,23 +51,13 @@ impl<'a> Vector<'a> {
 	}
 
 	pub fn value(value: f64, length: usize) -> Self {
-		unsafe {
-			Vector {
-				ptr: sws_getConstVec(value as c_double, length as c_int),
-				_own: true,
-				_marker: PhantomData,
-			}
-		}
+		let mut v = Vector::new(length);
+		v.coefficients_mut().fill(value);
+		v
 	}
 
 	pub fn identity() -> Self {
-		unsafe {
-			Vector {
-				ptr: sws_getIdentityVec(),
-				_own: true,
-				_marker: PhantomData,
-			}
-		}
+		Vector::value(1.0, 1)
 	}
 
 	pub fn scale(&mut self, scalar: f64) {
@@ -82,48 +72,22 @@ impl<'a> Vector<'a> {
 		}
 	}
 
-	pub fn conv(&mut self, other: &Vector<'_>) {
-		unsafe {
-			sws_convVec(self.as_mut_ptr(), other.as_ptr() as *mut _);
-		}
-	}
-
-	pub fn add(&mut self, other: &Vector<'_>) {
-		unsafe {
-			sws_addVec(self.as_mut_ptr(), other.as_ptr() as *mut _);
-		}
-	}
-
-	pub fn sub(&mut self, other: &Vector<'_>) {
-		unsafe {
-			sws_subVec(self.as_mut_ptr(), other.as_ptr() as *mut _);
-		}
-	}
-
-	pub fn shift(&mut self, value: usize) {
-		unsafe {
-			sws_shiftVec(self.as_mut_ptr(), value as c_int);
-		}
-	}
-
 	pub fn coefficients(&self) -> &[f64] {
 		unsafe { slice::from_raw_parts((*self.as_ptr()).coeff, (*self.as_ptr()).length as usize) }
 	}
 
-	pub fn coefficients_mut(&self) -> &[f64] {
+	pub fn coefficients_mut(&mut self) -> &mut [f64] {
 		unsafe { slice::from_raw_parts_mut((*self.as_ptr()).coeff, (*self.as_ptr()).length as usize) }
 	}
 }
 
 impl<'a> Clone for Vector<'a> {
 	fn clone(&self) -> Self {
-		unsafe {
-			Vector {
-				ptr: sws_cloneVec(self.as_ptr() as *mut _),
-				_own: true,
-				_marker: PhantomData,
-			}
-		}
+		let src = self.coefficients();
+		let mut clone = Vector::new(src.len());
+		clone.coefficients_mut().copy_from_slice(src);
+
+		clone
 	}
 }
 
