@@ -71,31 +71,31 @@ impl Audio {
 	#[inline]
 	pub fn set_channel_layout(&mut self, value: ChannelLayout) {
 		unsafe {
-			av_frame_set_channel_layout(self.as_mut_ptr(), value.bits() as i64);
+			(*self.as_mut_ptr()).ch_layout = value.into();
 		}
 	}
 
 	#[inline]
 	pub fn channels(&self) -> u16 {
-		unsafe { av_frame_get_channels(self.as_ptr()) as u16 }
+		unsafe { (*self.as_ptr()).channels as u16 }
 	}
 
 	#[inline]
 	pub fn set_channels(&mut self, value: u16) {
 		unsafe {
-			av_frame_set_channels(self.as_mut_ptr(), i32::from(value));
+			(*self.as_mut_ptr()).channels = i32::from(value);
 		}
 	}
 
 	#[inline]
 	pub fn sample_rate(&self) -> u32 {
-		unsafe { av_frame_get_sample_rate(self.as_ptr()) as u32 }
+		unsafe { (*self.as_ptr()).sample_rate as u32 }
 	}
 
 	#[inline]
 	pub fn set_rate(&mut self, value: u32) {
 		unsafe {
-			av_frame_set_sample_rate(self.as_mut_ptr(), value as c_int);
+			(*self.as_mut_ptr()).sample_rate = value as i32;
 		}
 	}
 
