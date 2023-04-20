@@ -123,7 +123,7 @@ impl Frame {
 	#[inline]
 	pub fn timestamp(&self) -> Option<i64> {
 		unsafe {
-			match av_frame_get_best_effort_timestamp(self.as_ptr()) {
+			match (*self.as_ptr()).best_effort_timestamp {
 				AV_NOPTS_VALUE => None,
 				t => Some(t as i64),
 			}

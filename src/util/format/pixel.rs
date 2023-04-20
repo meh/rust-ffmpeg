@@ -28,9 +28,10 @@ pub enum Pixel {
 	YUVJ420P,
 	YUVJ422P,
 	YUVJ444P,
-	#[cfg(feature = "ff_api_xvmc")]
+
+	#[cfg(all(not(feature = "ffmpeg_5_1"), feature = "ff_api_xvmc"))]
 	XVMC_MPEG2_MC,
-	#[cfg(feature = "ff_api_xvmc")]
+	#[cfg(all(not(feature = "ffmpeg_5_1"), feature = "ff_api_xvmc"))]
 	XVMC_MPEG2_IDCT,
 	UYVY422,
 	UYYVYY411,
@@ -386,9 +387,9 @@ impl From<AVPixelFormat> for Pixel {
 			AV_PIX_FMT_YUVJ420P => Pixel::YUVJ420P,
 			AV_PIX_FMT_YUVJ422P => Pixel::YUVJ422P,
 			AV_PIX_FMT_YUVJ444P => Pixel::YUVJ444P,
-			#[cfg(feature = "ff_api_xvmc")]
+			#[cfg(all(not(feature = "ffmpeg_5_1"), feature = "ff_api_xvmc"))]
 			AV_PIX_FMT_XVMC_MPEG2_MC => Pixel::XVMC_MPEG2_MC,
-			#[cfg(feature = "ff_api_xvmc")]
+			#[cfg(all(not(feature = "ffmpeg_5_1"), feature = "ff_api_xvmc"))]
 			AV_PIX_FMT_XVMC_MPEG2_IDCT => Pixel::XVMC_MPEG2_IDCT,
 			AV_PIX_FMT_UYVY422 => Pixel::UYVY422,
 			AV_PIX_FMT_UYYVYY411 => Pixel::UYYVYY411,
@@ -644,9 +645,9 @@ impl Into<AVPixelFormat> for Pixel {
 			Pixel::YUVJ420P => AV_PIX_FMT_YUVJ420P,
 			Pixel::YUVJ422P => AV_PIX_FMT_YUVJ422P,
 			Pixel::YUVJ444P => AV_PIX_FMT_YUVJ444P,
-			#[cfg(feature = "ff_api_xvmc")]
+			#[cfg(all(not(feature = "ffmpeg_5_1"), feature = "ff_api_xvmc"))]
 			Pixel::XVMC_MPEG2_MC => AV_PIX_FMT_XVMC_MPEG2_MC,
-			#[cfg(feature = "ff_api_xvmc")]
+			#[cfg(all(not(feature = "ffmpeg_5_1"), feature = "ff_api_xvmc"))]
 			Pixel::XVMC_MPEG2_IDCT => AV_PIX_FMT_XVMC_MPEG2_IDCT,
 			Pixel::UYVY422 => AV_PIX_FMT_UYVY422,
 			Pixel::UYYVYY411 => AV_PIX_FMT_UYYVYY411,
