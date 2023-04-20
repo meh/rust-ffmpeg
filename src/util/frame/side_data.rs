@@ -29,9 +29,10 @@ pub enum Type {
 	#[cfg(feature = "ffmpeg_3_4")]
 	IccProfile,
 
-	#[cfg(feature = "ffmpeg_4_0")]
+	#[cfg(all(feature = "ffmpeg_4_0", not(feature = "ffmpeg_5_0")))]
 	QpTableProperties,
-	#[cfg(feature = "ffmpeg_4_0")]
+
+	#[cfg(all(feature = "ffmpeg_4_0", not(feature = "ffmpeg_5_0")))]
 	QpTableData,
 
 	#[cfg(feature = "ffmpeg_4_1")]
@@ -71,9 +72,9 @@ impl From<AVFrameSideDataType> for Type {
 			#[cfg(feature = "ffmpeg_3_4")]
 			AV_FRAME_DATA_ICC_PROFILE => Type::IccProfile,
 			// TODO It's undef #if in frame.h
-			#[cfg(feature = "ffmpeg_4_0")]
+			#[cfg(all(feature = "ffmpeg_4_0", not(feature = "ffmpeg_5_0")))]
 			AV_FRAME_DATA_QP_TABLE_PROPERTIES => Type::QpTableProperties,
-			#[cfg(feature = "ffmpeg_4_0")]
+			#[cfg(all(feature = "ffmpeg_4_0", not(feature = "ffmpeg_5_0")))]
 			AV_FRAME_DATA_QP_TABLE_DATA => Type::QpTableData,
 			#[cfg(feature = "ffmpeg_4_1")]
 			AV_FRAME_DATA_S12M_TIMECODE => Type::S12MTimecode,
@@ -108,9 +109,9 @@ impl Into<AVFrameSideDataType> for Type {
 			#[cfg(feature = "ffmpeg_3_4")]
 			Type::IccProfile => AV_FRAME_DATA_ICC_PROFILE,
 
-			#[cfg(feature = "ffmpeg_4_0")]
+			#[cfg(all(feature = "ffmpeg_4_0", not(feature = "ffmpeg_5_0")))]
 			Type::QpTableProperties => AV_FRAME_DATA_QP_TABLE_PROPERTIES,
-			#[cfg(feature = "ffmpeg_4_0")]
+			#[cfg(all(feature = "ffmpeg_4_0", not(feature = "ffmpeg_5_0")))]
 			Type::QpTableData => AV_FRAME_DATA_QP_TABLE_DATA,
 
 			#[cfg(feature = "ffmpeg_4_1")]
