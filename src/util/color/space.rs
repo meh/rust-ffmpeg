@@ -26,7 +26,15 @@ pub enum Space {
 
 impl Space {
 	pub fn name(&self) -> &'static str {
-		unsafe { from_utf8_unchecked(CStr::from_ptr(av_get_colorspace_name((*self).into())).to_bytes()) }
+		#[cfg(feature = "ffmpeg_6_0")]
+		unsafe {
+			from_utf8_unchecked(CStr::from_ptr(av_color_space_name((*self).into())).to_bytes())
+		}
+
+		#[cfg(not(feature = "ffmpeg_6_0"))]
+		unsafe {
+			from_utf8_unchecked(CStr::from_ptr(av_get_colorspace_name((*self).into())).to_bytes())
+		}
 	}
 }
 
