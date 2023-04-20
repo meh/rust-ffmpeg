@@ -44,24 +44,44 @@ impl Context {
 		dst_rate: u32,
 	) -> Result<Self, Error> {
 		unsafe {
-			let ptr = swr_alloc_set_opts(
-				ptr::null_mut(),
-				dst_channel_layout.bits() as i64,
-				dst_format.into(),
-				dst_rate as c_int,
-				src_channel_layout.bits() as i64,
-				src_format.into(),
-				src_rate as c_int,
-				0,
-				ptr::null_mut(),
-			);
+			let mut ctx = ptr::null_mut::<SwrContext>();
 
-			if !ptr.is_null() {
-				match swr_init(ptr) {
+			#[cfg(not(feature = "ffmpeg_5_1"))]
+			{
+				ctx = swr_alloc_set_opts(
+					ptr::null_mut(),
+					dst_channel_layout.bits() as i64,
+					dst_format.into(),
+					dst_rate as c_int,
+					src_channel_layout.bits() as i64,
+					src_format.into(),
+					src_rate as c_int,
+					0,
+					ptr::null_mut(),
+				);
+			}
+
+			#[cfg(feature = "ffmpeg_5_1")]
+			{
+				swr_alloc_set_opts2(
+					&mut ctx as *mut _,
+					dst_channel_layout.as_ptr(),
+					dst_format.into(),
+					dst_rate as c_int,
+					src_channel_layout.as_ptr(),
+					src_format.into(),
+					src_rate as c_int,
+					0,
+					ptr::null_mut(),
+				);
+			}
+
+			if !ctx.is_null() {
+				match swr_init(ctx) {
 					e if e < 0 => Err(Error::from(e)),
 
 					_ => Ok(Context {
-						ptr,
+						ptr: ctx,
 
 						input: Definition {
 							format: src_format,
