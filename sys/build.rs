@@ -44,10 +44,6 @@ static LIBRARIES: &[Library] = &[
         is_feature: true,
     },
     Library {
-        name: "avresample",
-        is_feature: true,
-    },
-    Library {
         name: "avutil",
         is_feature: false,
     },
@@ -126,7 +122,7 @@ impl ParseCallbacks for Callbacks {
     }
 }
 
-fn version() -> String {
+fn num_version() -> (u8, u8) {
     let major: u8 = env::var("CARGO_PKG_VERSION_MAJOR")
         .unwrap()
         .parse()
@@ -136,7 +132,12 @@ fn version() -> String {
         .parse()
         .unwrap();
 
-    format!("{}.{}", major, minor)
+    (major, minor)
+}
+
+fn version() -> String {
+    let (major, minor) = num_version();
+    format!("{major}.{minor}")
 }
 
 fn output() -> PathBuf {
@@ -231,7 +232,6 @@ fn build(target_os: &str) -> io::Result<()> {
         } else {
             configure.arg(format!("--target_os={}", target_os));
         }
-
     }
 
     // control debug build
@@ -462,7 +462,7 @@ fn check_features(
         ));
     }
 
-    let version_check_info = [("avcodec", 56, 60, 0, 108)];
+    let version_check_info = [("avcodec", 56, 61, 0, 135)];
     for &(lib, begin_version_major, end_version_major, begin_version_minor, end_version_minor) in
         version_check_info.iter()
     {
@@ -601,6 +601,10 @@ fn check_features(
         ("ffmpeg_4_1", 58, 35),
         ("ffmpeg_4_2", 58, 54),
         ("ffmpeg_4_3", 58, 91),
+        ("ffmpeg_4_4", 58, 134),
+        ("ffmpeg_5_0", 59, 18),
+        ("ffmpeg_5_1", 59, 37),
+        ("ffmpeg_6_0", 60, 3),
     ];
     for &(ffmpeg_version_flag, lavc_version_major, lavc_version_minor) in
         ffmpeg_lavc_versions.iter()
@@ -632,6 +636,12 @@ fn search_include(include_paths: &[PathBuf], header: &str) -> String {
 }
 
 fn link_to_libraries(statik: bool, target_os: &str) {
+    if statik {
+        // without allow-multiple-definition, linking fails due to conflicting symbols:
+        // e.g. `ff_init_half2float_tables` (originally avutil) exported from avcodec and swscale.
+        println!("cargo:rustc-link-arg=-Wl,--allow-multiple-definition");
+    }
+
     let ffmpeg_ty = if statik { "static" } else { "dylib" };
     for lib in LIBRARIES {
         let feat_is_enabled = lib.feature_name().and_then(|f| env::var(&f).ok()).is_some();
@@ -742,7 +752,6 @@ fn thread_main() {
             ("libavformat", "AVFORMAT"),
             ("libavfilter", "AVFILTER"),
             ("libavdevice", "AVDEVICE"),
-            ("libavresample", "AVRESAMPLE"),
             ("libswscale", "SWSCALE"),
             ("libswresample", "SWRESAMPLE"),
         ];
@@ -1085,11 +1094,6 @@ fn thread_main() {
                 "FF_API_NOCONST_GET_NAME",
             ),
             (
-                "libavresample/avresample.h",
-                Some("avresample"),
-                "FF_API_RESAMPLE_CLOSE_OPEN",
-            ),
-            (
                 "libswscale/swscale.h",
                 Some("swscale"),
                 "FF_API_SWS_CPU_CAPS",
@@ -1198,7 +1202,9 @@ fn thread_main() {
         .blocklist_function("y0l")
         .blocklist_function("y1l")
         .blocklist_function("ynl")
-        .rustified_enum("*")
+        .newtype_enum("AVChannel")
+        .newtype_enum("AVChannelOrder")
+        .rustified_enum(".*")
         .prepend_enum_name(false)
         .derive_eq(true)
         .size_t_is_usize(true)
@@ -1211,7 +1217,6 @@ fn thread_main() {
             .header(search_include(&include_paths, "libavcodec/avcodec.h"))
             .header(search_include(&include_paths, "libavcodec/dv_profile.h"))
             .header(search_include(&include_paths, "libavcodec/avfft.h"))
-            .header(search_include(&include_paths, "libavcodec/vaapi.h"))
             .header(search_include(&include_paths, "libavcodec/vorbis_parser.h"));
     }
 
@@ -1230,10 +1235,6 @@ fn thread_main() {
         builder = builder
             .header(search_include(&include_paths, "libavformat/avformat.h"))
             .header(search_include(&include_paths, "libavformat/avio.h"));
-    }
-
-    if env::var("CARGO_FEATURE_AVRESAMPLE").is_ok() {
-        builder = builder.header(search_include(&include_paths, "libavresample/avresample.h"));
     }
 
     builder = builder
@@ -1314,22 +1315,22 @@ fn thread_main() {
         .to_string();
 
     if env::var("CARGO_FEATURE_SERDE").is_ok() {
-        bindings = Regex::new(
-            r"#\s*\[\s*derive\s*\((?P<d>[^)]+)\)\s*\]\s*pub\s*(?P<s>enum)"
-        )
-        .unwrap()
-        .replace_all(&bindings, r#"
+        bindings = Regex::new(r"#\s*\[\s*derive\s*\((?P<d>[^)]+)\)\s*\]\s*pub\s*(?P<s>enum)")
+            .unwrap()
+            .replace_all(
+                &bindings,
+                r#"
             #[derive($d)]
             #[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
             #[cfg_attr(feature = "serde", serde(rename_all = "kebab-case"))]
             pub $s
-        "#)
-        .into();
+        "#,
+            )
+            .into();
     }
 
     // Write the bindings to the $OUT_DIR/bindings.rs file.
-    fs::write(output().join("bindings.rs"), &bindings)
-        .expect("Couldn't write bindings!");
+    fs::write(output().join("bindings.rs"), &bindings).expect("Couldn't write bindings!");
 }
 
 fn print_pkg_config_libs(statik: bool, lib: &pkg_config::Library) {

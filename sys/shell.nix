@@ -11,11 +11,11 @@ mkShell {
 
   buildInputs = [
     # For building.
-    clang rustChannels.stable.rust pkg-config ffmpeg
+    clang rustChannels.stable.rust pkg-config ffmpeg_6
   ];
 
   RUST_BACKTRACE = 1;
   RUSTFLAGS = "-C target-cpu=native";
 
-  LIBCLANG_PATH = "${llvmPackages.libclang}/lib";
+  LIBCLANG_PATH = "${llvmPackages.libclang.lib}/lib";
 }
