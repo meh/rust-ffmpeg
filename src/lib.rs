@@ -13,7 +13,7 @@ pub use crate::sys as ffi;
 #[macro_use]
 pub mod util;
 pub use crate::util::{
-	channel_layout::{self, ChannelLayout},
+	channel_layout::{self, Channel, ChannelLayout},
 	chroma, color, dictionary,
 	dictionary::{Mut as DictionaryMut, Owned as Dictionary, Ref as DictionaryRef},
 	error::Error,

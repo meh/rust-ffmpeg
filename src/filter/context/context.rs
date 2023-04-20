@@ -50,7 +50,7 @@ impl<'a> Context<'a> {
 	}
 
 	pub fn set_channel_layout(&mut self, value: ChannelLayout) {
-		let _ = option::Settable::set(self, "channel_layouts", &value.bits());
+		let _ = option::Settable::set(self, "ch_layouts", &value);
 	}
 }
 
