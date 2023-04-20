@@ -130,6 +130,23 @@ impl Frame {
 	}
 
 	#[inline]
+	pub fn duration(&self) -> Option<i64> {
+		unsafe {
+			match (*self.as_ptr()).duration {
+				0 => None,
+				d => Some(d),
+			}
+		}
+	}
+
+	#[inline]
+	pub fn set_duration(&mut self, value: Option<i64>) {
+		unsafe {
+			(*self.as_mut_ptr()).duration = value.unwrap_or(0);
+		}
+	}
+
+	#[inline]
 	pub fn quality(&self) -> usize {
 		unsafe { (*self.as_ptr()).quality as usize }
 	}
