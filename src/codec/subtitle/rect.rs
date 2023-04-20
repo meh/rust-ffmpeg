@@ -1,7 +1,7 @@
 use std::{ffi::CStr, marker::PhantomData, str::from_utf8_unchecked};
 
 use super::{Flags, Type};
-use crate::{ffi::*, format, Picture};
+use crate::ffi::*;
 
 pub enum Rect<'a> {
 	None(*const AVSubtitleRect),
@@ -81,18 +81,6 @@ impl<'a> Bitmap<'a> {
 
 	pub fn colors(&self) -> usize {
 		unsafe { (*self.as_ptr()).nb_colors as usize }
-	}
-
-	// XXX: must split Picture and PictureMut
-	pub fn picture(&self, format: format::Pixel) -> Picture<'a> {
-		unsafe {
-			Picture::wrap(
-				&(*self.as_ptr()).pict as *const _ as *mut _,
-				format,
-				(*self.as_ptr()).w as u32,
-				(*self.as_ptr()).h as u32,
-			)
-		}
 	}
 }
 

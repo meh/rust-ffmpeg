@@ -48,8 +48,6 @@ pub use crate::codec::field_order::FieldOrder;
 #[cfg(feature = "codec")]
 pub use crate::codec::packet::{self, Packet};
 #[cfg(feature = "codec")]
-pub use crate::codec::picture::Picture;
-#[cfg(feature = "codec")]
 pub use crate::codec::subtitle::{self, Subtitle};
 #[cfg(feature = "codec")]
 pub use crate::codec::threading;
