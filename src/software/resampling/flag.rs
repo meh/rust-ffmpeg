@@ -1,7 +1,5 @@
+use ffmpeg_sys::SWR_FLAG_RESAMPLE;
 use libc::c_int;
-
-use crate::ffi::*;
-#[cfg(feature = "serde")]
 
 bitflags! {
 	#[cfg_attr(feature = "serde", derive(serde_derive::Serialize, serde_derive::Deserialize))]
