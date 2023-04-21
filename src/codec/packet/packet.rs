@@ -1,8 +1,8 @@
 use std::{marker::PhantomData, mem, slice};
 
-use libc::c_int;
+use libc::{c_int, c_void};
 
-use super::{Borrow, Flags, Mut, Ref, SideData};
+use super::{Flags, Mut, Ref, SideData};
 use crate::{ffi::*, format, Error, Rational};
 
 pub struct Packet(AVPacket);
@@ -49,11 +49,6 @@ impl Packet {
 		packet.data_mut().unwrap().write_all(data).unwrap();
 
 		packet
-	}
-
-	#[inline]
-	pub fn borrow(data: &[u8]) -> Borrow<'_> {
-		Borrow::new(data)
 	}
 
 	#[inline]
