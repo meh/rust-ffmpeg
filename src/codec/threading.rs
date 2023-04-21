@@ -6,7 +6,6 @@ use crate::ffi::*;
 pub struct Config {
 	pub kind: Type,
 	pub count: usize,
-	pub safe: bool,
 }
 
 impl Config {
@@ -23,13 +22,6 @@ impl Config {
 			..Default::default()
 		}
 	}
-
-	pub fn safe(value: bool) -> Self {
-		Config {
-			safe: value,
-			..Default::default()
-		}
-	}
 }
 
 impl Default for Config {
@@ -37,7 +29,6 @@ impl Default for Config {
 		Config {
 			kind: Type::None,
 			count: 0,
-			safe: false,
 		}
 	}
 }
