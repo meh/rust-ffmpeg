@@ -84,8 +84,8 @@ impl Codec {
 		}
 	}
 
-	pub fn max_lowres(&self) -> i32 {
-		unsafe { av_codec_get_max_lowres(self.as_ptr()) }
+	pub fn max_lowres(&self) -> u8 {
+		unsafe { (*self.as_ptr()).max_lowres }
 	}
 
 	pub fn capabilities(&self) -> Capabilities {
