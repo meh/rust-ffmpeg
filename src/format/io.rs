@@ -207,7 +207,7 @@ impl Drop for Io {
 			}
 
 			avio_context_free(&mut self.ptr);
-			Box::from_raw(self.proxy);
+			let _ = Box::from_raw(self.proxy);
 		}
 	}
 }
