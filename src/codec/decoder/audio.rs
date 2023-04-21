@@ -53,15 +53,6 @@ impl Audio {
 	pub fn frame_size(&self) -> u32 {
 		unsafe { (*self.as_ptr()).frame_size as u32 }
 	}
-
-	pub fn frame_start(&self) -> Option<usize> {
-		unsafe {
-			match (*self.as_ptr()).timecode_frame_start {
-				-1 => None,
-				n => Some(n as usize),
-			}
-		}
-	}
 }
 
 impl Deref for Audio {
