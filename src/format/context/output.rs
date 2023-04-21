@@ -91,6 +91,15 @@ impl Output {
 		}
 	}
 
+	pub fn flush(&mut self) -> Result<(), Error> {
+		unsafe {
+			match av_write_frame(self.as_mut_ptr(), ptr::null_mut()) {
+				e if e < 0 => Err(Error::from(e)),
+				_ => Ok(()),
+			}
+		}
+	}
+
 	pub fn add_stream(&mut self) -> Result<StreamMut<'_>, Error> {
 		unsafe {
 			let ptr = avformat_new_stream(self.as_mut_ptr(), ptr::null());
