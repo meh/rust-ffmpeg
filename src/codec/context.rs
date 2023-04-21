@@ -1,4 +1,4 @@
-use std::{ptr, rc::Rc};
+use std::{any::Any, ptr, rc::Rc};
 
 use libc::c_int;
 
@@ -9,13 +9,13 @@ use crate::{ffi::*, media, Codec, Error, Rational};
 
 pub struct Context {
 	ptr: *mut AVCodecContext,
-	owner: Option<Rc<dyn Drop>>,
+	owner: Option<Rc<dyn Any>>,
 }
 
 unsafe impl Send for Context {}
 
 impl Context {
-	pub unsafe fn wrap(ptr: *mut AVCodecContext, owner: Option<Rc<dyn Drop>>) -> Self {
+	pub unsafe fn wrap(ptr: *mut AVCodecContext, owner: Option<Rc<dyn Any>>) -> Self {
 		Context { ptr, owner }
 	}
 
