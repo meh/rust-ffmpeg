@@ -47,7 +47,7 @@ impl Filter {
 				None
 			}
 			else {
-				Some(PadIter::new((*self.as_ptr()).inputs))
+				Some(PadIter::new(ptr, (*self.as_ptr()).nb_inputs as usize))
 			}
 		}
 	}
@@ -60,7 +60,7 @@ impl Filter {
 				None
 			}
 			else {
-				Some(PadIter::new((*self.as_ptr()).outputs))
+				Some(PadIter::new(ptr, (*self.as_ptr()).nb_outputs as usize))
 			}
 		}
 	}
@@ -72,15 +72,17 @@ impl Filter {
 
 pub struct PadIter<'a> {
 	ptr: *const AVFilterPad,
-	cur: isize,
+	count: usize,
+	cur: usize,
 
 	_marker: PhantomData<&'a ()>,
 }
 
 impl<'a> PadIter<'a> {
-	pub fn new(ptr: *const AVFilterPad) -> Self {
+	pub fn new(ptr: *const AVFilterPad, count: usize) -> Self {
 		PadIter {
 			ptr,
+			count,
 			cur: 0,
 			_marker: PhantomData,
 		}
@@ -92,7 +94,7 @@ impl<'a> Iterator for PadIter<'a> {
 
 	fn next(&mut self) -> Option<Self::Item> {
 		unsafe {
-			if self.cur >= avfilter_pad_count(self.ptr) as isize {
+			if self.cur >= self.count {
 				return None;
 			}
 

@@ -4,13 +4,13 @@ use crate::{ffi::*, media};
 
 pub struct Pad<'a> {
 	ptr: *const AVFilterPad,
-	idx: isize,
+	idx: usize,
 
 	_marker: PhantomData<&'a ()>,
 }
 
 impl<'a> Pad<'a> {
-	pub unsafe fn wrap(ptr: *const AVFilterPad, idx: isize) -> Self {
+	pub unsafe fn wrap(ptr: *const AVFilterPad, idx: usize) -> Self {
 		Pad {
 			ptr,
 			idx,
