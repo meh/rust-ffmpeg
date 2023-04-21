@@ -10,22 +10,18 @@ use crate::{codec, ffi::*, media};
 
 #[derive(Copy, Clone)]
 pub struct Output {
-	ptr: *mut AVOutputFormat,
+	ptr: *const AVOutputFormat,
 }
 
 unsafe impl Send for Output {}
 unsafe impl Sync for Output {}
 
 impl Output {
-	pub unsafe fn wrap(ptr: *mut AVOutputFormat) -> Self {
+	pub unsafe fn wrap(ptr: *const AVOutputFormat) -> Self {
 		Output { ptr }
 	}
 
 	pub unsafe fn as_ptr(&self) -> *const AVOutputFormat {
-		self.ptr as *const _
-	}
-
-	pub unsafe fn as_mut_ptr(&mut self) -> *mut AVOutputFormat {
 		self.ptr
 	}
 }
@@ -71,7 +67,7 @@ impl Output {
 
 		unsafe {
 			codec::Id::from(av_guess_codec(
-				self.as_ptr() as *mut _,
+				self.as_ptr(),
 				ptr::null(),
 				path.as_ptr(),
 				ptr::null(),

@@ -2,7 +2,7 @@ use std::ptr;
 
 use crate::{ffi::*, format, Format};
 
-pub struct AudioIter(*mut AVOutputFormat);
+pub struct AudioIter(*const AVOutputFormat);
 
 impl Iterator for AudioIter {
 	type Item = Format;
@@ -27,7 +27,7 @@ pub fn audio() -> AudioIter {
 	AudioIter(ptr::null_mut())
 }
 
-pub struct VideoIter(*mut AVOutputFormat);
+pub struct VideoIter(*const AVOutputFormat);
 
 impl Iterator for VideoIter {
 	type Item = Format;

@@ -88,7 +88,7 @@ pub fn open_with(path_or_url: impl AsRef<OsStr>, format: &Format, options: Dicti
 			}
 
 			Format::Output(ref format) => {
-				match avformat_alloc_output_context2(&mut ps, format.as_ptr() as *mut _, ptr::null(), path.as_ptr()) {
+				match avformat_alloc_output_context2(&mut ps, format.as_ptr(), ptr::null(), path.as_ptr()) {
 					0 => match avio_open(&mut (*ps).pb, path.as_ptr(), AVIO_FLAG_WRITE) {
 						0 => Ok(Context::Output(context::Output::wrap(ps))),
 						e => Err(Error::from(e)),
@@ -106,7 +106,7 @@ pub fn input(path_or_url: impl AsRef<OsStr>) -> Result<context::Input, Error> {
 		let mut ps = ptr::null_mut();
 		let path = from_os_str(path_or_url);
 
-		match avformat_open_input(&mut ps, path.as_ptr(), ptr::null_mut(), ptr::null_mut()) {
+		match avformat_open_input(&mut ps, path.as_ptr(), ptr::null(), ptr::null_mut()) {
 			0 => match avformat_find_stream_info(ps, ptr::null_mut()) {
 				r if r >= 0 => Ok(context::Input::wrap(ps)),
 				e => {
@@ -125,7 +125,7 @@ pub fn input_with_dictionary(path_or_url: impl AsRef<OsStr>, options: Dictionary
 		let mut ps = ptr::null_mut();
 		let path = from_os_str(path_or_url);
 		let mut opts = options.disown();
-		let res = avformat_open_input(&mut ps, path.as_ptr(), ptr::null_mut(), &mut opts);
+		let res = avformat_open_input(&mut ps, path.as_ptr(), ptr::null(), &mut opts);
 
 		Dictionary::own(opts);
 
@@ -152,7 +152,7 @@ pub fn input_with_interrupt<P: AsRef<OsStr>>(
 		let path = from_os_str(path_or_url);
 		(*ps).interrupt_callback = interrupt::new(Box::new(closure)).interrupt;
 
-		match avformat_open_input(&mut ps, path.as_ptr(), ptr::null_mut(), ptr::null_mut()) {
+		match avformat_open_input(&mut ps, path.as_ptr(), ptr::null(), ptr::null_mut()) {
 			0 => match avformat_find_stream_info(ps, ptr::null_mut()) {
 				r if r >= 0 => Ok(context::Input::wrap(ps)),
 				e => {
@@ -171,7 +171,7 @@ pub fn output(path_or_url: impl AsRef<OsStr>) -> Result<context::Output, Error> 
 		let mut ps = ptr::null_mut();
 		let path = from_os_str(path_or_url);
 
-		match avformat_alloc_output_context2(&mut ps, ptr::null_mut(), ptr::null(), path.as_ptr()) {
+		match avformat_alloc_output_context2(&mut ps, ptr::null(), ptr::null(), path.as_ptr()) {
 			0 => match avio_open(&mut (*ps).pb, path.as_ptr(), AVIO_FLAG_WRITE) {
 				0 => Ok(context::Output::wrap(ps)),
 				e => Err(Error::from(e)),
@@ -188,7 +188,7 @@ pub fn output_with(path_or_url: impl AsRef<OsStr>, options: Dictionary) -> Resul
 		let path = from_os_str(path_or_url);
 		let mut opts = options.disown();
 
-		match avformat_alloc_output_context2(&mut ps, ptr::null_mut(), ptr::null(), path.as_ptr()) {
+		match avformat_alloc_output_context2(&mut ps, ptr::null(), ptr::null(), path.as_ptr()) {
 			0 => {
 				let res = avio_open2(&mut (*ps).pb, path.as_ptr(), AVIO_FLAG_WRITE, ptr::null(), &mut opts);
 
@@ -205,12 +205,12 @@ pub fn output_with(path_or_url: impl AsRef<OsStr>, options: Dictionary) -> Resul
 	}
 }
 
-pub fn output_as(path_or_url: impl AsRef<OsStr>, mut format: format::Output) -> Result<context::Output, Error> {
+pub fn output_as(path_or_url: impl AsRef<OsStr>, format: format::Output) -> Result<context::Output, Error> {
 	unsafe {
 		let mut ps = ptr::null_mut();
 		let path = from_os_str(path_or_url);
 
-		match avformat_alloc_output_context2(&mut ps, format.as_mut_ptr(), ptr::null_mut(), path.as_ptr()) {
+		match avformat_alloc_output_context2(&mut ps, format.as_ptr(), ptr::null_mut(), path.as_ptr()) {
 			0 => match avio_open(&mut (*ps).pb, path.as_ptr(), AVIO_FLAG_WRITE) {
 				0 => Ok(context::Output::wrap(ps)),
 				e => Err(Error::from(e)),
@@ -223,7 +223,7 @@ pub fn output_as(path_or_url: impl AsRef<OsStr>, mut format: format::Output) -> 
 
 pub fn output_as_with(
 	path_or_url: impl AsRef<OsStr>,
-	mut format: format::Output,
+	format: format::Output,
 	options: Dictionary,
 ) -> Result<context::Output, Error> {
 	unsafe {
@@ -231,7 +231,7 @@ pub fn output_as_with(
 		let path = from_os_str(path_or_url);
 		let mut opts = options.disown();
 
-		match avformat_alloc_output_context2(&mut ps, format.as_mut_ptr(), ptr::null_mut(), path.as_ptr()) {
+		match avformat_alloc_output_context2(&mut ps, format.as_ptr(), ptr::null_mut(), path.as_ptr()) {
 			0 => {
 				let res = avio_open2(&mut (*ps).pb, path.as_ptr(), AVIO_FLAG_WRITE, ptr::null(), &mut opts);
 
