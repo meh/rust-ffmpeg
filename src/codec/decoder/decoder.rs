@@ -7,7 +7,7 @@ use super::{Audio, Check, Conceal, Opened, Subtitle, Video};
 use crate::{
 	codec::{traits, Context},
 	ffi::*,
-	Dictionary, Discard, Error, Rational,
+	Dictionary, Discard, Error,
 };
 
 pub struct Decoder(pub Context);
