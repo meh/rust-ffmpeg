@@ -1,3 +1,5 @@
+use std::ptr;
+
 use libc::c_int;
 
 use super::Disposition;
@@ -94,6 +96,23 @@ impl<'a> Stream<'a> {
 
 	pub fn avg_frame_rate(&self) -> Rational {
 		unsafe { Rational::from((*self.as_ptr()).avg_frame_rate) }
+	}
+
+	pub fn guess_frame_rate(&self) -> Option<Rational> {
+		unsafe {
+			let r = Rational::from(av_guess_frame_rate(
+				self.context.as_ptr() as *mut _,
+				self.as_ptr() as *mut _,
+				ptr::null_mut(),
+			));
+
+			if r == Rational(0, 1) {
+				None
+			}
+			else {
+				Some(r)
+			}
+		}
 	}
 
 	pub fn metadata(&self) -> DictionaryRef<'_> {
