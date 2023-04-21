@@ -4,22 +4,18 @@ use crate::ffi::*;
 
 #[derive(Copy, Clone)]
 pub struct Input {
-	ptr: *mut AVInputFormat,
+	ptr: *const AVInputFormat,
 }
 
 unsafe impl Send for Input {}
 unsafe impl Sync for Input {}
 
 impl Input {
-	pub unsafe fn wrap(ptr: *mut AVInputFormat) -> Self {
+	pub unsafe fn wrap(ptr: *const AVInputFormat) -> Self {
 		Input { ptr }
 	}
 
 	pub unsafe fn as_ptr(&self) -> *const AVInputFormat {
-		self.ptr as *const _
-	}
-
-	pub unsafe fn as_mut_ptr(&mut self) -> *mut AVInputFormat {
 		self.ptr
 	}
 }
