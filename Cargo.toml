@@ -13,7 +13,6 @@ keywords    = ["audio", "video"]
 
 [features]
 default = ["codec", "device", "filter", "format", "resampling", "software-scaling"]
-unstable = []
 serde = ["serde_", "serde_derive", "ffmpeg-sys/serde"]
 
 static = ["ffmpeg-sys/static"]
