@@ -161,8 +161,6 @@ impl Clone for Context {
 	}
 
 	fn clone_from(&mut self, source: &Self) {
-		unsafe {
-			avcodec_copy_context(self.as_mut_ptr(), source.as_ptr());
-		}
+		self.set_parameters(Parameters::from(source)).unwrap();
 	}
 }
