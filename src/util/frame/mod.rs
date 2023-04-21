@@ -217,6 +217,21 @@ impl Frame {
 			}
 		}
 	}
+
+	#[inline]
+	pub fn try_clone(&self) -> Result<Self, Error> {
+		unsafe {
+			// This doesn't use av_frame_clone, because it masks
+			// any av_frame_ref errors by returning a null pointer.
+
+			let mut frame = Frame::empty();
+
+			match av_frame_ref(frame.as_mut_ptr(), self.as_ptr()) {
+				0 => Ok(frame),
+				e => Err(Error::from(e)),
+			}
+		}
+	}
 }
 
 impl Drop for Frame {
