@@ -5,7 +5,7 @@ use std::{
 
 use libc::{c_float, c_int};
 
-use super::{Comparison, Decision, Encoder as Super, MotionEstimation, Prediction};
+use super::{Comparison, Decision, Encoder as Super};
 use crate::{
 	codec::{traits, Context},
 	color,
@@ -194,13 +194,6 @@ impl Video {
 	pub fn set_dark_masking(&mut self, value: f32) {
 		unsafe {
 			(*self.as_mut_ptr()).dark_masking = value as c_float;
-		}
-	}
-
-	#[inline]
-	pub fn set_prediction(&mut self, value: Prediction) {
-		unsafe {
-			(*self.as_mut_ptr()).prediction_method = value.into();
 		}
 	}
 
