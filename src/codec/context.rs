@@ -120,6 +120,11 @@ impl Context {
 		}
 	}
 
+	#[cfg(feature = "ffmpeg_3_1")]
+	pub fn parameters(&self) -> Parameters {
+		Parameters::from(self)
+	}
+
 	pub fn time_base(&self) -> Rational {
 		unsafe { Rational::from((*self.as_ptr()).time_base) }
 	}
