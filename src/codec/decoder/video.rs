@@ -6,31 +6,13 @@ use super::{slice, Opened};
 use crate::{
 	codec::Context,
 	color,
-	ffi::*,
-	frame, packet,
 	util::{chroma, format},
-	Error, FieldOrder, Rational,
+	FieldOrder, Rational,
 };
 
 pub struct Video(pub Opened);
 
 impl Video {
-	pub fn decode<P: packet::Ref>(&mut self, packet: &P, out: &mut frame::Video) -> Result<(), Error> {
-		unsafe {
-			match avcodec_send_packet(self.as_mut_ptr(), packet.as_ptr()) {
-				e if e < 0 => Err(Error::from(e))?,
-				_ => (),
-			}
-
-			match avcodec_receive_frame(self.as_mut_ptr(), out.as_mut_ptr()) {
-				e if e < 0 => Err(Error::from(e))?,
-				_ => (),
-			}
-
-			Ok(())
-		}
-	}
-
 	pub fn width(&self) -> u32 {
 		unsafe { (*self.as_ptr()).width as u32 }
 	}

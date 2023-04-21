@@ -1,24 +1,11 @@
 use std::ops::{Deref, DerefMut};
 
-use libc::c_int;
-
 use super::Opened;
-use crate::{codec::Context, ffi::*, frame, packet, util::format, AudioService, ChannelLayout, Error};
+use crate::{codec::Context, util::format, AudioService, ChannelLayout};
 
 pub struct Audio(pub Opened);
 
 impl Audio {
-	pub fn decode<P: packet::Ref>(&mut self, packet: &P, out: &mut frame::Audio) -> Result<bool, Error> {
-		unsafe {
-			let mut got: c_int = 0;
-
-			match avcodec_decode_audio4(self.as_mut_ptr(), out.as_mut_ptr(), &mut got, packet.as_ptr()) {
-				e if e < 0 => Err(Error::from(e)),
-				_ => Ok(got != 0),
-			}
-		}
-	}
-
 	pub fn sample_rate(&self) -> u32 {
 		unsafe { (*self.as_ptr()).sample_rate as u32 }
 	}
