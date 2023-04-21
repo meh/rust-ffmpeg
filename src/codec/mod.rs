@@ -44,7 +44,9 @@ pub use self::profile::Profile;
 pub mod threading;
 
 pub mod decoder;
+pub use self::decoder::Decoder;
 pub mod encoder;
+pub use self::encoder::Encoder;
 pub mod traits;
 
 use std::{ffi::CStr, str::from_utf8_unchecked};
