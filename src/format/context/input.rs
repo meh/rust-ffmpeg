@@ -54,7 +54,7 @@ impl Input {
 
 	pub fn video_codec(&self) -> Option<Codec> {
 		unsafe {
-			let ptr = av_format_get_video_codec(self.as_ptr());
+			let ptr = (*self.as_ptr()).video_codec;
 
 			if ptr.is_null() {
 				None
@@ -67,7 +67,7 @@ impl Input {
 
 	pub fn audio_codec(&self) -> Option<Codec> {
 		unsafe {
-			let ptr = av_format_get_audio_codec(self.as_ptr());
+			let ptr = (*self.as_ptr()).audio_codec;
 
 			if ptr.is_null() {
 				None
@@ -80,7 +80,7 @@ impl Input {
 
 	pub fn subtitle_codec(&self) -> Option<Codec> {
 		unsafe {
-			let ptr = av_format_get_subtitle_codec(self.as_ptr());
+			let ptr = (*self.as_ptr()).subtitle_codec;
 
 			if ptr.is_null() {
 				None
@@ -93,7 +93,7 @@ impl Input {
 
 	pub fn data_codec(&self) -> Option<Codec> {
 		unsafe {
-			let ptr = av_format_get_data_codec(self.as_ptr());
+			let ptr = (*self.as_ptr()).data_codec;
 
 			if ptr.is_null() {
 				None
@@ -105,7 +105,7 @@ impl Input {
 	}
 
 	pub fn probe_score(&self) -> i32 {
-		unsafe { av_format_get_probe_score(self.as_ptr()) }
+		unsafe { (*self.as_ptr()).probe_score }
 	}
 
 	pub fn packets(&mut self) -> PacketIter<'_> {
