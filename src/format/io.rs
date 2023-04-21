@@ -90,18 +90,29 @@ unsafe extern "C" fn read_packet(opaque: *mut c_void, buf: *mut u8, size: c_int)
 	result.try_into().unwrap()
 }
 
+// copy of unstable `Seek::stream_len`
+// https://github.com/rust-lang/rust/issues/59359
+fn stream_len(mut seek: impl Seek) -> io::Result<u64> {
+	let old_pos = seek.stream_position()?;
+	let len = seek.seek(SeekFrom::End(0))?;
+
+	// Avoid seeking a third time when we were already at the end of the
+	// stream. The branch is usually way cheaper than a seek operation.
+	if old_pos != len {
+		seek.seek(SeekFrom::Start(old_pos))?;
+	}
+
+	Ok(len)
+}
+
 unsafe extern "C" fn seek(opaque: *mut c_void, offset: i64, whence: c_int) -> i64 {
 	let mut proxy = Box::<Proxy>::from_raw(opaque.cast());
 
 	let result: i64 = if whence == AVSEEK_SIZE {
-		#[cfg(feature = "unstable")]
-		match proxy.as_seek().stream_len() {
+		match stream_len(proxy.as_seek()) {
 			Ok(size) => size.try_into().unwrap(),
 			Err(err) => as_error(err).into(),
 		}
-
-		#[cfg(not(feature = "unstable"))]
-		0
 	}
 	else {
 		let whence = match whence {
