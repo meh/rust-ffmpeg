@@ -89,7 +89,7 @@ impl<'a> Stream<'a> {
 	}
 
 	pub fn frame_rate(&self) -> Rational {
-		unsafe { Rational::from(av_stream_get_r_frame_rate(self.as_ptr())) }
+		unsafe { Rational::from((*self.as_ptr()).r_frame_rate) }
 	}
 
 	pub fn avg_frame_rate(&self) -> Rational {
