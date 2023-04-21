@@ -118,10 +118,6 @@ impl Decoder {
 			(*self.as_mut_ptr()).skip_frame = value.into();
 		}
 	}
-
-	pub fn time_base(&self) -> Rational {
-		unsafe { Rational::from((*self.as_ptr()).time_base) }
-	}
 }
 
 impl Deref for Decoder {
