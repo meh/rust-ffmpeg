@@ -1,5 +1,7 @@
 use std::{ffi::CStr, ptr, str::from_utf8_unchecked};
 
+use libc::c_void;
+
 use crate::ffi::*;
 
 #[derive(Copy, Clone)]
@@ -57,12 +59,12 @@ impl Input {
 }
 
 pub struct Iter {
-	input: *mut AVInputFormat,
+	state: *mut c_void,
 }
 
 impl Iter {
 	pub fn new() -> Self {
-		Iter { input: ptr::null_mut() }
+		Iter { state: ptr::null_mut() }
 	}
 }
 
@@ -77,13 +79,12 @@ impl Iterator for Iter {
 
 	fn next(&mut self) -> Option<<Self as Iterator>::Item> {
 		unsafe {
-			let ptr = av_iformat_next(self.input);
+			let ptr = av_demuxer_iterate(&mut self.state as *mut _);
 
-			if ptr.is_null() && !self.input.is_null() {
+			if ptr.is_null() {
 				None
 			}
 			else {
-				self.input = ptr;
 				Some(Input::wrap(ptr))
 			}
 		}
