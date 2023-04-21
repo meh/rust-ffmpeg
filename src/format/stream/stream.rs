@@ -2,10 +2,10 @@ use libc::c_int;
 
 use super::Disposition;
 use crate::{
-	codec::{self, packet},
+	codec::{self, packet, Decoder},
 	ffi::*,
 	format::context::common::Context,
-	DictionaryRef, Discard, Rational,
+	DictionaryRef, Discard, Error, Rational,
 };
 
 #[derive(Debug)]
@@ -98,6 +98,18 @@ impl<'a> Stream<'a> {
 
 	pub fn metadata(&self) -> DictionaryRef<'_> {
 		unsafe { DictionaryRef::wrap((*self.as_ptr()).metadata) }
+	}
+
+	pub fn decoder(&self) -> Result<Decoder, Error> {
+		let params = self.parameters();
+		let codec = codec::decoder::find(params.id()).ok_or(Error::DecoderNotFound)?;
+		let mut dec = Decoder::new(codec)?;
+
+		dec.set_parameters(params)?;
+		dec.set_time_base(self.time_base());
+		dec.set_frame_rate(self.guess_frame_rate());
+
+		Ok(dec)
 	}
 }
 
