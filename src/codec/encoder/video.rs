@@ -10,7 +10,7 @@ use crate::{
 	codec::{traits, Context},
 	color,
 	ffi::*,
-	format, frame, packet, Dictionary, Error, Rational,
+	format, Dictionary, Error, Rational,
 };
 
 pub struct Video(pub Super);
@@ -117,14 +117,6 @@ impl Video {
 	#[inline]
 	pub fn format(&self) -> format::Pixel {
 		unsafe { format::Pixel::from((*self.as_ptr()).pix_fmt) }
-	}
-
-	#[inline]
-	#[cfg(feature = "ff_api_motion_est")]
-	pub fn set_motion_estimation(&mut self, value: MotionEstimation) {
-		unsafe {
-			(*self.as_mut_ptr()).me_method = value.into();
-		}
 	}
 
 	#[inline]
@@ -243,13 +235,6 @@ impl Video {
 	pub fn set_last_predictors(&mut self, value: usize) {
 		unsafe {
 			(*self.as_mut_ptr()).last_predictor_count = value as c_int;
-		}
-	}
-
-	#[inline]
-	pub fn set_pre_me(&mut self, value: MotionEstimation) {
-		unsafe {
-			(*self.as_mut_ptr()).pre_me = value.into();
 		}
 	}
 
