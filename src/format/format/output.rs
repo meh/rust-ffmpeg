@@ -5,6 +5,8 @@ use std::{
 	str::from_utf8_unchecked,
 };
 
+use libc::c_void;
+
 use super::Flags;
 use crate::{codec, ffi::*, media};
 
@@ -82,14 +84,12 @@ impl Output {
 }
 
 pub struct Iter {
-	output: *mut AVOutputFormat,
+	state: *mut c_void,
 }
 
 impl Iter {
 	pub fn new() -> Self {
-		Iter {
-			output: ptr::null_mut(),
-		}
+		Iter { state: ptr::null_mut() }
 	}
 }
 
@@ -104,13 +104,12 @@ impl Iterator for Iter {
 
 	fn next(&mut self) -> Option<<Self as Iterator>::Item> {
 		unsafe {
-			let ptr = av_oformat_next(self.output);
+			let ptr = av_muxer_iterate(&mut self.state as *mut _);
 
-			if ptr.is_null() && !self.output.is_null() {
+			if ptr.is_null() {
 				None
 			}
 			else {
-				self.output = ptr;
 				Some(Output::wrap(ptr))
 			}
 		}
