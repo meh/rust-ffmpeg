@@ -3,6 +3,7 @@ use crate::util::interrupt;
 
 pub mod io;
 pub mod stream;
+pub use self::stream::{Stream, StreamMut};
 
 pub mod chapter;
 
