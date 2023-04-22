@@ -1,8 +1,8 @@
 [package]
 name    = "ffmpeg"
-version = "0.4.0"
+version = "0.6.0"
 build   = "build.rs"
-edition = "2018"
+edition = "2021"
 
 authors = ["meh. <meh@schizofreni.co>"]
 license = "WTFPL"
@@ -17,8 +17,8 @@ unstable = []
 serde = ["serde_", "serde_derive", "ffmpeg-sys/serde"]
 
 static = ["ffmpeg-sys/static"]
-# Currently the version built by ffmpeg-sys is 4.1
-build  = ["static", "ffmpeg-sys/build", "ffmpeg_4_1"]
+# Currently the version built by ffmpeg-sys is 6.0
+build  = ["static", "ffmpeg-sys/build", "ffmpeg_6_0"]
 
 # licensing
 build-license-gpl      = ["ffmpeg-sys/build-license-gpl"]
@@ -98,6 +98,10 @@ ffmpeg_4_0 = ["ffmpeg_3_4"]
 ffmpeg_4_1 = ["ffmpeg_4_0"]
 ffmpeg_4_2 = ["ffmpeg_4_1"]
 ffmpeg_4_3 = ["ffmpeg_4_2"]
+ffmpeg_4_4 = ["ffmpeg_4_3"]
+ffmpeg_5_0 = ["ffmpeg_4_4"]
+ffmpeg_5_1 = ["ffmpeg_5_0"]
+ffmpeg_6_0 = ["ffmpeg_5_1"]
 
 [dependencies]
 libc      = "0.2"
