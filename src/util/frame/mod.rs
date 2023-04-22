@@ -209,6 +209,16 @@ impl Frame {
 	}
 
 	#[inline]
+	pub fn is_writable(&mut self) -> Result<(), Error> {
+		unsafe {
+			match av_frame_is_writable(self.as_mut_ptr()) {
+				0 => Ok(()),
+				e => Err(Error::from(e)),
+			}
+		}
+	}
+
+	#[inline]
 	pub fn make_writable(&mut self) -> Result<(), Error> {
 		unsafe {
 			match av_frame_make_writable(self.as_mut_ptr()) {
