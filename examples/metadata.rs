@@ -44,12 +44,14 @@ fn main() {
 				println!("\tdiscard: {:?}", stream.discard());
 				println!("\tframe rate: {}", stream.frame_rate());
 
-				let codec = stream.codec();
-				println!("\tmedium: {:?}", codec.medium());
-				println!("\tid: {:?}", codec.id());
+				let codec_par = stream.parameters();
+				println!("\tmedium: {:?}", codec_par.medium());
+				println!("\tid: {:?}", codec_par.id());
 
-				if codec.medium() == ffmpeg::media::Type::Video {
-					if let Ok(video) = codec.decoder().video() {
+				let dec = stream.decoder().expect("Unable to open decoder");
+
+				if codec_par.medium() == ffmpeg::media::Type::Video {
+					if let Ok(video) = dec.video() {
 						println!("\tbit_rate: {}", video.bit_rate());
 						println!("\tmax_rate: {}", video.max_bit_rate());
 						println!("\tdelay: {}", video.delay());
@@ -70,8 +72,8 @@ fn main() {
 						println!("\tvideo.intra_dc_precision: {}", video.intra_dc_precision());
 					}
 				}
-				else if codec.medium() == ffmpeg::media::Type::Audio {
-					if let Ok(audio) = codec.decoder().audio() {
+				else if codec_par.medium() == ffmpeg::media::Type::Audio {
+					if let Ok(audio) = dec.audio() {
 						println!("\tbit_rate: {}", audio.bit_rate());
 						println!("\tmax_rate: {}", audio.max_bit_rate());
 						println!("\tdelay: {}", audio.delay());
@@ -81,7 +83,6 @@ fn main() {
 						println!("\taudio.frames: {}", audio.frames());
 						println!("\taudio.align: {}", audio.align());
 						println!("\taudio.channel_layout: {:?}", audio.channel_layout());
-						println!("\taudio.frame_start: {:?}", audio.frame_start());
 					}
 				}
 			}

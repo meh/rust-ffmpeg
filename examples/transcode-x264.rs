@@ -24,7 +24,7 @@ const DEFAULT_X264_OPTS: &str = "preset=medium";
 struct Transcoder {
 	ost_index: usize,
 	decoder: decoder::Video,
-	encoder: encoder::video::Video,
+	encoder: encoder::Video,
 	logging_enabled: bool,
 	frame_count: usize,
 	last_log_frame_count: usize,
@@ -41,9 +41,11 @@ impl Transcoder {
 		enable_logging: bool,
 	) -> Result<Self, ffmpeg::Error> {
 		let global_header = octx.format().flags().contains(format::Flags::GLOBAL_HEADER);
-		let decoder = ist.codec().decoder().video()?;
-		let mut ost = octx.add_stream(encoder::find(codec::Id::H264))?;
-		let mut encoder = ost.codec().encoder().video()?;
+		let decoder = ist.decoder()?.open()?.video()?;
+
+		let mut ost = octx.add_stream()?;
+		let codec = encoder::find(codec::Id::H264).unwrap();
+		let mut encoder = codec::Encoder::new(codec)?.video()?;
 		encoder.set_height(decoder.height());
 		encoder.set_width(decoder.width());
 		encoder.set_aspect_ratio(decoder.aspect_ratio());
@@ -53,15 +55,14 @@ impl Transcoder {
 		if global_header {
 			encoder.set_flags(codec::Flags::GLOBAL_HEADER);
 		}
-		encoder
+		let encoder = encoder
 			.open_with(x264_opts)
 			.expect("error opening libx264 encoder with supplied settings");
-		encoder = ost.codec().encoder().video()?;
-		ost.set_parameters(encoder);
+		ost.set_parameters(encoder.parameters());
 		Ok(Self {
 			ost_index,
 			decoder,
-			encoder: ost.codec().encoder().video()?,
+			encoder,
 			logging_enabled: enable_logging,
 			frame_count: 0,
 			last_log_frame_count: 0,
@@ -117,7 +118,7 @@ impl Transcoder {
 			return;
 		}
 		eprintln!(
-			"time elpased: \t{:8.2}\tframe count: {:8}\ttimestamp: {:8.2}",
+			"time elapsed: \t{:8.2}\tframe count: {:8}\ttimestamp: {:8.2}",
 			self.starting_time.elapsed().as_secs_f64(),
 			self.frame_count,
 			timestamp
@@ -163,7 +164,7 @@ fn main() {
 	let mut transcoders = HashMap::new();
 	let mut ost_index = 0;
 	for (ist_index, ist) in ictx.streams().enumerate() {
-		let ist_medium = ist.codec().medium();
+		let ist_medium = ist.parameters().medium();
 		if ist_medium != media::Type::Audio && ist_medium != media::Type::Video && ist_medium != media::Type::Subtitle {
 			stream_mapping[ist_index] = -1;
 			continue;
@@ -183,9 +184,10 @@ fn main() {
 				)
 				.unwrap(),
 			);
-		} else {
+		}
+		else {
 			// Set up for stream copy for non-video stream.
-			let mut ost = octx.add_stream(encoder::find(codec::Id::None)).unwrap();
+			let mut ost = octx.add_stream().unwrap();
 			ost.set_parameters(ist.parameters());
 			// We need to set codec_tag to 0 lest we run into incompatible codec tag
 			// issues when muxing into a different container format. Unfortunately

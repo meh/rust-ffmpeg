@@ -1,6 +1,6 @@
 use std::env;
 
-use ffmpeg::{codec, encoder, format, media, Rational};
+use ffmpeg::{format, media, Rational};
 
 fn main() {
 	let input_file = env::args().nth(1).expect("missing input file");
@@ -15,7 +15,8 @@ fn main() {
 	let mut ist_time_bases = vec![Rational(0, 1); ictx.nb_streams() as _];
 	let mut ost_index = 0;
 	for (ist_index, ist) in ictx.streams().enumerate() {
-		let ist_medium = ist.codec().medium();
+		let codec_par = ist.parameters();
+		let ist_medium = codec_par.medium();
 		if ist_medium != media::Type::Audio && ist_medium != media::Type::Video && ist_medium != media::Type::Subtitle {
 			stream_mapping[ist_index] = -1;
 			continue;
@@ -23,7 +24,7 @@ fn main() {
 		stream_mapping[ist_index] = ost_index;
 		ist_time_bases[ist_index] = ist.time_base();
 		ost_index += 1;
-		let mut ost = octx.add_stream(encoder::find(codec::Id::None)).unwrap();
+		let mut ost = octx.add_stream().unwrap();
 		ost.set_parameters(ist.parameters());
 		// We need to set codec_tag to 0 lest we run into incompatible codec tag
 		// issues when muxing into a different container format. Unfortunately

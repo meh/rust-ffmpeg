@@ -1,6 +1,6 @@
 use std::{env, path::Path};
 
-use ffmpeg::{codec, filter, format, frame, media, rescale, Rescale};
+use ffmpeg::{channel_layout::ChannelLayout, codec, filter, format, frame, media, rescale, Rescale};
 
 fn filter(
 	spec: &str,
@@ -10,11 +10,11 @@ fn filter(
 	let mut filter = filter::Graph::new();
 
 	let args = format!(
-		"time_base={}:sample_rate={}:sample_fmt={}:channel_layout=0x{:x}",
+		"time_base={}:sample_rate={}:sample_fmt={}:channel_layout={}",
 		decoder.time_base(),
 		decoder.sample_rate(),
 		decoder.format().name(),
-		decoder.channel_layout().bits()
+		decoder.channel_layout().describe().unwrap()
 	);
 
 	filter.add(&filter::find("abuffer").unwrap(), "in", &args)?;
@@ -64,7 +64,7 @@ fn transcoder<P: AsRef<Path>>(
 		.streams()
 		.best(media::Type::Audio)
 		.expect("could not find best audio stream");
-	let mut decoder = input.codec().decoder().audio()?;
+	let mut decoder = input.decoder()?.audio()?;
 	let codec = ffmpeg::encoder::find(octx.format().codec(path, media::Type::Audio))
 		.expect("failed to find encoder")
 		.audio()?;
@@ -75,13 +75,13 @@ fn transcoder<P: AsRef<Path>>(
 
 	decoder.set_parameters(input.parameters())?;
 
-	let mut output = octx.add_stream(codec)?;
-	let mut encoder = output.codec().encoder().audio()?;
+	let mut output = octx.add_stream()?;
+	let mut encoder = codec::Encoder::new(codec)?.audio()?;
 
 	let channel_layout = codec
 		.channel_layouts()
 		.map(|cls| cls.best(decoder.channel_layout().channels()))
-		.unwrap_or(ffmpeg::channel_layout::ChannelLayout::STEREO);
+		.unwrap_or(ChannelLayout::STEREO);
 
 	if global {
 		encoder.set_flags(ffmpeg::codec::flag::Flags::GLOBAL_HEADER);
@@ -98,7 +98,7 @@ fn transcoder<P: AsRef<Path>>(
 	output.set_time_base((1, decoder.sample_rate() as i32));
 
 	let encoder = encoder.open_as(codec)?;
-	output.set_parameters(&encoder);
+	output.set_parameters(encoder.parameters());
 
 	let filter = filter(filter_spec, &decoder, &encoder)?;
 
