@@ -1,7 +1,7 @@
 use std::{any::Any, ops::Deref, rc::Rc};
 
-use super::{Context, Id};
-use crate::{ffi::*, media};
+use super::{decoder, encoder, Context, Decoder, Encoder, Id};
+use crate::{ffi::*, media, Error};
 
 pub struct Parameters {
 	ptr: *mut AVCodecParameters,
@@ -65,6 +65,23 @@ impl Parameters {
 			(*self.as_mut_ptr()).codec_tag = value;
 		}
 		self
+	}
+
+	pub fn encoder(&self) -> Result<Encoder, Error> {
+		let codec = encoder::find(self.id()).ok_or(Error::EncoderNotFound)?;
+		let mut ctx = Encoder::new(codec)?;
+		ctx.set_parameters(self.clone())?;
+
+		Ok(ctx)
+	}
+
+	/// Also see [`Stream::decoder`](crate::format::Stream::decoder)
+	pub fn decoder(&self) -> Result<Decoder, Error> {
+		let codec = decoder::find(self.id()).ok_or(Error::DecoderNotFound)?;
+		let mut ctx = Decoder::new(codec)?;
+		ctx.set_parameters(self.clone())?;
+
+		Ok(ctx)
 	}
 }
 
