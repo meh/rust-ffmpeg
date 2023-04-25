@@ -9,7 +9,6 @@ use libc;
 
 use super::{common::Context, destructor};
 use crate::{
-	codec::traits,
 	ffi::*,
 	format::{self, io::Io},
 	ChapterMut, Dictionary, Error, Rational, StreamMut,
@@ -92,11 +91,9 @@ impl Output {
 		}
 	}
 
-	pub fn add_stream<E: traits::Encoder>(&mut self, codec: E) -> Result<StreamMut<'_>, Error> {
+	pub fn add_stream(&mut self) -> Result<StreamMut<'_>, Error> {
 		unsafe {
-			let codec = codec.encoder();
-			let codec = codec.map_or(ptr::null(), |c| c.as_ptr());
-			let ptr = avformat_new_stream(self.as_mut_ptr(), codec);
+			let ptr = avformat_new_stream(self.as_mut_ptr(), ptr::null());
 
 			if ptr.is_null() {
 				return Err(Error::Unknown);
