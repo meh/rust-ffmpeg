@@ -243,6 +243,18 @@ impl Packet {
 			}
 		}
 	}
+
+	#[inline]
+	pub fn opaque(&self) -> *mut c_void {
+		unsafe { (*self.as_ptr()).opaque }
+	}
+
+	#[inline]
+	pub fn set_opaque(&mut self, data: *mut c_void) {
+		unsafe {
+			(*self.as_mut_ptr()).opaque = data;
+		}
+	}
 }
 
 impl Ref for Packet {
