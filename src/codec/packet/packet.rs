@@ -228,6 +228,21 @@ impl Packet {
 			}
 		}
 	}
+
+	#[inline]
+	pub fn try_clone(&self) -> Result<Self, Error> {
+		unsafe {
+			// This doesn't use av_packet_clone, because it masks
+			// any av_packet_ref errors by returning a null pointer.
+
+			let mut frame = Packet::empty();
+
+			match av_packet_ref(frame.as_mut_ptr(), self.as_ptr()) {
+				0 => Ok(frame),
+				e => Err(Error::from(e)),
+			}
+		}
+	}
 }
 
 impl Ref for Packet {
@@ -239,23 +254,6 @@ impl Ref for Packet {
 impl Mut for Packet {
 	fn as_mut_ptr(&mut self) -> *mut AVPacket {
 		&mut self.0
-	}
-}
-
-impl Clone for Packet {
-	#[inline]
-	fn clone(&self) -> Self {
-		let mut pkt = Packet::empty();
-		pkt.clone_from(self);
-
-		pkt
-	}
-
-	#[inline]
-	fn clone_from(&mut self, source: &Self) {
-		unsafe {
-			av_copy_packet(&mut self.0, &source.0);
-		}
 	}
 }
 
