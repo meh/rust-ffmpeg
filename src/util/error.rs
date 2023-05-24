@@ -110,7 +110,28 @@ impl fmt::Display for Error {
 impl fmt::Debug for Error {
 	fn fmt(&self, f: &mut fmt::Formatter<'_>) -> Result<(), fmt::Error> {
 		f.write_str("ffmpeg::Error(")?;
-		f.write_str(&format!("{}: ", AVUNERROR(self.as_raw_error())))?;
+
+		let error_code = AVUNERROR(self.as_raw_error());
+
+		let maybe_err_tag = {
+			let mut bytes = error_code.to_ne_bytes();
+			for b in &mut bytes {
+				if *b == 0xF8 {
+					*b = b' ';
+				}
+			}
+
+			bytes.iter().all(u8::is_ascii_alphabetic).then_some(bytes)
+		};
+
+		if let Some(err_tag) = maybe_err_tag {
+			let s = String::from_utf8_lossy(&err_tag);
+			write!(f, "{s}: ")?;
+		}
+		else {
+			write!(f, "{}: ", error_code)?;
+		}
+
 		fmt::Display::fmt(self, f)?;
 		f.write_str(")")
 	}
