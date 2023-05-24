@@ -23,7 +23,7 @@ impl Drop for Destructor {
 			match self.mode {
 				Mode::Input => avformat_close_input(&mut self.ptr),
 				Mode::Output => {
-					if (*self.ptr).flags & AVFMT_NOFILE != 0
+					if (*self.ptr).flags & AVFMT_FLAG_CUSTOM_IO == 0
 						&& (*self.ptr)
 							.pb
 							.as_ref()
