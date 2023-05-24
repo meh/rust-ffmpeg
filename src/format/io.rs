@@ -216,6 +216,7 @@ pub fn input(io: impl Read + Seek + 'static) -> Result<context::Input, Error> {
 	unsafe {
 		let mut ps = avformat_alloc_context();
 		let mut io = Io::input(io);
+		(*ps).flags |= AVFMT_FLAG_CUSTOM_IO;
 		(*ps).pb = io.as_mut_ptr();
 
 		match avformat_open_input(&mut ps, ptr::null_mut(), ptr::null_mut(), ptr::null_mut()) {
@@ -237,6 +238,7 @@ pub fn input_as(io: impl Read + Seek + 'static, format: format::Input) -> Result
 	unsafe {
 		let mut ps = avformat_alloc_context();
 		let mut io = Io::input(io);
+		(*ps).flags |= AVFMT_FLAG_CUSTOM_IO;
 		(*ps).pb = io.as_mut_ptr();
 
 		match avformat_open_input(&mut ps, ptr::null_mut(), format.as_ptr(), ptr::null_mut()) {
@@ -261,6 +263,7 @@ pub fn output(io: impl Write + 'static, format: format::Output) -> Result<contex
 
 		match avformat_alloc_output_context2(&mut ps, format.as_ptr(), ptr::null_mut(), ptr::null_mut()) {
 			n if n >= 0 => {
+				(*ps).flags |= AVFMT_FLAG_CUSTOM_IO;
 				(*ps).pb = io.as_mut_ptr();
 				Ok(context::Output::wrap_with(ps, io))
 			}
