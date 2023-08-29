@@ -53,8 +53,8 @@ impl<'a> Stream<'a> {
 		unsafe { (*self.as_ptr()).index as usize }
 	}
 
-	pub fn time_base(&self) -> Rational {
-		unsafe { Rational::from((*self.as_ptr()).time_base) }
+	pub fn time_base(&self) -> Option<Rational> {
+		unsafe { Rational::from((*self.as_ptr()).time_base).non_zero() }
 	}
 
 	pub fn start_time(&self) -> Option<i64> {

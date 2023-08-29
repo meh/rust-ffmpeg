@@ -26,9 +26,9 @@ impl<'a> StreamMut<'a> {
 }
 
 impl<'a> StreamMut<'a> {
-	pub fn set_time_base<R: Into<Rational>>(&mut self, value: R) {
+	pub fn set_time_base<R: Into<Rational>>(&mut self, value: Option<R>) {
 		unsafe {
-			(*self.as_mut_ptr()).time_base = value.into().into();
+			(*self.as_mut_ptr()).time_base = value.map(Into::into).unwrap_or(Rational::ZERO).into();
 		}
 	}
 
