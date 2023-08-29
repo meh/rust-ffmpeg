@@ -14,6 +14,8 @@ use crate::ffi::*;
 pub struct Rational(pub i32, pub i32);
 
 impl Rational {
+	pub const ZERO: Rational = Rational(0, 1);
+
 	#[inline]
 	pub fn new(numerator: i32, denominator: i32) -> Self {
 		Rational(numerator, denominator)
@@ -68,6 +70,17 @@ impl Rational {
 	#[inline]
 	pub fn approx(&self) -> f64 {
 		self.0 as f64 / self.1 as f64
+	}
+
+	#[inline]
+	pub fn non_zero(self) -> Option<Rational> {
+		(self.numerator() != 0).then_some(self)
+	}
+}
+
+impl Default for Rational {
+	fn default() -> Self {
+		Rational::ZERO
 	}
 }
 
