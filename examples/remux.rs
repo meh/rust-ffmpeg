@@ -1,6 +1,6 @@
 use std::env;
 
-use ffmpeg::{format, media, Rational};
+use ffmpeg::{format, media};
 
 fn main() {
 	let input_file = env::args().nth(1).expect("missing input file");
@@ -12,7 +12,7 @@ fn main() {
 	let mut octx = format::output(&output_file).unwrap();
 
 	let mut stream_mapping = vec![0; ictx.nb_streams() as _];
-	let mut ist_time_bases = vec![Rational(0, 1); ictx.nb_streams() as _];
+	let mut ist_time_bases = vec![None; ictx.nb_streams() as _];
 	let mut ost_index = 0;
 	for (ist_index, ist) in ictx.streams().enumerate() {
 		let codec_par = ist.parameters();
@@ -45,7 +45,7 @@ fn main() {
 			continue;
 		}
 		let ost = octx.stream(ost_index as _).unwrap();
-		packet.rescale_ts(ist_time_bases[ist_index], ost.time_base());
+		packet.rescale_ts(ist_time_bases[ist_index].unwrap(), ost.time_base().unwrap());
 		packet.set_position(-1);
 		packet.set_stream(ost_index as _);
 		packet.write_interleaved(&mut octx).unwrap();

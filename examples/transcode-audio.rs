@@ -11,7 +11,7 @@ fn filter(
 
 	let args = format!(
 		"time_base={}:sample_rate={}:sample_fmt={}:channel_layout={}",
-		decoder.time_base(),
+		decoder.time_base().unwrap(),
 		decoder.sample_rate(),
 		decoder.format().name(),
 		decoder.channel_layout().describe().unwrap()
@@ -94,16 +94,17 @@ fn transcoder<P: AsRef<Path>>(
 	encoder.set_bit_rate(decoder.bit_rate());
 	encoder.set_max_bit_rate(decoder.max_bit_rate());
 
-	encoder.set_time_base((1, decoder.sample_rate() as i32));
-	output.set_time_base((1, decoder.sample_rate() as i32));
+	let enc_tb = (1, decoder.sample_rate() as i32);
+	encoder.set_time_base(Some(enc_tb));
+	output.set_time_base(Some(enc_tb));
 
 	let encoder = encoder.open_as(codec)?;
 	output.set_parameters(encoder.parameters());
 
 	let filter = filter(filter_spec, &decoder, &encoder)?;
 
-	let in_time_base = decoder.time_base();
-	let out_time_base = output.time_base();
+	let in_time_base = decoder.time_base().unwrap();
+	let out_time_base = output.time_base().unwrap();
 
 	Ok(Transcoder {
 		stream: input.index(),
@@ -207,7 +208,7 @@ fn main() {
 	for res in ictx.packets() {
 		let (stream, mut packet) = res.unwrap();
 		if stream.index() == transcoder.stream {
-			packet.rescale_ts(stream.time_base(), transcoder.in_time_base);
+			packet.rescale_ts(stream.time_base().unwrap(), transcoder.in_time_base);
 			transcoder.send_packet_to_decoder(&packet);
 			transcoder.receive_and_process_decoded_frames(&mut octx);
 		}

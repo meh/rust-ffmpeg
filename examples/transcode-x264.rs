@@ -51,7 +51,7 @@ impl Transcoder {
 		encoder.set_aspect_ratio(decoder.aspect_ratio());
 		encoder.set_format(decoder.format());
 		encoder.set_frame_rate(decoder.frame_rate());
-		encoder.set_time_base(decoder.frame_rate().unwrap().invert());
+		encoder.set_time_base(Some(decoder.frame_rate().unwrap().invert()));
 		if global_header {
 			encoder.set_flags(codec::Flags::GLOBAL_HEADER);
 		}
@@ -85,7 +85,7 @@ impl Transcoder {
 			self.frame_count += 1;
 			let timestamp = frame.timestamp();
 			self.log_progress(f64::from(
-				Rational(timestamp.unwrap_or(0) as i32, 1) * self.decoder.time_base(),
+				Rational(timestamp.unwrap_or(0) as i32, 1) * self.decoder.time_base().unwrap(),
 			));
 			frame.set_pts(timestamp);
 			frame.set_kind(picture::Type::None);
@@ -106,7 +106,7 @@ impl Transcoder {
 		let mut encoded = Packet::empty();
 		while self.encoder.receive_packet(&mut encoded).is_ok() {
 			encoded.set_stream(self.ost_index);
-			encoded.rescale_ts(self.decoder.time_base(), ost_time_base);
+			encoded.rescale_ts(self.decoder.time_base().unwrap(), ost_time_base);
 			encoded.write_interleaved(octx).unwrap();
 		}
 	}
@@ -170,7 +170,7 @@ fn main() {
 			continue;
 		}
 		stream_mapping[ist_index] = ost_index;
-		ist_time_bases[ist_index] = ist.time_base();
+		ist_time_bases[ist_index] = ist.time_base().unwrap();
 		if ist_medium == media::Type::Video {
 			// Initialize transcoder for video stream.
 			transcoders.insert(
@@ -204,7 +204,7 @@ fn main() {
 	octx.write_header().unwrap();
 
 	for (ost_index, _) in octx.streams().enumerate() {
-		ost_time_bases[ost_index] = octx.stream(ost_index as _).unwrap().time_base();
+		ost_time_bases[ost_index] = octx.stream(ost_index as _).unwrap().time_base().unwrap();
 	}
 
 	for res in ictx.packets() {
@@ -217,7 +217,7 @@ fn main() {
 		let ost_time_base = ost_time_bases[ost_index as usize];
 		match transcoders.get_mut(&ist_index) {
 			Some(transcoder) => {
-				packet.rescale_ts(stream.time_base(), transcoder.decoder.time_base());
+				packet.rescale_ts(stream.time_base().unwrap(), transcoder.decoder.time_base().unwrap());
 				transcoder.send_packet_to_decoder(&packet);
 				transcoder.receive_and_process_decoded_frames(&mut octx, ost_time_base);
 			}
