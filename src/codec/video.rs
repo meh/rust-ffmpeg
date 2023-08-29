@@ -61,14 +61,9 @@ impl Iterator for RateIter {
 
 	fn next(&mut self) -> Option<<Self as Iterator>::Item> {
 		unsafe {
-			if (*self.ptr).num == 0 && (*self.ptr).den == 0 {
-				return None;
-			}
-
-			let rate = (*self.ptr).into();
+			let rate = Rational::from(*self.ptr).non_zero();
 			self.ptr = self.ptr.offset(1);
-
-			Some(rate)
+			rate
 		}
 	}
 }

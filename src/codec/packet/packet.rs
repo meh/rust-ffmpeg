@@ -107,6 +107,16 @@ impl Packet {
 	}
 
 	#[inline]
+	pub fn time_base(&self) -> Option<Rational> {
+		Rational::from(self.0.time_base).non_zero()
+	}
+
+	#[inline]
+	pub fn set_time_base(&mut self, time_base: Option<impl Into<Rational>>) {
+		self.0.time_base = time_base.map(Into::into).unwrap_or(Rational::ZERO).into();
+	}
+
+	#[inline]
 	pub fn pts(&self) -> Option<i64> {
 		match self.0.pts {
 			AV_NOPTS_VALUE => None,

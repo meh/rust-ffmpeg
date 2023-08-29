@@ -9,7 +9,7 @@ fn main() {
 
 			for chapter in ictx.chapters() {
 				println!("chapter id {}:", chapter.id());
-				println!("\ttime_base: {}", chapter.time_base());
+				println!("\ttime_base: {:?}", chapter.time_base());
 				println!("\tstart: {}", chapter.start());
 				println!("\tend: {}", chapter.end());
 
@@ -28,7 +28,7 @@ fn main() {
 
 				match octx.add_chapter(
 					chapter.id(),
-					chapter.time_base(),
+					chapter.time_base().expect("Input chapter is missing a time base"),
 					chapter.start(),
 					chapter.end(),
 					&title,
@@ -43,7 +43,7 @@ fn main() {
 			println!("\nOuput: nb chapters: {}", octx.nb_chapters());
 			for chapter in octx.chapters() {
 				println!("chapter id {}:", chapter.id());
-				println!("\ttime_base: {}", chapter.time_base());
+				println!("\ttime_base: {:?}", chapter.time_base());
 				println!("\tstart: {}", chapter.start());
 				println!("\tend: {}", chapter.end());
 				for (k, v) in chapter.metadata().iter() {

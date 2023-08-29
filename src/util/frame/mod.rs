@@ -10,7 +10,7 @@ pub use self::audio::Audio;
 pub mod flag;
 
 pub use self::flag::Flags;
-use crate::{ffi::*, Dictionary, DictionaryRef, Error};
+use crate::{ffi::*, Dictionary, DictionaryRef, Error, Rational};
 
 #[derive(PartialEq, Eq, Copy, Clone, Debug)]
 pub struct Packet {
@@ -99,6 +99,18 @@ impl Frame {
 				pts: (*self.as_ptr()).pkt_pts,
 				dts: (*self.as_ptr()).pkt_dts,
 			}
+		}
+	}
+
+	#[inline]
+	pub fn time_base(&self) -> Option<Rational> {
+		unsafe { Rational::from((*self.as_ptr()).time_base).non_zero() }
+	}
+
+	#[inline]
+	pub fn set_time_base(&mut self, time_base: Option<impl Into<Rational>>) {
+		unsafe {
+			(*self.as_mut_ptr()).time_base = time_base.map(Into::into).unwrap_or(Rational::ZERO).into();
 		}
 	}
 

@@ -32,12 +32,15 @@ fn main() {
 
 			for stream in context.streams() {
 				println!("stream index {}:", stream.index());
-				println!("\ttime_base: {}", stream.time_base());
+				println!("\ttime_base: {:?}", stream.time_base());
 				println!("\tstart_time: {:?}", stream.start_time());
 				println!("\tduration (stream timebase): {:?}", stream.duration());
 				println!(
 					"\tduration (seconds): {:?}",
-					stream.duration().map(|d| d as f64 * f64::from(stream.time_base()))
+					stream
+						.time_base()
+						.zip(stream.duration())
+						.map(|(tb, d)| d as f64 * f64::from(tb))
 				);
 				println!("\tframes: {}", stream.frames());
 				println!("\tdisposition: {:?}", stream.disposition());
