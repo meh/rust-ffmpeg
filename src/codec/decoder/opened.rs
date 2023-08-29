@@ -82,16 +82,7 @@ impl Opened {
 	}
 
 	pub fn frame_rate(&self) -> Option<Rational> {
-		unsafe {
-			let value = (*self.as_ptr()).framerate;
-
-			if value == (AVRational { num: 0, den: 1 }) {
-				None
-			}
-			else {
-				Some(Rational::from(value))
-			}
-		}
+		unsafe { Rational::from((*self.as_ptr()).framerate).non_zero() }
 	}
 
 	pub fn flush(&mut self) {

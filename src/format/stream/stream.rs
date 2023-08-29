@@ -107,12 +107,7 @@ impl<'a> Stream<'a> {
 				ptr::null_mut(),
 			));
 
-			if r == Rational(0, 1) {
-				None
-			}
-			else {
-				Some(r)
-			}
+			r.non_zero()
 		}
 	}
 
