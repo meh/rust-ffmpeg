@@ -274,7 +274,7 @@ impl<'a> Iterator for StreamIterMut<'a> {
 
 		unsafe {
 			Some(StreamMut::wrap(
-				mem::transmute_copy(&self.context),
+				mem::transmute::<&mut Context, &mut Context>(self.context),
 				(self.current - 1) as usize,
 			))
 		}
@@ -349,7 +349,7 @@ impl<'a> Iterator for ChapterIterMut<'a> {
 			self.current += 1;
 
 			Some(ChapterMut::wrap(
-				mem::transmute_copy(&self.context),
+				mem::transmute::<&mut Context, &mut Context>(self.context),
 				(self.current - 1) as usize,
 			))
 		}
