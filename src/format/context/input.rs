@@ -181,10 +181,10 @@ impl<'a> Iterator for PacketIter<'a> {
 			Err(Error::Eof) => None,
 
 			Ok(..) => unsafe {
-				Some(Ok((
-					Stream::wrap(mem::transmute_copy(&self.context), packet.stream()),
-					packet,
-				)))
+				let context = mem::transmute::<&Context, &Context>(self.context);
+				let stream = Stream::wrap(context, packet.stream());
+
+				Some(Ok((stream, packet)))
 			},
 
 			Err(err) => Some(Err(err)),

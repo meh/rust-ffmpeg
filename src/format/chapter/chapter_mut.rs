@@ -15,10 +15,10 @@ pub struct ChapterMut<'a> {
 impl<'a> ChapterMut<'a> {
 	pub unsafe fn wrap(context: &mut Context, index: usize) -> ChapterMut<'_> {
 		ChapterMut {
-			context: mem::transmute_copy(&context),
+			context: mem::transmute::<&mut Context, &mut Context>(context),
 			index,
 
-			immutable: Chapter::wrap(mem::transmute_copy(&context), index),
+			immutable: Chapter::wrap(mem::transmute::<&Context, &Context>(context), index),
 		}
 	}
 
