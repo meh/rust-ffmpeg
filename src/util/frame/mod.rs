@@ -256,6 +256,21 @@ impl Frame {
 	}
 }
 
+impl Clone for Frame {
+	#[inline]
+	fn clone(&self) -> Self {
+		unsafe { Frame::wrap(av_frame_clone(self.as_ptr())) }
+	}
+
+	#[inline]
+	fn clone_from(&mut self, source: &Self) {
+		unsafe {
+			av_frame_copy(self.as_mut_ptr(), source.as_ptr());
+			av_frame_copy_props(self.as_mut_ptr(), source.as_ptr());
+		}
+	}
+}
+
 impl Drop for Frame {
 	#[inline]
 	fn drop(&mut self) {
