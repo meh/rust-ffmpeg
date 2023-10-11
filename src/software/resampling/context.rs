@@ -5,7 +5,7 @@ use libc::c_int;
 use super::Delay;
 use crate::{ffi::*, frame, util::format, ChannelLayout, Error};
 
-#[derive(Copy, Clone)]
+#[derive(Clone)]
 pub struct Definition {
 	pub format: format::Sample,
 	pub channel_layout: ChannelLayout,
@@ -131,7 +131,7 @@ impl Context {
 
 		unsafe {
 			if output.is_empty() {
-				output.alloc(self.output.format, input.samples(), self.output.channel_layout);
+				output.alloc(self.output.format, input.samples(), self.output.channel_layout.clone());
 			}
 
 			match swr_convert_frame(self.as_mut_ptr(), output.as_mut_ptr(), input.as_ptr()) {

@@ -1,7 +1,8 @@
 use std::{
 	array,
-	ffi::{CString, NulError},
+	ffi::CString,
 	fmt::{self, Display},
+	hash::Hash,
 	mem, ptr, slice,
 	str::FromStr,
 };
@@ -67,7 +68,6 @@ pub enum ChannelOrder {
 	Ambisonic = AVChannelOrder::AV_CHANNEL_ORDER_AMBISONIC.0,
 }
 
-#[derive(Copy, Clone)]
 pub struct ChannelLayout(AVChannelLayout);
 
 /// SAFETY: these are not auto-implemented due to the `opaque: *mut c_void` in
@@ -403,6 +403,26 @@ impl From<ChannelLayout> for AVChannelLayout {
 impl From<AVChannelLayout> for ChannelLayout {
 	fn from(v: AVChannelLayout) -> ChannelLayout {
 		Self(v)
+	}
+}
+
+impl Hash for ChannelLayout {
+	fn hash<H: std::hash::Hasher>(&self, state: &mut H) {
+		self.0.nb_channels.hash(state);
+		self.0.order.hash(state);
+		self.0.opaque.hash(state);
+		unsafe {
+			self.0.u.map.hash(state);
+			self.0.u.mask.hash(state);
+		}
+	}
+}
+
+impl Clone for ChannelLayout {
+	fn clone(&self) -> Self {
+		let mut layout = ChannelLayout::new();
+		unsafe { av_channel_layout_copy(layout.as_mut_ptr(), self.as_ptr()) };
+		layout
 	}
 }
 
