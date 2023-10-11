@@ -406,3 +406,32 @@ impl Display for Profile {
 		write!(f, "")
 	}
 }
+
+#[cfg(test)]
+mod test {
+
+	use super::Profile;
+
+	#[test]
+	fn av1() {
+		assert_eq!(Profile::AV1(super::AV1::Main).to_string(), "Main");
+		assert_eq!(Profile::AV1(super::AV1::High).to_string(), "High");
+		assert_eq!(Profile::AV1(super::AV1::Professional).to_string(), "Professional");
+	}
+
+	#[test]
+	fn h264() {
+		assert_eq!(Profile::H264(super::H264::Baseline).to_string(), "Baseline");
+		assert_eq!(Profile::H264(super::H264::Main).to_string(), "Main");
+		assert_eq!(Profile::H264(super::H264::High).to_string(), "High");
+		assert_eq!(Profile::H264(super::H264::High10).to_string(), "High 10");
+		assert_eq!(
+			Profile::H264(super::H264::High444Predictive).to_string(),
+			"High 4:4:4 Predictive"
+		);
+		assert_eq!(
+			Profile::H264(super::H264::ConstrainedBaseline).to_string(),
+			"Constrained Baseline"
+		);
+	}
+}
