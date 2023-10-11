@@ -1,4 +1,4 @@
-use std::{marker::PhantomData, mem, slice};
+use std::{fmt, marker::PhantomData, mem, slice};
 
 use libc::{c_int, c_void};
 
@@ -180,8 +180,7 @@ impl Packet {
 		unsafe {
 			if self.0.data.is_null() {
 				None
-			}
-			else {
+			} else {
 				Some(slice::from_raw_parts(self.0.data, self.0.size as usize))
 			}
 		}
@@ -192,8 +191,7 @@ impl Packet {
 		unsafe {
 			if self.0.data.is_null() {
 				None
-			}
-			else {
+			} else {
 				Some(slice::from_raw_parts_mut(self.0.data, self.0.size as usize))
 			}
 		}
@@ -311,8 +309,7 @@ impl<'a> Iterator for SideDataIter<'a> {
 		unsafe {
 			if self.cur >= (*self.ptr).side_data_elems {
 				None
-			}
-			else {
+			} else {
 				self.cur += 1;
 				Some(SideData::wrap((*self.ptr).side_data.offset((self.cur - 1) as isize)))
 			}
@@ -329,3 +326,40 @@ impl<'a> Iterator for SideDataIter<'a> {
 }
 
 impl<'a> ExactSizeIterator for SideDataIter<'a> {}
+
+impl Clone for Packet {
+	#[inline]
+	fn clone(&self) -> Self {
+		let mut pkt = Packet::empty();
+		pkt.clone_from(self);
+
+		pkt
+	}
+
+	#[inline]
+	fn clone_from(&mut self, source: &Self) {
+		#[cfg(feature = "ffmpeg_4_0")]
+		unsafe {
+			av_packet_ref(&mut self.0, &source.0);
+			// av_packet_make_writable(&mut self.0);
+		}
+		#[cfg(not(feature = "ffmpeg_4_0"))]
+		unsafe {
+			av_copy_packet(&mut self.0, &source.0);
+		}
+	}
+}
+
+impl fmt::Debug for Packet {
+	fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+		f.debug_struct("Packet")
+			.field("is_key", &self.is_key())
+			.field("size", &self.size())
+			.field("stream", &self.stream())
+			.field("dts", &self.dts())
+			.field("pts", &self.pts())
+			.field("duration", &self.duration())
+			.field("time_base", &self.time_base())
+			.finish()
+	}
+}

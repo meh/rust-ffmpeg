@@ -1,4 +1,4 @@
-use std::{marker::PhantomData, slice};
+use std::{marker::PhantomData, mem::transmute, slice};
 
 use super::Packet;
 use crate::ffi::{AVPacketSideDataType::*, *};
@@ -45,6 +45,8 @@ pub enum Type {
 
 	#[cfg(feature = "ffmpeg_4_1")]
 	AFD,
+
+	OTHER(i32),
 }
 
 impl From<AVPacketSideDataType> for Type {
@@ -88,7 +90,7 @@ impl From<AVPacketSideDataType> for Type {
 			#[cfg(feature = "ffmpeg_4_1")]
 			AV_PKT_DATA_AFD => Type::AFD,
 
-			_ => unimplemented!(),
+			value => Type::OTHER(value as i32),
 		}
 	}
 }
@@ -132,6 +134,7 @@ impl Into<AVPacketSideDataType> for Type {
 			Type::EncryptionInfo => AV_PKT_DATA_ENCRYPTION_INFO,
 			#[cfg(feature = "ffmpeg_4_1")]
 			Type::AFD => AV_PKT_DATA_AFD,
+			Type::OTHER(value) => unsafe { transmute(value) },
 		}
 	}
 }

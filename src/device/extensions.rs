@@ -54,8 +54,7 @@ impl<'a> Iterator for DeviceIter<'a> {
 		unsafe {
 			if self.cur >= (*self.ptr).nb_devices {
 				None
-			}
-			else {
+			} else {
 				self.cur += 1;
 				Some(device::Info::wrap(*(*self.ptr).devices.offset((self.cur - 1) as isize)))
 			}
@@ -67,6 +66,16 @@ impl<'a> Iterator for DeviceIter<'a> {
 			let length = (*self.ptr).nb_devices as usize;
 
 			(length - self.cur as usize, Some(length - self.cur as usize))
+		}
+	}
+}
+
+impl<'a> From<*mut AVDeviceInfoList> for DeviceIter<'a> {
+	fn from(ptr: *mut AVDeviceInfoList) -> Self {
+		DeviceIter {
+			ptr,
+			cur: 0,
+			_marker: PhantomData,
 		}
 	}
 }

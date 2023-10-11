@@ -58,8 +58,7 @@ impl Input {
 
 			if ptr.is_null() {
 				None
-			}
-			else {
+			} else {
 				Some(Codec::wrap(ptr))
 			}
 		}
@@ -71,8 +70,7 @@ impl Input {
 
 			if ptr.is_null() {
 				None
-			}
-			else {
+			} else {
 				Some(Codec::wrap(ptr))
 			}
 		}
@@ -84,8 +82,7 @@ impl Input {
 
 			if ptr.is_null() {
 				None
-			}
-			else {
+			} else {
 				Some(Codec::wrap(ptr))
 			}
 		}
@@ -97,8 +94,7 @@ impl Input {
 
 			if ptr.is_null() {
 				None
-			}
-			else {
+			} else {
 				Some(Codec::wrap(ptr))
 			}
 		}
@@ -179,6 +175,7 @@ impl<'a> Iterator for PacketIter<'a> {
 
 		match packet.read(self.context) {
 			Err(Error::Eof) => None,
+			Err(Error::Exit) => None,
 
 			Ok(..) => unsafe {
 				let context = mem::transmute::<&Context, &Context>(self.context);

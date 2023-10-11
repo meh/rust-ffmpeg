@@ -1,6 +1,6 @@
-use std::{any::Any, ops::Deref, rc::Rc};
+use std::{any::Any, ops::Deref, rc::Rc, slice};
 
-use super::{decoder, encoder, Context, Decoder, Encoder, Id};
+use super::{decoder, encoder, Context, Decoder, Encoder, Id, Profile};
 use crate::{ffi::*, media, Error};
 
 pub struct Parameters {
@@ -54,6 +54,32 @@ impl Parameters {
 			(*self.as_mut_ptr()).codec_id = value.into();
 		}
 		self
+	}
+
+	#[inline]
+	pub fn extradata(&self) -> Option<&[u8]> {
+		unsafe {
+			if (*self.as_ptr()).extradata.is_null() {
+				None
+			} else {
+				Some(slice::from_raw_parts(
+					(*self.as_ptr()).extradata,
+					(*self.as_ptr()).extradata_size as usize,
+				))
+			}
+		}
+	}
+
+	pub fn bit_rate(&self) -> usize {
+		unsafe { (*self.as_ptr()).bit_rate as usize }
+	}
+
+	pub fn profile(&self) -> Profile {
+		unsafe { Profile::from((self.id(), (*self.as_ptr()).profile)) }
+	}
+
+	pub fn level(&self) -> i32 {
+		unsafe { (*self.as_ptr()).level as i32 }
 	}
 
 	pub fn tag(&self) -> u32 {

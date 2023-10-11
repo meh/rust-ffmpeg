@@ -127,8 +127,7 @@ impl fmt::Debug for Error {
 		if let Some(err_tag) = maybe_err_tag {
 			let s = String::from_utf8_lossy(&err_tag);
 			write!(f, "{s}: ")?;
-		}
-		else {
+		} else {
 			write!(f, "{}: ", error_code)?;
 		}
 

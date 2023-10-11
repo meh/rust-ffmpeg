@@ -2,9 +2,16 @@ pub mod extensions;
 pub mod input;
 pub mod output;
 
-use std::{ffi::CStr, marker::PhantomData, str::from_utf8_unchecked};
+use std::{
+	ffi::{CStr, CString},
+	marker::PhantomData,
+	ptr,
+	str::from_utf8_unchecked,
+};
 
-use crate::ffi::*;
+use crate::{ffi::*, Error};
+
+use self::extensions::DeviceIter;
 
 pub struct Info<'a> {
 	ptr: *mut AVDeviceInfo,
@@ -55,4 +62,30 @@ pub fn configuration() -> &'static str {
 
 pub fn license() -> &'static str {
 	unsafe { from_utf8_unchecked(CStr::from_ptr(avdevice_license()).to_bytes()) }
+}
+
+pub fn sources(device_name: &str) -> Result<DeviceIter, Error> {
+	unsafe {
+		let mut ptr: *mut AVDeviceInfoList = ptr::null_mut();
+		let string = CString::new(device_name).map_err(|_| Error::InvalidData)?;
+
+		match avdevice_list_input_sources(ptr::null_mut(), string.as_ptr(), ptr::null_mut(), &mut ptr) {
+			n if n < 0 => Err(Error::from(n)),
+
+			_ => Ok(ptr.into()),
+		}
+	}
+}
+
+pub fn sinks(device_name: &str) -> Result<DeviceIter, Error> {
+	unsafe {
+		let mut ptr: *mut AVDeviceInfoList = ptr::null_mut();
+		let string = CString::new(device_name).map_err(|_| Error::InvalidData)?;
+
+		match avdevice_list_output_sinks(ptr::null_mut(), string.as_ptr(), ptr::null_mut(), &mut ptr) {
+			n if n < 0 => Err(Error::from(n)),
+
+			_ => Ok(ptr.into()),
+		}
+	}
 }

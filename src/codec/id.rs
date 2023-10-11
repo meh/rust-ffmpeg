@@ -1,4 +1,9 @@
-use std::{ffi::CStr, str::from_utf8_unchecked};
+use std::{
+	error,
+	ffi::{CStr, CString, NulError},
+	fmt::{self, Display},
+	str::{from_utf8_unchecked, FromStr},
+};
 
 use crate::{
 	ffi::{AVCodecID::*, *},
@@ -1526,5 +1531,60 @@ impl Into<AVCodecID> for Id {
 			#[cfg(feature = "ffmpeg_4_1")]
 			Id::TTML => AV_CODEC_ID_TTML,
 		}
+	}
+}
+
+#[derive(Debug)]
+pub enum ParseIdError {
+	NulError(NulError),
+	UnknownId,
+}
+
+impl fmt::Display for ParseIdError {
+	fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+		match *self {
+			ParseIdError::NulError(ref e) => e.fmt(f),
+			ParseIdError::UnknownId => write!(f, "unknown codec id"),
+		}
+	}
+}
+
+impl error::Error for ParseIdError {
+	fn cause(&self) -> Option<&dyn error::Error> {
+		match *self {
+			ParseIdError::NulError(ref e) => Some(e),
+			ParseIdError::UnknownId => None,
+		}
+	}
+}
+
+impl From<NulError> for ParseIdError {
+	fn from(x: NulError) -> ParseIdError {
+		ParseIdError::NulError(x)
+	}
+}
+
+impl FromStr for Id {
+	type Err = ParseIdError;
+
+	#[inline(always)]
+	fn from_str(s: &str) -> Result<Id, ParseIdError> {
+		let cstring = CString::new(s)?;
+
+		let descriptor = unsafe { avcodec_descriptor_get_by_name(cstring.as_ptr()) };
+
+		if descriptor.is_null() {
+			Err(ParseIdError::UnknownId)
+		} else {
+			Ok(unsafe { (*descriptor).id.into() })
+		}
+	}
+}
+
+impl Display for Id {
+	fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+		let name = unsafe { avcodec_get_name((*self).into()) };
+		let name = unsafe { from_utf8_unchecked(CStr::from_ptr(name).to_bytes()) };
+		write!(f, "{}", name)
 	}
 }

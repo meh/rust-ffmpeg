@@ -49,6 +49,8 @@ pub mod encoder;
 pub use self::encoder::Encoder;
 pub mod traits;
 
+pub mod bitstream_filter;
+
 use std::{ffi::CStr, str::from_utf8_unchecked};
 
 use crate::ffi::*;

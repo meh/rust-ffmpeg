@@ -1,3 +1,9 @@
+use std::{
+	ffi::CStr,
+	fmt::{self, Display},
+	str::{from_utf8_unchecked, FromStr},
+};
+
 use libc::c_int;
 
 use super::Id;
@@ -18,6 +24,15 @@ pub enum Profile {
 	JPEG2000(JPEG2000),
 	HEVC(HEVC),
 	VP9(VP9),
+	AV1(AV1),
+}
+
+#[allow(non_camel_case_types)]
+#[derive(Eq, PartialEq, Clone, Copy, Debug)]
+pub enum AV1 {
+	Main,
+	High,
+	Professional,
 }
 
 #[allow(non_camel_case_types)]
@@ -263,6 +278,13 @@ impl From<(Id, c_int)> for Profile {
 				_ => Profile::Unknown,
 			},
 
+			Id::AV1 => match value {
+				FF_PROFILE_AV1_MAIN => Profile::AV1(AV1::Main),
+				FF_PROFILE_AV1_HIGH => Profile::AV1(AV1::High),
+				FF_PROFILE_AV1_PROFESSIONAL => Profile::AV1(AV1::Professional),
+				_ => Profile::Unknown,
+			},
+
 			_ => Profile::Unknown,
 		}
 	}
@@ -353,6 +375,34 @@ impl Into<c_int> for Profile {
 			Profile::VP9(VP9::_1) => FF_PROFILE_VP9_1,
 			Profile::VP9(VP9::_2) => FF_PROFILE_VP9_2,
 			Profile::VP9(VP9::_3) => FF_PROFILE_VP9_3,
+
+			Profile::AV1(AV1::Main) => FF_PROFILE_AV1_MAIN,
+			Profile::AV1(AV1::High) => FF_PROFILE_AV1_HIGH,
+			Profile::AV1(AV1::Professional) => FF_PROFILE_AV1_PROFESSIONAL,
 		}
+	}
+}
+
+impl Display for Profile {
+	fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+		if let Some(id) = match self {
+			Profile::AAC(_) => Id::from_str("aac").ok(),
+			Profile::MPEG2(_) => Id::from_str("mpeg2video").ok(),
+			Profile::DTS(_) => Id::from_str("dts").ok(),
+			Profile::H264(_) => Id::from_str("h264").ok(),
+			Profile::VC1(_) => Id::from_str("vc1").ok(),
+			Profile::MPEG4(_) => Id::from_str("mpeg4").ok(),
+			Profile::JPEG2000(_) => Id::from_str("jpeg2000").ok(),
+			Profile::HEVC(_) => Id::from_str("hevc").ok(),
+			Profile::VP9(_) => Id::from_str("vp9").ok(),
+			Profile::AV1(_) => Id::from_str("av1").ok(),
+			_ => None,
+		} {
+			let name = unsafe { avcodec_profile_name(id.into(), (*self).into()) };
+			let name = unsafe { from_utf8_unchecked(CStr::from_ptr(name).to_bytes()) };
+			return write!(f, "{}", name);
+		}
+
+		write!(f, "")
 	}
 }

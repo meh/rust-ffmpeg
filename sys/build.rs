@@ -635,6 +635,15 @@ fn search_include(include_paths: &[PathBuf], header: &str) -> String {
     format!("/usr/include/{}", header)
 }
 
+fn maybe_search_include(include_paths: &[PathBuf], header: &str) -> Option<String> {
+    let path = search_include(include_paths, header);
+    if fs::metadata(&path).is_ok() {
+        Some(path)
+    } else {
+        None
+    }
+}
+
 fn link_to_libraries(statik: bool, target_os: &str) {
     if statik {
         // without allow-multiple-definition, linking fails due to conflicting symbols:
@@ -1219,6 +1228,10 @@ fn thread_main() {
             .header(search_include(&include_paths, "libavcodec/avfft.h"))
             .header(search_include(&include_paths, "libavcodec/vorbis_parser.h"));
     }
+    
+	if let Some(bsf_header) = maybe_search_include(&include_paths, "libavcodec/bsf.h") {
+		builder = builder.header(bsf_header);
+	}
 
     if env::var("CARGO_FEATURE_AVDEVICE").is_ok() {
         builder = builder.header(search_include(&include_paths, "libavdevice/avdevice.h"));
