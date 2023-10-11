@@ -443,6 +443,8 @@ impl PartialEq for ChannelLayout {
 	}
 }
 
+impl Eq for ChannelLayout {}
+
 impl Display for ChannelLayout {
 	fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
 		write!(f, "{}", self.describe().unwrap_or_else(|_| String::from("unknown")))
