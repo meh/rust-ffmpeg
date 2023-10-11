@@ -1,9 +1,10 @@
 use std::{
-	ffi::{CStr, CString},
+	error,
+	ffi::{CStr, CString, NulError},
 	fmt::{self, Display},
 	ops::Index,
 	ptr, slice,
-	str::from_utf8_unchecked,
+	str::{from_utf8_unchecked, FromStr},
 };
 
 use libc::{c_int, c_void};
@@ -90,6 +91,52 @@ impl From<AVSampleFormat> for Sample {
 			AV_SAMPLE_FMT_DBLP => Sample::F64(Type::Planar),
 
 			AV_SAMPLE_FMT_NB => Sample::None,
+		}
+	}
+}
+
+#[derive(Debug)]
+pub enum ParseSampleError {
+	NulError(NulError),
+	UnknownFormat,
+}
+
+impl fmt::Display for ParseSampleError {
+	fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+		match *self {
+			ParseSampleError::NulError(ref e) => e.fmt(f),
+			ParseSampleError::UnknownFormat => write!(f, "unknown sample format"),
+		}
+	}
+}
+
+impl error::Error for ParseSampleError {
+	fn cause(&self) -> Option<&dyn error::Error> {
+		match *self {
+			ParseSampleError::NulError(ref e) => Some(e),
+			ParseSampleError::UnknownFormat => None,
+		}
+	}
+}
+
+impl From<NulError> for ParseSampleError {
+	fn from(x: NulError) -> ParseSampleError {
+		ParseSampleError::NulError(x)
+	}
+}
+
+impl FromStr for Sample {
+	type Err = ParseSampleError;
+
+	#[inline(always)]
+	fn from_str(s: &str) -> Result<Sample, ParseSampleError> {
+		let value = CString::new(s)?;
+		let format = unsafe { Sample::from(av_get_sample_fmt(value.as_ptr())) };
+
+		if format == Sample::None {
+			Err(ParseSampleError::UnknownFormat)
+		} else {
+			Ok(format)
 		}
 	}
 }
