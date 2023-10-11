@@ -1,4 +1,4 @@
-use std::{ffi::CStr, marker::PhantomData, slice, str::from_utf8_unchecked};
+use std::{ffi::CStr, marker::PhantomData, mem::transmute, slice, str::from_utf8_unchecked};
 
 use super::Frame;
 use crate::{
@@ -37,6 +37,8 @@ pub enum Type {
 
 	#[cfg(feature = "ffmpeg_4_1")]
 	S12MTimecode,
+
+	OTHER(i32),
 }
 
 impl Type {
@@ -79,15 +81,15 @@ impl From<AVFrameSideDataType> for Type {
 			#[cfg(feature = "ffmpeg_4_1")]
 			AV_FRAME_DATA_S12M_TIMECODE => Type::S12MTimecode,
 
-			_ => unimplemented!(),
+			value => Type::OTHER(value as i32),
 		}
 	}
 }
 
-impl Into<AVFrameSideDataType> for Type {
+impl From<Type> for AVFrameSideDataType {
 	#[inline(always)]
-	fn into(self) -> AVFrameSideDataType {
-		match self {
+	fn from(val: Type) -> Self {
+		match val {
 			Type::PanScan => AV_FRAME_DATA_PANSCAN,
 			Type::A53CC => AV_FRAME_DATA_A53_CC,
 			Type::Stereo3D => AV_FRAME_DATA_STEREO3D,
@@ -116,6 +118,7 @@ impl Into<AVFrameSideDataType> for Type {
 
 			#[cfg(feature = "ffmpeg_4_1")]
 			Type::S12MTimecode => AV_FRAME_DATA_S12M_TIMECODE,
+			Type::OTHER(value) => unsafe { transmute(value) },
 		}
 	}
 }
