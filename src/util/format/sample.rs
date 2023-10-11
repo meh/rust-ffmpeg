@@ -1,5 +1,6 @@
 use std::{
 	ffi::{CStr, CString},
+	fmt::{self, Display},
 	ops::Index,
 	ptr, slice,
 	str::from_utf8_unchecked,
@@ -93,6 +94,14 @@ impl From<AVSampleFormat> for Sample {
 	}
 }
 
+impl Display for Sample {
+	fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+		let name = unsafe { av_get_sample_fmt_name((*self).into()) };
+		let name = unsafe { from_utf8_unchecked(CStr::from_ptr(name).to_bytes()) };
+		write!(f, "{}", name)
+	}
+}
+
 impl From<&'static str> for Sample {
 	#[inline]
 	fn from(value: &'static str) -> Self {
@@ -104,10 +113,10 @@ impl From<&'static str> for Sample {
 	}
 }
 
-impl Into<AVSampleFormat> for Sample {
+impl From<Sample> for AVSampleFormat {
 	#[inline]
-	fn into(self) -> AVSampleFormat {
-		match self {
+	fn from(val: Sample) -> Self {
+		match val {
 			Sample::None => AV_SAMPLE_FMT_NONE,
 
 			Sample::U8(Type::Packed) => AV_SAMPLE_FMT_U8,
