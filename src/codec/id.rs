@@ -241,7 +241,7 @@ pub enum Id {
 	YLC,
 
 	// various PCM "codecs"
-	// PCM_S16LE,
+	PCM_S16LE,
 	PCM_S16BE,
 	PCM_U16LE,
 	PCM_U16BE,
@@ -752,7 +752,7 @@ impl From<AVCodecID> for Id {
 			AV_CODEC_ID_YLC => Id::YLC,
 
 			// various PCM "codecs"
-			// AV_CODEC_ID_PCM_S16LE => Id::PCM_S16LE,
+			AV_CODEC_ID_PCM_S16LE => Id::PCM_S16LE,
 			AV_CODEC_ID_PCM_S16BE => Id::PCM_S16BE,
 			AV_CODEC_ID_PCM_U16LE => Id::PCM_U16LE,
 			AV_CODEC_ID_PCM_U16BE => Id::PCM_U16BE,
@@ -1259,6 +1259,7 @@ impl Into<AVCodecID> for Id {
 			Id::YLC => AV_CODEC_ID_YLC,
 
 			// various PCM "codecs"
+			Id::PCM_S16LE => AV_CODEC_ID_PCM_S16LE,
 			Id::PCM_S16BE => AV_CODEC_ID_PCM_S16BE,
 			Id::PCM_U16LE => AV_CODEC_ID_PCM_U16LE,
 			Id::PCM_U16BE => AV_CODEC_ID_PCM_U16BE,
