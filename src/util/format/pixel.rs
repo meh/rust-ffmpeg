@@ -1,6 +1,7 @@
 use std::{
 	ffi::{CStr, CString, NulError},
 	fmt::{self, Display},
+	mem::transmute,
 	str::{from_utf8_unchecked, FromStr},
 };
 
@@ -324,6 +325,8 @@ pub enum Pixel {
 	DRM_PRIME,
 	#[cfg(feature = "ffmpeg_4_0")]
 	OPENCL,
+
+	OTHER(i32),
 }
 
 #[derive(Clone, Copy, PartialEq, Eq)]
@@ -620,7 +623,7 @@ impl From<AVPixelFormat> for Pixel {
 			#[cfg(feature = "ffmpeg_4_0")]
 			AV_PIX_FMT_OPENCL => Pixel::OPENCL,
 
-			_ => unimplemented!(),
+			value => Pixel::OTHER(value as i32),
 		}
 	}
 }
@@ -940,6 +943,8 @@ impl From<Pixel> for AVPixelFormat {
 			Pixel::DRM_PRIME => AV_PIX_FMT_DRM_PRIME,
 			#[cfg(feature = "ffmpeg_4_0")]
 			Pixel::OPENCL => AV_PIX_FMT_OPENCL,
+
+			Pixel::OTHER(value) => unsafe { transmute(value) },
 		}
 	}
 }
