@@ -2,6 +2,7 @@ use std::{
 	ffi::CString,
 	mem,
 	ops::{Deref, DerefMut},
+	ptr,
 };
 
 use super::{common::Context, destructor};
@@ -17,6 +18,7 @@ pub struct Input {
 	ctx: Context,
 	// keeps IO proxy alive, no way to drop it otherwise
 	_io: Option<Io>,
+	has_found_streams: bool,
 }
 
 unsafe impl Send for Input {}
@@ -27,6 +29,7 @@ impl Input {
 			ptr,
 			ctx: Context::wrap(ptr, destructor::Mode::Input),
 			_io: None,
+			has_found_streams: false,
 		}
 	}
 
@@ -35,6 +38,7 @@ impl Input {
 			ptr,
 			ctx: Context::wrap(ptr, destructor::Mode::Input),
 			_io: Some(io),
+			has_found_streams: false,
 		}
 	}
 
@@ -96,6 +100,23 @@ impl Input {
 				None
 			} else {
 				Some(Codec::wrap(ptr))
+			}
+		}
+	}
+
+	pub fn find_stream_info(&mut self) -> Result<(), Error> {
+		// avformat_find_stream_info crashes the app with a memory error if ran twice
+		if self.has_found_streams {
+			return Ok(());
+		}
+
+		unsafe {
+			match avformat_find_stream_info(self.as_mut_ptr(), ptr::null_mut()) {
+				r if r >= 0 => {
+					self.has_found_streams = true;
+					Ok(())
+				}
+				e => Err(Error::from(e)),
 			}
 		}
 	}

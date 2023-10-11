@@ -44,11 +44,7 @@ pub fn open(path_or_url: impl AsRef<OsStr>, format: &Format) -> Result<Context, 
 		match *format {
 			Format::Input(ref format) => {
 				match avformat_open_input(&mut ps, path.as_ptr(), format.as_ptr() as *mut _, ptr::null_mut()) {
-					0 => match avformat_find_stream_info(ps, ptr::null_mut()) {
-						r if r >= 0 => Ok(Context::Input(context::Input::wrap(ps))),
-						e => Err(Error::from(e)),
-					},
-
+					0 => Ok(Context::Input(context::Input::wrap(ps))),
 					e => Err(Error::from(e)),
 				}
 			}
@@ -80,11 +76,7 @@ pub fn open_with(path_or_url: impl AsRef<OsStr>, format: &Format, options: Dicti
 				Dictionary::own(opts);
 
 				match res {
-					0 => match avformat_find_stream_info(ps, ptr::null_mut()) {
-						r if r >= 0 => Ok(Context::Input(context::Input::wrap(ps))),
-						e => Err(Error::from(e)),
-					},
-
+					0 => Ok(Context::Input(context::Input::wrap(ps))),
 					e => Err(Error::from(e)),
 				}
 			}
@@ -109,14 +101,7 @@ pub fn input(path_or_url: impl AsRef<OsStr>) -> Result<context::Input, Error> {
 		let path = from_os_str(path_or_url);
 
 		match avformat_open_input(&mut ps, path.as_ptr(), ptr::null(), ptr::null_mut()) {
-			0 => match avformat_find_stream_info(ps, ptr::null_mut()) {
-				r if r >= 0 => Ok(context::Input::wrap(ps)),
-				e => {
-					avformat_close_input(&mut ps);
-					Err(Error::from(e))
-				}
-			},
-
+			0 => Ok(context::Input::wrap(ps)),
 			e => Err(Error::from(e)),
 		}
 	}
@@ -132,14 +117,7 @@ pub fn input_with_dictionary(path_or_url: impl AsRef<OsStr>, options: Dictionary
 		Dictionary::own(opts);
 
 		match res {
-			0 => match avformat_find_stream_info(ps, ptr::null_mut()) {
-				r if r >= 0 => Ok(context::Input::wrap(ps)),
-				e => {
-					avformat_close_input(&mut ps);
-					Err(Error::from(e))
-				}
-			},
-
+			0 => Ok(context::Input::wrap(ps)),
 			e => Err(Error::from(e)),
 		}
 	}
@@ -155,14 +133,7 @@ pub fn input_with_interrupt<P: AsRef<OsStr>>(
 		(*ps).interrupt_callback = interrupt::new(Box::new(closure)).interrupt;
 
 		match avformat_open_input(&mut ps, path.as_ptr(), ptr::null(), ptr::null_mut()) {
-			0 => match avformat_find_stream_info(ps, ptr::null_mut()) {
-				r if r >= 0 => Ok(context::Input::wrap(ps)),
-				e => {
-					avformat_close_input(&mut ps);
-					Err(Error::from(e))
-				}
-			},
-
+			0 => Ok(context::Input::wrap(ps)),
 			e => Err(Error::from(e)),
 		}
 	}
@@ -190,14 +161,7 @@ where
 		Dictionary::own(opts);
 
 		match res {
-			0 => match avformat_find_stream_info(ps, std::ptr::null_mut()) {
-				r if r >= 0 => Ok(context::Input::wrap(ps)),
-				e => {
-					avformat_close_input(&mut ps);
-					Err(Error::from(e))
-				}
-			},
-
+			0 => Ok(context::Input::wrap(ps)),
 			e => Err(Error::from(e)),
 		}
 	}

@@ -70,8 +70,7 @@ impl Io {
 fn as_error(err: io::Error) -> c_int {
 	if let Some(value) = err.raw_os_error() {
 		value.try_into().unwrap()
-	}
-	else {
+	} else {
 		EINVAL
 	}
 }
@@ -113,8 +112,7 @@ unsafe extern "C" fn seek(opaque: *mut c_void, offset: i64, whence: c_int) -> i6
 			Ok(size) => size.try_into().unwrap(),
 			Err(err) => as_error(err).into(),
 		}
-	}
-	else {
+	} else {
 		let whence = match whence {
 			SEEK_SET => SeekFrom::Start(offset.try_into().unwrap()),
 			SEEK_END => SeekFrom::End(offset.try_into().unwrap()),
@@ -220,15 +218,21 @@ pub fn input(io: impl Read + Seek + 'static) -> Result<context::Input, Error> {
 		(*ps).pb = io.as_mut_ptr();
 
 		match avformat_open_input(&mut ps, ptr::null_mut(), ptr::null_mut(), ptr::null_mut()) {
-			0 => match avformat_find_stream_info(ps, ptr::null_mut()) {
-				r if r >= 0 => Ok(context::Input::wrap_with(ps, io)),
+			0 => Ok(context::Input::wrap_with(ps, io)),
+			e => Err(Error::from(e)),
+		}
+	}
+}
 
-				e => {
-					avformat_close_input(&mut ps);
-					Err(Error::from(e))
-				}
-			},
+pub fn stream(io: impl Read + 'static) -> Result<context::Input, Error> {
+	unsafe {
+		let mut ps = avformat_alloc_context();
+		let mut io = Io::stream(io);
+		(*ps).flags |= AVFMT_FLAG_CUSTOM_IO;
+		(*ps).pb = io.as_mut_ptr();
 
+		match avformat_open_input(&mut ps, ptr::null_mut(), ptr::null_mut(), ptr::null_mut()) {
+			0 => Ok(context::Input::wrap_with(ps, io)),
 			e => Err(Error::from(e)),
 		}
 	}
@@ -242,15 +246,7 @@ pub fn input_as(io: impl Read + Seek + 'static, format: format::Input) -> Result
 		(*ps).pb = io.as_mut_ptr();
 
 		match avformat_open_input(&mut ps, ptr::null_mut(), format.as_ptr(), ptr::null_mut()) {
-			0 => match avformat_find_stream_info(ps, ptr::null_mut()) {
-				r if r >= 0 => Ok(context::Input::wrap_with(ps, io)),
-
-				e => {
-					avformat_close_input(&mut ps);
-					Err(Error::from(e))
-				}
-			},
-
+			0 => Ok(context::Input::wrap_with(ps, io)),
 			e => Err(Error::from(e)),
 		}
 	}
