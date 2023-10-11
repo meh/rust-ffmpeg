@@ -1,5 +1,6 @@
 use std::{
 	ffi::{CStr, CString, NulError},
+	fmt::{self, Display},
 	str::{from_utf8_unchecked, FromStr},
 };
 
@@ -624,10 +625,10 @@ impl From<AVPixelFormat> for Pixel {
 	}
 }
 
-impl Into<AVPixelFormat> for Pixel {
+impl From<Pixel> for AVPixelFormat {
 	#[inline]
-	fn into(self) -> AVPixelFormat {
-		match self {
+	fn from(val: Pixel) -> Self {
+		match val {
 			Pixel::None => AV_PIX_FMT_NONE,
 
 			Pixel::YUV420P => AV_PIX_FMT_YUV420P,
@@ -943,6 +944,14 @@ impl Into<AVPixelFormat> for Pixel {
 	}
 }
 
+impl Display for Pixel {
+	fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+		let name = unsafe { av_get_pix_fmt_name((*self).into()) };
+		let name = unsafe { from_utf8_unchecked(CStr::from_ptr(name).to_bytes()) };
+		write!(f, "{}", name)
+	}
+}
+
 #[derive(Error, Debug)]
 pub enum ParsePixelError {
 	#[error("NULL error")]
@@ -962,8 +971,7 @@ impl FromStr for Pixel {
 
 		if format == Pixel::None {
 			Err(ParsePixelError::UnknownFormat)
-		}
-		else {
+		} else {
 			Ok(format)
 		}
 	}
