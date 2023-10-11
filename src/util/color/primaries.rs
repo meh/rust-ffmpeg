@@ -1,4 +1,4 @@
-use std::ffi::CStr;
+use std::{ffi::CStr, fmt::Display};
 
 use crate::ffi::{AVColorPrimaries::*, *};
 
@@ -87,5 +87,11 @@ impl Into<AVColorPrimaries> for Primaries {
 			#[cfg(feature = "ffmpeg_4_3")]
 			Primaries::EBU3213 => AVCOL_PRI_EBU3213,
 		}
+	}
+}
+
+impl Display for Primaries {
+	fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+		write!(f, "{}", self.name().unwrap_or("unknown"))
 	}
 }

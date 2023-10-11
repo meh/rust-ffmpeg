@@ -1,4 +1,4 @@
-use std::ffi::CStr;
+use std::{ffi::CStr, fmt::Display};
 
 use crate::ffi::{AVColorTransferCharacteristic::*, *};
 
@@ -91,5 +91,11 @@ impl Into<AVColorTransferCharacteristic> for TransferCharacteristic {
 			TransferCharacteristic::SMPTE428 => AVCOL_TRC_SMPTE428,
 			TransferCharacteristic::ARIB_STD_B67 => AVCOL_TRC_ARIB_STD_B67,
 		}
+	}
+}
+
+impl Display for TransferCharacteristic {
+	fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+		write!(f, "{}", self.name().unwrap_or("unknown"))
 	}
 }

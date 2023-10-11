@@ -1,4 +1,12 @@
-use std::{array, ffi::CString, fmt, mem, ptr, slice};
+use std::{
+	array,
+	ffi::{CString, NulError},
+	fmt::{self, Display},
+	mem, ptr, slice,
+	str::FromStr,
+};
+
+use thiserror::Error;
 
 use crate::{
 	ffi::{AVChannel, AVChannelOrder, *},
@@ -9,6 +17,8 @@ use crate::{
 
 #[derive(Copy, Clone, PartialEq, Eq, Debug)]
 #[repr(i32)]
+#[cfg_attr(feature = "serde", derive(serde_derive::Serialize, serde_derive::Deserialize))]
+#[cfg_attr(feature = "serde", serde(crate = "serde_", rename_all = "kebab-case"))]
 pub enum Channel {
 	None = AVChannel::AV_CHAN_NONE.0,
 	FrontLeft = AVChannel::AV_CHAN_FRONT_LEFT.0,
@@ -48,6 +58,8 @@ pub enum Channel {
 
 #[derive(Copy, Clone, PartialEq, Eq, Debug)]
 #[repr(u32)]
+#[cfg_attr(feature = "serde", derive(serde_derive::Serialize, serde_derive::Deserialize))]
+#[cfg_attr(feature = "serde", serde(crate = "serde_", rename_all = "kebab-case"))]
 pub enum ChannelOrder {
 	Unspecified = AVChannelOrder::AV_CHANNEL_ORDER_UNSPEC.0,
 	Native = AVChannelOrder::AV_CHANNEL_ORDER_NATIVE.0,
@@ -431,6 +443,27 @@ impl PartialEq for ChannelLayout {
 	}
 }
 
+impl Display for ChannelLayout {
+	fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+		write!(f, "{}", self.describe().unwrap_or_else(|_| String::from("unknown")))
+	}
+}
+
+#[derive(Error, Debug)]
+pub enum ParseChannelLayoutError {
+	#[error("unknown format")]
+	UnknownLayout,
+}
+
+impl FromStr for ChannelLayout {
+	type Err = ParseChannelLayoutError;
+
+	#[inline(always)]
+	fn from_str(s: &str) -> Result<ChannelLayout, ParseChannelLayoutError> {
+		ChannelLayout::from_name(s).map_err(|_| ParseChannelLayoutError::UnknownLayout)
+	}
+}
+
 #[derive(Debug, Clone, PartialEq, Eq)]
 #[repr(transparent)]
 pub struct CustomChannel(AVChannelCustom);
@@ -475,6 +508,45 @@ impl From<CustomChannel> for AVChannelCustom {
 impl From<AVChannelCustom> for CustomChannel {
 	fn from(v: AVChannelCustom) -> CustomChannel {
 		Self(v)
+	}
+}
+
+#[cfg(test)]
+mod tests {
+	use std::str::FromStr;
+
+	use crate::ChannelLayout;
+
+	#[test]
+	fn mono() {
+		let layout = ChannelLayout::default(1);
+		let layout_string = layout.to_string();
+		assert_eq!(layout_string, "mono");
+		assert_eq!(layout, ChannelLayout::from_str(layout_string.as_str()).unwrap());
+	}
+
+	#[test]
+	fn stereo() {
+		let layout = ChannelLayout::default(2);
+		let layout_string = layout.to_string();
+		assert_eq!(layout_string, "stereo");
+		assert_eq!(layout, ChannelLayout::from_str(layout_string.as_str()).unwrap());
+	}
+
+	#[test]
+	fn six_point_zero() {
+		let layout = ChannelLayout::from_name("6.0").unwrap();
+		let layout_string = layout.to_string();
+		assert_eq!(layout_string, "6.0");
+		assert_eq!(layout, ChannelLayout::from_str(layout_string.as_str()).unwrap());
+	}
+
+	#[test]
+	fn seven_point_one_wide() {
+		let layout = ChannelLayout::from_name("7.1(wide)").unwrap();
+		let layout_string = layout.to_string();
+		assert_eq!(layout_string, "7.1(wide)");
+		assert_eq!(layout, ChannelLayout::from_str(layout_string.as_str()).unwrap());
 	}
 }
 
@@ -629,7 +701,7 @@ mod serde {
 	}
 
 	#[cfg(test)]
-	mod test {
+	mod tests {
 		use std::fmt::Debug;
 
 		use serde_::{de::DeserializeOwned, Serialize};

@@ -1,6 +1,8 @@
 use crate::ffi::{AVFieldOrder::*, *};
 
 #[derive(Eq, PartialEq, Clone, Copy, Debug)]
+#[cfg_attr(feature = "serde", derive(serde_derive::Serialize, serde_derive::Deserialize))]
+#[cfg_attr(feature = "serde", serde(crate = "serde_", rename_all = "lowercase"))]
 pub enum FieldOrder {
 	Unknown,
 	Progressive,
@@ -33,5 +35,24 @@ impl Into<AVFieldOrder> for FieldOrder {
 			FieldOrder::TB => AV_FIELD_TB,
 			FieldOrder::BT => AV_FIELD_BT,
 		}
+	}
+}
+
+#[cfg(feature = "serde")]
+#[cfg(test)]
+mod tests {
+	use crate::FieldOrder;
+
+	#[test]
+	fn field_order() {
+		assert_eq!(serde_json::to_string(&FieldOrder::TT).unwrap(), "\"tt\"");
+		assert_eq!(serde_json::to_string(&FieldOrder::BB).unwrap(), "\"bb\"");
+		assert_eq!(serde_json::to_string(&FieldOrder::TB).unwrap(), "\"tb\"");
+		assert_eq!(serde_json::to_string(&FieldOrder::BT).unwrap(), "\"bt\"");
+		assert_eq!(serde_json::to_string(&FieldOrder::Unknown).unwrap(), "\"unknown\"");
+		assert_eq!(
+			serde_json::to_string(&FieldOrder::Progressive).unwrap(),
+			"\"progressive\""
+		);
 	}
 }

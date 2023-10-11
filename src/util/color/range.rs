@@ -1,4 +1,4 @@
-use std::ffi::CStr;
+use std::{ffi::CStr, fmt::Display};
 
 use crate::ffi::{AVColorRange::*, *};
 
@@ -43,5 +43,11 @@ impl Into<AVColorRange> for Range {
 			Range::MPEG => AVCOL_RANGE_MPEG,
 			Range::JPEG => AVCOL_RANGE_JPEG,
 		}
+	}
+}
+
+impl Display for Range {
+	fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+		write!(f, "{}", self.name().unwrap_or("unknown"))
 	}
 }

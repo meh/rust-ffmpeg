@@ -408,8 +408,7 @@ impl Display for Profile {
 }
 
 #[cfg(test)]
-mod test {
-
+mod tests {
 	use super::Profile;
 
 	#[test]

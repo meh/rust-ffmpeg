@@ -1,4 +1,4 @@
-use std::{ffi::CStr, str::from_utf8_unchecked};
+use std::{ffi::CStr, fmt::Display, str::from_utf8_unchecked};
 
 use crate::ffi::{AVColorSpace::*, *};
 
@@ -85,5 +85,11 @@ impl Into<AVColorSpace> for Space {
 			Space::ChromaDerivedCL => AVCOL_SPC_CHROMA_DERIVED_CL,
 			Space::ICTCP => AVCOL_SPC_ICTCP,
 		}
+	}
+}
+
+impl Display for Space {
+	fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+		write!(f, "{}", self.name())
 	}
 }

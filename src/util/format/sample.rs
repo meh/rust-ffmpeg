@@ -280,3 +280,29 @@ impl Drop for Buffer {
 		}
 	}
 }
+
+#[cfg(test)]
+mod tests {
+	use super::{Sample, Type};
+
+	#[cfg(feature = "serde")]
+	#[test]
+	fn sample() {
+		assert_eq!(
+			serde_json::to_string(&Sample::U8(Type::Packed)).unwrap(),
+			"{\"u8\":\"packed\"}"
+		);
+		assert_eq!(
+			serde_json::to_string(&Sample::F64(Type::Planar)).unwrap(),
+			"{\"f64\":\"planar\"}"
+		);
+	}
+
+	#[test]
+	fn sample_to_string() {
+		assert_eq!(Sample::U8(Type::Packed).to_string(), "u8");
+		assert_eq!(Sample::U8(Type::Planar).to_string(), "u8p");
+		assert_eq!(Sample::F64(Type::Packed).to_string(), "dbl");
+		assert_eq!(Sample::F64(Type::Planar).to_string(), "dblp");
+	}
+}
