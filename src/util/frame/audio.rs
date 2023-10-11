@@ -49,8 +49,7 @@ impl Audio {
 		unsafe {
 			if (*self.as_ptr()).format == -1 {
 				format::Sample::None
-			}
-			else {
+			} else {
 				format::Sample::from(mem::transmute::<_, AVSampleFormat>((*self.as_ptr()).format))
 			}
 		}
@@ -131,8 +130,7 @@ impl Audio {
 
 		if self.is_packed() {
 			1
-		}
-		else {
+		} else {
 			self.channels() as usize
 		}
 	}
@@ -149,8 +147,7 @@ impl Audio {
 
 		let len = if self.is_packed() {
 			self.samples() * self.channels() as usize
-		}
-		else {
+		} else {
 			self.samples()
 		};
 		unsafe { slice::from_raw_parts((*self.as_ptr()).data[index] as *const T, len) }
@@ -168,8 +165,7 @@ impl Audio {
 
 		let len = if self.is_packed() {
 			self.samples() * self.channels() as usize
-		}
-		else {
+		} else {
 			self.samples()
 		};
 		unsafe { slice::from_raw_parts_mut((*self.as_mut_ptr()).data[index] as *mut T, len) }
@@ -226,10 +222,7 @@ impl ::std::fmt::Debug for Audio {
 
 impl Clone for Audio {
 	fn clone(&self) -> Self {
-		let mut cloned = Audio::new(self.format(), self.samples(), self.channel_layout());
-		cloned.clone_from(self);
-
-		cloned
+		unsafe { Audio::wrap(crate::sys::av_frame_clone(self.as_ptr())) }
 	}
 
 	fn clone_from(&mut self, source: &Self) {

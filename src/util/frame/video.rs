@@ -55,8 +55,7 @@ impl Video {
 		unsafe {
 			if (*self.as_ptr()).format == -1 {
 				format::Pixel::None
-			}
-			else {
+			} else {
 				format::Pixel::from(mem::transmute::<_, AVPixelFormat>((*self.as_ptr()).format))
 			}
 		}
@@ -229,8 +228,7 @@ impl Video {
 		if let Some(desc) = self.format().descriptor() {
 			let s = desc.log2_chroma_w();
 			(self.width() + (1 << s) - 1) >> s
-		}
-		else {
+		} else {
 			self.width()
 		}
 	}
@@ -249,8 +247,7 @@ impl Video {
 		if let Some(desc) = self.format().descriptor() {
 			let s = desc.log2_chroma_h();
 			(self.height() + (1 << s) - 1) >> s
-		}
-		else {
+		} else {
 			self.height()
 		}
 	}
@@ -318,6 +315,14 @@ impl Video {
 			)
 		}
 	}
+
+	#[inline]
+	pub fn deep_clone(&mut self, source: &Self) {
+		unsafe {
+			av_frame_copy(self.as_mut_ptr(), source.as_ptr());
+			av_frame_copy_props(self.as_mut_ptr(), source.as_ptr());
+		}
+	}
 }
 
 impl Deref for Video {
@@ -339,10 +344,7 @@ impl DerefMut for Video {
 impl Clone for Video {
 	#[inline]
 	fn clone(&self) -> Self {
-		let mut cloned = Video::new(self.format(), self.width(), self.height());
-		cloned.clone_from(self);
-
-		cloned
+		unsafe { Video::wrap(crate::sys::av_frame_clone(self.as_ptr())) }
 	}
 
 	#[inline]
