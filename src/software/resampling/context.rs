@@ -37,10 +37,10 @@ impl Context {
 	/// Create a resampler with the given definitions.
 	pub fn get(
 		src_format: format::Sample,
-		src_channel_layout: ChannelLayout,
+		mut src_channel_layout: ChannelLayout,
 		src_rate: u32,
 		dst_format: format::Sample,
-		dst_channel_layout: ChannelLayout,
+		mut dst_channel_layout: ChannelLayout,
 		dst_rate: u32,
 	) -> Result<Self, Error> {
 		unsafe {
@@ -65,10 +65,10 @@ impl Context {
 			{
 				swr_alloc_set_opts2(
 					&mut ctx as *mut _,
-					dst_channel_layout.as_ptr(),
+					dst_channel_layout.as_mut_ptr(),
 					dst_format.into(),
 					dst_rate as c_int,
-					src_channel_layout.as_ptr(),
+					src_channel_layout.as_mut_ptr(),
 					src_format.into(),
 					src_rate as c_int,
 					0,
@@ -96,8 +96,7 @@ impl Context {
 						},
 					}),
 				}
-			}
-			else {
+			} else {
 				Err(Error::InvalidData)
 			}
 		}

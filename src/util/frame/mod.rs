@@ -142,6 +142,7 @@ impl Frame {
 	}
 
 	#[inline]
+	#[cfg(feature = "ffmpeg_6_0")]
 	pub fn duration(&self) -> Option<i64> {
 		unsafe {
 			match (*self.as_ptr()).duration {
@@ -152,6 +153,7 @@ impl Frame {
 	}
 
 	#[inline]
+	#[cfg(feature = "ffmpeg_6_0")]
 	pub fn set_duration(&mut self, value: Option<i64>) {
 		unsafe {
 			(*self.as_mut_ptr()).duration = value.unwrap_or(0);
@@ -187,8 +189,7 @@ impl Frame {
 
 			if ptr.is_null() {
 				None
-			}
-			else {
+			} else {
 				Some(SideData::wrap(ptr))
 			}
 		}
@@ -206,8 +207,7 @@ impl Frame {
 
 			if ptr.is_null() {
 				None
-			}
-			else {
+			} else {
 				Some(SideData::wrap(ptr))
 			}
 		}

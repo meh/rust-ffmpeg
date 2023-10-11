@@ -246,8 +246,7 @@ impl ChannelLayout {
 				if bytes_needed <= buf.len() {
 					let s = String::from_utf8_lossy(&buf[..bytes_needed]);
 					Ok(Ok(s.into_owned()))
-				}
-				else {
+				} else {
 					Ok(Err(bytes_needed))
 				}
 			}
@@ -290,6 +289,10 @@ impl ChannelLayout {
 
 	pub fn as_ptr(&self) -> *const AVChannelLayout {
 		&self.0 as *const _
+	}
+
+	pub fn as_mut_ptr(&mut self) -> *mut AVChannelLayout {
+		&mut self.0
 	}
 
 	pub fn native_order_bits(&self) -> Option<u64> {
@@ -400,8 +403,7 @@ impl fmt::Debug for ChannelLayout {
 
 		if let Some(custom) = self.custom_channels() {
 			d.field("map", &custom);
-		}
-		else {
+		} else {
 			unsafe {
 				d.field("mask", &self.0.u.mask);
 			}
@@ -545,8 +547,7 @@ mod serde {
 
 			if let Some(custom) = self.custom_channels() {
 				s.serialize_field("map", &custom)?;
-			}
-			else {
+			} else {
 				s.serialize_field::<u64>("mask", unsafe { &self.0.u.mask })?;
 			}
 
