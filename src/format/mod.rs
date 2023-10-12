@@ -250,7 +250,7 @@ pub fn output_as_with(
 }
 
 pub fn output_with_format_dictionary_and_interrupt<P: AsRef<OsStr>, F>(
-	path_or_url: impl AsRef<OsStr>,
+	path_or_url: P,
 	format: format::Output,
 	options: Dictionary,
 	closure: F,
