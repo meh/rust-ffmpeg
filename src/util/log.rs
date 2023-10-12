@@ -4,18 +4,6 @@ use vsprintf::vsprintf;
 
 use crate::ffi::*;
 
-pub fn set_level(level: tracing::Level) {
-	unsafe {
-		av_log_set_level(match level {
-			tracing::Level::ERROR => AV_LOG_ERROR,
-			tracing::Level::WARN => AV_LOG_WARNING,
-			tracing::Level::INFO => AV_LOG_INFO,
-			tracing::Level::DEBUG => AV_LOG_DEBUG,
-			tracing::Level::TRACE => AV_LOG_TRACE,
-		});
-	}
-}
-
 #[cfg(target_os = "macos")]
 unsafe extern "C" fn callback(_ptr: *mut c_void, level: c_int, fmt: *const c_char, args: va_list) {
 	let string = vsprintf(fmt, args).unwrap();
