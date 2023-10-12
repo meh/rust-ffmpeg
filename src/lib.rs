@@ -23,6 +23,9 @@ pub use crate::util::{
 	time,
 };
 
+#[cfg(feature = "tracing")]
+pub use util::log;
+
 pub type Result<T> = ::std::result::Result<T, Error>;
 
 #[cfg(feature = "format")]
@@ -65,7 +68,7 @@ pub mod software;
 
 fn init_util() {
 	util::error::register_all();
-	#[cfg(feature = "log")]
+	#[cfg(feature = "tracing")]
 	util::log::register();
 }
 

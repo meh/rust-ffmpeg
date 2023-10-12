@@ -16,7 +16,7 @@ pub mod range;
 pub mod rational;
 pub mod time;
 
-#[cfg(feature = "log")]
+#[cfg(feature = "tracing")]
 pub mod log;
 
 use std::{
