@@ -6,6 +6,10 @@ use crate::ffi::*;
 
 #[cfg(target_os = "macos")]
 unsafe extern "C" fn callback(_ptr: *mut c_void, level: c_int, fmt: *const c_char, args: va_list) {
+	if av_log_get_level() <= level {
+		return;
+	};
+
 	let string = vsprintf(fmt, args).unwrap();
 	let string = string.trim();
 
@@ -21,6 +25,10 @@ unsafe extern "C" fn callback(_ptr: *mut c_void, level: c_int, fmt: *const c_cha
 
 #[cfg(not(target_os = "macos"))]
 unsafe extern "C" fn callback(_ptr: *mut c_void, level: c_int, fmt: *const c_char, args: *mut __va_list_tag) {
+	if av_log_get_level() <= level {
+		return;
+	};
+
 	let string = vsprintf(fmt, args).unwrap();
 	let string = string.trim();
 
