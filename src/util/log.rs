@@ -6,7 +6,8 @@ use crate::ffi::*;
 
 #[cfg(target_os = "macos")]
 unsafe extern "C" fn callback(_ptr: *mut c_void, level: c_int, fmt: *const c_char, args: va_list) {
-	let string = vsprintf(fmt, args).unwrap().trim();
+	let string = vsprintf(fmt, args).unwrap();
+	let string = string.trim();
 
 	match level {
 		AV_LOG_PANIC | AV_LOG_FATAL | AV_LOG_ERROR => tracing::error!(string),
@@ -20,7 +21,8 @@ unsafe extern "C" fn callback(_ptr: *mut c_void, level: c_int, fmt: *const c_cha
 
 #[cfg(not(target_os = "macos"))]
 unsafe extern "C" fn callback(_ptr: *mut c_void, level: c_int, fmt: *const c_char, args: *mut __va_list_tag) {
-	let string = vsprintf(fmt, args).unwrap().trim();
+	let string = vsprintf(fmt, args).unwrap();
+	let string = string.trim();
 
 	match level {
 		AV_LOG_PANIC | AV_LOG_FATAL | AV_LOG_ERROR => tracing::error!(string),
