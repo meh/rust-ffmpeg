@@ -259,7 +259,11 @@ impl Frame {
 impl Clone for Frame {
 	#[inline]
 	fn clone(&self) -> Self {
-		unsafe { Frame::wrap(av_frame_clone(self.as_ptr())) }
+		unsafe {
+			let mut frame = Frame::wrap(av_frame_clone(self.as_ptr()));
+			frame._own = true;
+			frame
+		}
 	}
 
 	#[inline]

@@ -222,7 +222,11 @@ impl ::std::fmt::Debug for Audio {
 
 impl Clone for Audio {
 	fn clone(&self) -> Self {
-		unsafe { Audio::wrap(crate::sys::av_frame_clone(self.as_ptr())) }
+		unsafe {
+			let mut frame = Audio::wrap(av_frame_clone(self.as_ptr()));
+			frame._own = true;
+			frame
+		}
 	}
 
 	fn clone_from(&mut self, source: &Self) {

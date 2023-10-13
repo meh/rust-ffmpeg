@@ -344,7 +344,11 @@ impl DerefMut for Video {
 impl Clone for Video {
 	#[inline]
 	fn clone(&self) -> Self {
-		unsafe { Video::wrap(crate::sys::av_frame_clone(self.as_ptr())) }
+		unsafe {
+			let mut frame = Video::wrap(av_frame_clone(self.as_ptr()));
+			frame._own = true;
+			frame
+		}
 	}
 
 	#[inline]
