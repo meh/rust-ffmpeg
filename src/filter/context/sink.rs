@@ -1,7 +1,7 @@
 use libc::c_int;
 
 use super::Context;
-use crate::{ffi::*, Error, Frame};
+use crate::{ffi::*, Error, Frame, Rational};
 
 pub struct Sink<'a> {
 	ctx: &'a mut Context<'a>,
@@ -38,5 +38,9 @@ impl<'a> Sink<'a> {
 		unsafe {
 			av_buffersink_set_frame_size(self.ctx.as_mut_ptr(), value);
 		}
+	}
+
+	pub fn time_base(&self) -> Rational {
+		unsafe { Rational::from(av_buffersink_get_time_base(self.ctx.as_ptr())) }
 	}
 }
