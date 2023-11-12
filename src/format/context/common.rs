@@ -3,7 +3,12 @@ use std::{fmt, mem, ptr, rc::Rc};
 use libc::{c_int, c_uint};
 
 use super::destructor::{self, Destructor};
-use crate::{ffi::*, media, Chapter, ChapterMut, DictionaryRef, Stream, StreamMut};
+use crate::{
+	ffi::*,
+	media,
+	option::{get_option, OptionType},
+	Chapter, ChapterMut, DictionaryRef, Stream, StreamMut,
+};
 
 pub struct Context {
 	ptr: *mut AVFormatContext,
@@ -41,8 +46,7 @@ impl Context {
 		unsafe {
 			if index >= self.nb_streams() as usize {
 				None
-			}
-			else {
+			} else {
 				Some(Stream::wrap(self, index))
 			}
 		}
@@ -55,8 +59,7 @@ impl Context {
 		unsafe {
 			if index >= self.nb_streams() as usize {
 				None
-			}
-			else {
+			} else {
 				Some(StreamMut::wrap(self, index))
 			}
 		}
@@ -100,8 +103,7 @@ impl Context {
 		unsafe {
 			if index >= self.nb_chapters() as usize {
 				None
-			}
-			else {
+			} else {
 				Some(Chapter::wrap(self, index))
 			}
 		}
@@ -114,8 +116,7 @@ impl Context {
 		unsafe {
 			if index >= self.nb_chapters() as usize {
 				None
-			}
-			else {
+			} else {
 				Some(ChapterMut::wrap(self, index))
 			}
 		}
@@ -131,6 +132,10 @@ impl Context {
 
 	pub fn metadata(&self) -> DictionaryRef<'_> {
 		unsafe { DictionaryRef::wrap((*self.as_ptr()).metadata) }
+	}
+
+	pub fn option(&self, option: &crate::option::Option) -> Option<OptionType> {
+		unsafe { get_option((*self.as_ptr()).priv_data, option) }
 	}
 }
 
@@ -184,8 +189,7 @@ impl<'a> Best<'a> {
 
 			if index >= 0 && !decoder.is_null() {
 				Some(Stream::wrap(self.context, index as usize))
-			}
-			else {
+			} else {
 				None
 			}
 		}

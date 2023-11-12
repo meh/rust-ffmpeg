@@ -1,7 +1,13 @@
 pub mod iter;
 mod traits;
 
-use std::ffi::CStr;
+use std::{
+	borrow::Cow,
+	ffi::{CStr, CString},
+	ptr,
+};
+
+use libc::c_void;
 
 use self::iter::AVOptionIterator;
 pub use self::traits::{Gettable, Iterable, Settable, Target};
@@ -95,7 +101,7 @@ impl From<Type> for AVOptionType {
 pub enum OptionType {
 	Int(i64),
 	Double(f64),
-	String(std::option::Option<&'static str>),
+	String(std::option::Option<Cow<'static, str>>),
 	Rational(Rational),
 	Bool(bool),
 	Pixel(Pixel),
@@ -187,7 +193,7 @@ impl Option {
 						return OptionType::String(None);
 					}
 
-					OptionType::String(Some(CStr::from_ptr(default.str_).to_str().unwrap()))
+					OptionType::String(CStr::from_ptr(default.str_).to_str().ok().map(Cow::from))
 				}
 				AV_OPT_TYPE_BOOL => OptionType::Bool(default.i64_ > 0),
 				AV_OPT_TYPE_RATIONAL => OptionType::Rational(default.dbl.into()),
@@ -226,6 +232,92 @@ impl Iterator for OptionIter {
 			}
 
 			return Some(Option::new(self.inner.class(), next));
+		}
+	}
+}
+
+pub unsafe fn get_option(ptr: *mut c_void, option: &crate::option::Option) -> std::option::Option<OptionType> {
+	let name = CString::new(option.name()).ok()?;
+
+	match option.kind() {
+		Type::Flags | Type::Int | Type::Int64 | Type::Constant | Type::Duration | Type::ChannelLayout | Type::c_ulong => {
+			let mut value = 0;
+			let res = unsafe { av_opt_get_int(ptr, name.as_ptr(), 0, &mut value) };
+
+			if res < 0 {
+				return None;
+			}
+
+			Some(OptionType::Int(value))
+		}
+
+		Type::Double | Type::Float => {
+			let mut value = 0.0;
+			let res = unsafe { av_opt_get_double(ptr, name.as_ptr(), 0, &mut value) };
+
+			if res < 0 {
+				return None;
+			}
+
+			Some(OptionType::Double(value))
+		}
+		Type::String | Type::Binary | Type::ImageSize | Type::Dictionary | Type::Color | Type::VideoRate => {
+			let mut value = ptr::null_mut();
+			let res = unsafe { av_opt_get(ptr, name.as_ptr(), 0, &mut value) };
+
+			if res < 0 {
+				return None;
+			}
+
+			if value.is_null() {
+				return Some(OptionType::String(None));
+			}
+
+			let string = unsafe { CStr::from_ptr(value as *const _) }.to_str().ok()?.to_string();
+			unsafe { av_free(value as *mut c_void) };
+			Some(OptionType::String(Some(string.into())))
+		}
+		Type::Rational => {
+			let mut value = AVRational { num: 0, den: 1 };
+			let res = unsafe { av_opt_get_q(ptr, name.as_ptr(), 0, &mut value) };
+
+			if res < 0 {
+				return None;
+			}
+
+			Some(OptionType::Rational(value.into()))
+		}
+
+		Type::PixelFormat => {
+			let mut value = AVPixelFormat::AV_PIX_FMT_NONE;
+			let res = unsafe { av_opt_get_pixel_fmt(ptr, name.as_ptr(), 0, &mut value) };
+
+			if res < 0 {
+				return None;
+			}
+
+			Some(OptionType::Pixel(value.into()))
+		}
+		Type::SampleFormat => {
+			let mut value = AVSampleFormat::AV_SAMPLE_FMT_NONE;
+			let res = unsafe { av_opt_get_sample_fmt(ptr, name.as_ptr(), 0, &mut value) };
+
+			if res < 0 {
+				return None;
+			}
+
+			Some(OptionType::Sample(value.into()))
+		}
+
+		Type::bool => {
+			let mut value = 0;
+			let res = unsafe { av_opt_get_int(ptr, name.as_ptr(), 0, &mut value) };
+
+			if res < 0 {
+				return None;
+			}
+
+			Some(OptionType::Bool(value > 0))
 		}
 	}
 }
