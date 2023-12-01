@@ -111,27 +111,3 @@ pub fn by_extension(ext: impl Into<String>) -> impl Iterator<Item = Input> {
 	let ext = ext.into();
 	all().filter(move |i| i.extensions().contains(&ext.as_ref()))
 }
-
-#[cfg(test)]
-mod tests {
-	use crate::format::input;
-
-	#[test]
-	fn test_options() {
-		input::all().for_each(|input| {
-			println!("\n\ninput: {}\n", input.name());
-			input.options().for_each(|option| {
-				println!(
-					"{}({:?} - {:?}): {:?}",
-					option.name(),
-					option.kind(),
-					option.default_value(),
-					option.help()
-				);
-				option.constants().for_each(|asdf| {
-					println!(" {}({:?}) - {:?}", asdf.name(), asdf.default_value(), asdf.help());
-				})
-			});
-		});
-	}
-}
