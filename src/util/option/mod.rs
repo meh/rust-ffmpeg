@@ -108,9 +108,9 @@ pub enum OptionType {
 	Sample(Sample),
 }
 
-pub struct OptionConstants(Option);
+pub struct OptionConstant(Option);
 
-impl OptionConstants {
+impl OptionConstant {
 	pub fn name(&self) -> &str {
 		self.0.name()
 	}
@@ -160,13 +160,13 @@ impl Option {
 		unsafe { (*self.option).type_.into() }
 	}
 
-	pub fn constants(&self) -> impl Iterator<Item = OptionConstants> + '_ {
+	pub fn constants(&self) -> impl Iterator<Item = OptionConstant> + '_ {
 		AVOptionIterator::from_option(self.class, self.option)
 			.take_while(|option| {
 				let option = *option;
 				(unsafe { *option }).type_ == AV_OPT_TYPE_CONST
 			})
-			.map(|option| OptionConstants(Option::new(self.class, option)))
+			.map(|option| OptionConstant(Option::new(self.class, option)))
 	}
 
 	pub fn default_value(&self) -> OptionType {
