@@ -153,8 +153,7 @@ impl Output {
 					(*self.as_mut_ptr()).nb_chapters = nb_chapters as u32;
 					let index = (*self.ctx.as_ptr()).nb_chapters - 1;
 					index as usize
-				}
-				else {
+				} else {
 					// failed to add the chapter
 					av_freep(ptr);
 					return Err(Error::Bug);

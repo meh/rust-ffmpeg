@@ -8,7 +8,7 @@ use std::{
 use libc::c_void;
 
 use super::Flags;
-use crate::{codec, ffi::*, media};
+use crate::{codec, ffi::*, media, option::OptionIter};
 
 #[derive(Copy, Clone)]
 pub struct Output {
@@ -43,8 +43,7 @@ impl Output {
 
 			if ptr.is_null() {
 				Vec::new()
-			}
-			else {
+			} else {
 				from_utf8_unchecked(CStr::from_ptr(ptr).to_bytes()).split(',').collect()
 			}
 		}
@@ -56,8 +55,7 @@ impl Output {
 
 			if ptr.is_null() {
 				Vec::new()
-			}
-			else {
+			} else {
 				from_utf8_unchecked(CStr::from_ptr(ptr).to_bytes()).split(',').collect()
 			}
 		}
@@ -80,6 +78,11 @@ impl Output {
 
 	pub fn flags(&self) -> Flags {
 		unsafe { Flags::from_bits_truncate((*self.as_ptr()).flags) }
+	}
+
+	pub fn options(&self) -> OptionIter {
+		let ptr = (unsafe { *self.as_ptr() }).priv_class;
+		OptionIter::new(ptr)
 	}
 }
 
@@ -108,8 +111,7 @@ impl Iterator for Iter {
 
 			if ptr.is_null() {
 				None
-			}
-			else {
+			} else {
 				Some(Output::wrap(ptr))
 			}
 		}

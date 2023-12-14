@@ -5,7 +5,12 @@ use libc::c_int;
 #[cfg(feature = "ffmpeg_3_1")]
 use super::Parameters;
 use super::{decoder::Decoder, encoder::Encoder, threading, Compliance, Debug, Flags, Id};
-use crate::{ffi::*, media, Codec, Error, Rational};
+use crate::{
+	ffi::*,
+	media,
+	option::{get_option, OptionType},
+	Codec, Error, Rational,
+};
 
 pub struct Context {
 	ptr: *mut AVCodecContext,
@@ -59,8 +64,7 @@ impl Context {
 		unsafe {
 			if (*self.as_ptr()).codec.is_null() {
 				None
-			}
-			else {
+			} else {
 				Some(Codec::wrap((*self.as_ptr()).codec as *mut _))
 			}
 		}
@@ -143,6 +147,10 @@ impl Context {
 		unsafe {
 			(*self.as_mut_ptr()).framerate = value.map(Into::into).unwrap_or(Rational::ZERO).into();
 		}
+	}
+
+	pub fn option(&self, option: &crate::option::Option) -> Option<OptionType> {
+		unsafe { get_option((*self.as_ptr()).priv_data, option) }
 	}
 }
 

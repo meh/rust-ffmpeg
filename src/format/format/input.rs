@@ -2,7 +2,7 @@ use std::{ffi::CStr, ptr, str::from_utf8_unchecked};
 
 use libc::c_void;
 
-use crate::ffi::*;
+use crate::{ffi::*, option::OptionIter};
 
 #[derive(Copy, Clone)]
 pub struct Input {
@@ -37,8 +37,7 @@ impl Input {
 
 			if ptr.is_null() {
 				Vec::new()
-			}
-			else {
+			} else {
 				from_utf8_unchecked(CStr::from_ptr(ptr).to_bytes()).split(',').collect()
 			}
 		}
@@ -50,11 +49,15 @@ impl Input {
 
 			if ptr.is_null() {
 				Vec::new()
-			}
-			else {
+			} else {
 				from_utf8_unchecked(CStr::from_ptr(ptr).to_bytes()).split(',').collect()
 			}
 		}
+	}
+
+	pub fn options(&self) -> OptionIter {
+		let ptr = (unsafe { *self.as_ptr() }).priv_class;
+		OptionIter::new(ptr)
 	}
 }
 
@@ -83,8 +86,7 @@ impl Iterator for Iter {
 
 			if ptr.is_null() {
 				None
-			}
-			else {
+			} else {
 				Some(Input::wrap(ptr))
 			}
 		}
