@@ -1,4 +1,7 @@
-use std::{mem, ops::Deref};
+use std::{
+	mem::{self, size_of},
+	ops::Deref,
+};
 
 use super::Stream;
 use crate::{codec, ffi::*, format::context::common::Context, Dictionary, Rational};
@@ -63,6 +66,32 @@ impl<'a> StreamMut<'a> {
 		unsafe {
 			let metadata = metadata.disown();
 			(*self.as_mut_ptr()).metadata = metadata;
+		}
+	}
+
+	pub fn set_display_rotation(&mut self, angle: f64) {
+		// Display matrix in libavcodec is [i32; 9] where each point is 16.16
+		// fixed point, but all this is opaque here..
+		const MATRIX_LEN: usize = 9 * size_of::<i32>();
+		let mut matrix = [0u8; MATRIX_LEN];
+
+		unsafe {
+			av_display_rotation_set(matrix.as_mut_ptr() as *mut i32, angle);
+
+			let mut data_size: usize = 0;
+			let mut side_data = av_stream_get_side_data(
+				self.as_mut_ptr(),
+				AVPacketSideDataType::AV_PKT_DATA_DISPLAYMATRIX,
+				&mut data_size,
+			);
+			if side_data.is_null() || data_size != MATRIX_LEN {
+				side_data = av_stream_new_side_data(
+					self.as_mut_ptr(),
+					AVPacketSideDataType::AV_PKT_DATA_DISPLAYMATRIX,
+					MATRIX_LEN,
+				);
+			}
+			side_data.copy_from(matrix.as_ptr(), MATRIX_LEN);
 		}
 	}
 }
