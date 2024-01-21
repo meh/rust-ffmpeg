@@ -115,6 +115,23 @@ impl<'a> Stream<'a> {
 		unsafe { DictionaryRef::wrap((*self.as_ptr()).metadata) }
 	}
 
+	pub fn display_rotation(&self) -> f64 {
+		if let Some(display_matrix) = self
+			.side_data()
+			.find(|d| d.kind() == packet::side_data::Type::DisplayMatrix)
+		{
+			unsafe {
+				let bytes = display_matrix.data();
+				let (prefix, matrix, suffix) = bytes.align_to::<i32>();
+				// data result should be aligned &[i32; 9]
+				assert!(prefix.is_empty() && suffix.is_empty() && matrix.len() == 9);
+				av_display_rotation_get(matrix.as_ptr())
+			}
+		} else {
+			0.0f64
+		}
+	}
+
 	pub fn decoder(&self) -> Result<Decoder, Error> {
 		let params = self.parameters();
 		let codec = codec::decoder::find(params.id()).ok_or(Error::DecoderNotFound)?;
