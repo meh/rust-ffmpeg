@@ -116,7 +116,7 @@ impl ChannelLayout {
 	}
 
 	pub fn from_name(name: impl Into<Vec<u8>>) -> Result<ChannelLayout, Error> {
-		let s = CString::new(name.into()).unwrap();
+		let s = CString::new(name.into()).map_err(|_| Error::InvalidData)?;
 		let mut layout = Self::new();
 
 		unsafe {
