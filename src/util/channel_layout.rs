@@ -245,7 +245,7 @@ impl ChannelLayout {
 
 				if bytes_needed <= buf.len() {
 					let s = String::from_utf8_lossy(&buf[..bytes_needed]);
-					Ok(Ok(s.into_owned()))
+					Ok(Ok(s.trim_end_matches('\0').to_owned()))
 				}
 				else {
 					Ok(Err(bytes_needed))
