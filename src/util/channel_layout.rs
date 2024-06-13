@@ -179,9 +179,10 @@ impl ChannelLayout {
 	fn contains_avchannel(&self, channel: AVChannel) -> Option<bool> {
 		match self.0.order {
 			AVChannelOrder::AV_CHANNEL_ORDER_NATIVE => unsafe { Some(self.0.u.mask & (1 << channel.0 as u64) != 0) },
-			AVChannelOrder::AV_CHANNEL_ORDER_CUSTOM => unsafe {
-				let channels = self.custom_channels_unchecked();
-				Some(channels.iter().any(|ch| ch.0.id == channel))
+			AVChannelOrder::AV_CHANNEL_ORDER_CUSTOM => {
+				self.custom_channels().map(|channels| {
+					channels.iter().any(|ch| ch.0.id == channel)
+				})
 			},
 
 			// no information about channels available
@@ -216,13 +217,12 @@ impl ChannelLayout {
 			// could be implemented in the future
 			(AVChannelOrder::AV_CHANNEL_ORDER_CUSTOM, AVChannelOrder::AV_CHANNEL_ORDER_NATIVE) => None,
 
-			(_, AVChannelOrder::AV_CHANNEL_ORDER_CUSTOM) => unsafe {
-				let channels = self.custom_channels_unchecked();
-				Some(
+			(_, AVChannelOrder::AV_CHANNEL_ORDER_CUSTOM) => {
+				self.custom_channels().map(|channels| {
 					channels
 						.iter()
-						.all(|ch| self.contains_avchannel(ch.0.id).unwrap_or(false)),
-				)
+						.all(|ch| self.contains_avchannel(ch.0.id).unwrap_or(false))
+				})
 			},
 
 			// no information about channels available
@@ -293,15 +293,20 @@ impl ChannelLayout {
 	}
 
 	pub fn native_order_bits(&self) -> Option<u64> {
-		(self.0.order == AVChannelOrder::AV_CHANNEL_ORDER_NATIVE).then_some(unsafe { self.0.u.mask })
-	}
-
-	unsafe fn custom_channels_unchecked(&self) -> &[CustomChannel] {
-		slice::from_raw_parts(self.0.u.map.cast::<CustomChannel>(), self.0.nb_channels.max(0) as usize)
+		(self.0.order == AVChannelOrder::AV_CHANNEL_ORDER_NATIVE).then(|| unsafe { self.0.u.mask })
 	}
 
 	pub fn custom_channels(&self) -> Option<&[CustomChannel]> {
-		(self.0.order == AVChannelOrder::AV_CHANNEL_ORDER_CUSTOM).then_some(unsafe { self.custom_channels_unchecked() })
+		if self.0.order != AVChannelOrder::AV_CHANNEL_ORDER_CUSTOM {
+			return None;
+		}
+		let ptr = unsafe { self.0.u.map.cast::<CustomChannel>() };
+		if ptr.is_null() {
+			return None;
+		}
+		Some(unsafe {
+			slice::from_raw_parts(ptr, self.0.nb_channels.max(0) as usize)
+		})
 	}
 }
 
