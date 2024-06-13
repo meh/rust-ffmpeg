@@ -17,7 +17,7 @@ impl Audio {
 impl Audio {
 	pub fn sample_rates(&self) -> Option<RateIter> {
 		unsafe {
-			(!(*self.as_ptr()).supported_samplerates.is_null()).then_some(RateIter {
+			(!(*self.as_ptr()).supported_samplerates.is_null()).then(|| RateIter {
 				inner: self,
 				next_idx: 0,
 			})
@@ -26,7 +26,7 @@ impl Audio {
 
 	pub fn formats(&self) -> Option<FormatIter> {
 		unsafe {
-			(!(*self.codec.as_ptr()).sample_fmts.is_null()).then_some(FormatIter {
+			(!(*self.codec.as_ptr()).sample_fmts.is_null()).then(|| FormatIter {
 				inner: self,
 				next_idx: 0,
 			})
@@ -35,7 +35,7 @@ impl Audio {
 
 	pub fn channel_layouts(&self) -> Option<ChannelLayoutIter> {
 		unsafe {
-			(!(*self.codec.as_ptr()).ch_layouts.is_null()).then_some(ChannelLayoutIter {
+			(!(*self.codec.as_ptr()).ch_layouts.is_null()).then(|| ChannelLayoutIter {
 				inner: self,
 				next_idx: 0,
 			})
