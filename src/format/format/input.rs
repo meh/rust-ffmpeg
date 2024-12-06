@@ -20,6 +20,23 @@ impl Input {
 	pub unsafe fn as_ptr(&self) -> *const AVInputFormat {
 		self.ptr
 	}
+
+    #[cfg(not(feature = "ffmpeg_5_0"))]
+    pub unsafe fn as_mut_ptr(&mut self) -> *mut AVInputFormat {
+		self.ptr.cast_mut()
+    }
+
+    // Some APIs const-ified args in FFMPEG 5.0:
+
+    #[cfg(not(feature = "ffmpeg_5_0"))]
+    pub(crate) unsafe fn as_api_ptr(&self) -> *mut AVInputFormat {
+		self.as_ptr() as *mut _
+    }
+
+    #[cfg(feature = "ffmpeg_5_0")]
+    pub(crate) unsafe fn as_api_ptr(&self) -> *const AVInputFormat {
+		self.as_ptr()
+    }
 }
 
 impl Input {

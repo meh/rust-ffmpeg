@@ -23,6 +23,13 @@ use std::{
 
 use crate::{ffi::*, util::from_os_str, Dictionary, Error, Format};
 
+// FFMPEG 5.0 const-ified a bunch of string APIs
+#[cfg(feature = "ffmpeg_5_0")]
+use ptr::null as maybe_mut_ptr_null;
+
+#[cfg(not(feature = "ffmpeg_5_0"))]
+use ptr::null_mut as maybe_mut_ptr_null;
+
 pub fn version() -> u32 {
 	unsafe { avformat_version() }
 }
@@ -42,7 +49,7 @@ pub fn open(path_or_url: impl AsRef<OsStr>, format: &Format) -> Result<Context, 
 
 		match *format {
 			Format::Input(ref format) => {
-				match avformat_open_input(&mut ps, path.as_ptr(), format.as_ptr() as *mut _, ptr::null_mut()) {
+				match avformat_open_input(&mut ps, path.as_ptr(), format.as_api_ptr(), ptr::null_mut()) {
 					0 => match avformat_find_stream_info(ps, ptr::null_mut()) {
 						r if r >= 0 => Ok(Context::Input(context::Input::wrap(ps))),
 						e => Err(Error::from(e)),
@@ -53,7 +60,7 @@ pub fn open(path_or_url: impl AsRef<OsStr>, format: &Format) -> Result<Context, 
 			}
 
 			Format::Output(ref format) => {
-				match avformat_alloc_output_context2(&mut ps, format.as_ptr() as *mut _, ptr::null(), path.as_ptr()) {
+				match avformat_alloc_output_context2(&mut ps, format.as_api_ptr(), ptr::null(), path.as_ptr()) {
 					0 => {
 						let output = context::Output::wrap(ps);
 						if output.format().flags().contains(Flags::NO_FILE) {
@@ -94,7 +101,7 @@ pub fn open_with(path_or_url: impl AsRef<OsStr>, format: &Format, options: Dicti
 			}
 
 			Format::Output(ref format) => {
-				match avformat_alloc_output_context2(&mut ps, format.as_ptr(), ptr::null(), path.as_ptr()) {
+				match avformat_alloc_output_context2(&mut ps, format.as_api_ptr(), maybe_mut_ptr_null(), path.as_ptr()) {
 					0 => {
 						let output = context::Output::wrap(ps);
 						if output.format().flags().contains(Flags::NO_FILE) {
@@ -118,7 +125,7 @@ pub fn input(path_or_url: impl AsRef<OsStr>) -> Result<context::Input, Error> {
 		let mut ps = ptr::null_mut();
 		let path = from_os_str(path_or_url);
 
-		match avformat_open_input(&mut ps, path.as_ptr(), ptr::null(), ptr::null_mut()) {
+		match avformat_open_input(&mut ps, path.as_ptr(), maybe_mut_ptr_null(), ptr::null_mut()) {
 			0 => match avformat_find_stream_info(ps, ptr::null_mut()) {
 				r if r >= 0 => Ok(context::Input::wrap(ps)),
 				e => {
@@ -137,7 +144,7 @@ pub fn input_with_dictionary(path_or_url: impl AsRef<OsStr>, options: Dictionary
 		let mut ps = ptr::null_mut();
 		let path = from_os_str(path_or_url);
 		let mut opts = options.disown();
-		let res = avformat_open_input(&mut ps, path.as_ptr(), ptr::null(), &mut opts);
+		let res = avformat_open_input(&mut ps, path.as_ptr(), maybe_mut_ptr_null(), &mut opts);
 
 		Dictionary::own(opts);
 
@@ -164,7 +171,7 @@ pub fn input_with_interrupt<P: AsRef<OsStr>>(
 		let path = from_os_str(path_or_url);
 		(*ps).interrupt_callback = interrupt::new(Box::new(closure)).interrupt;
 
-		match avformat_open_input(&mut ps, path.as_ptr(), ptr::null(), ptr::null_mut()) {
+		match avformat_open_input(&mut ps, path.as_ptr(), maybe_mut_ptr_null(), ptr::null_mut()) {
 			0 => match avformat_find_stream_info(ps, ptr::null_mut()) {
 				r if r >= 0 => Ok(context::Input::wrap(ps)),
 				e => {
@@ -183,7 +190,7 @@ pub fn output(path_or_url: impl AsRef<OsStr>) -> Result<context::Output, Error> 
 		let mut ps = ptr::null_mut();
 		let path = from_os_str(path_or_url);
 
-		match avformat_alloc_output_context2(&mut ps, ptr::null(), ptr::null(), path.as_ptr()) {
+		match avformat_alloc_output_context2(&mut ps, maybe_mut_ptr_null(), ptr::null(), path.as_ptr()) {
 			0 => {
 				let output = context::Output::wrap(ps);
 				if output.format().flags().contains(Flags::NO_FILE) {
@@ -205,7 +212,7 @@ pub fn output_with(path_or_url: impl AsRef<OsStr>, options: Dictionary) -> Resul
 		let mut ps = ptr::null_mut();
 		let path = from_os_str(path_or_url);
 
-		match avformat_alloc_output_context2(&mut ps, ptr::null(), ptr::null(), path.as_ptr()) {
+		match avformat_alloc_output_context2(&mut ps, maybe_mut_ptr_null(), ptr::null(), path.as_ptr()) {
 			0 => {
 				let output = context::Output::wrap(ps);
 				if output.format().flags().contains(Flags::NO_FILE) {
@@ -232,7 +239,7 @@ pub fn output_as(path_or_url: impl AsRef<OsStr>, format: Output) -> Result<conte
 		let mut ps = ptr::null_mut();
 		let path = from_os_str(path_or_url);
 
-		match avformat_alloc_output_context2(&mut ps, format.as_ptr(), ptr::null_mut(), path.as_ptr()) {
+		match avformat_alloc_output_context2(&mut ps, format.as_api_ptr(), ptr::null_mut(), path.as_ptr()) {
 			0 => {
 				let output = context::Output::wrap(ps);
 				if output.format().flags().contains(Flags::NO_FILE) {
@@ -258,7 +265,7 @@ pub fn output_as_with(
 		let mut ps = ptr::null_mut();
 		let path = from_os_str(path_or_url);
 
-		match avformat_alloc_output_context2(&mut ps, format.as_ptr(), ptr::null_mut(), path.as_ptr()) {
+		match avformat_alloc_output_context2(&mut ps, format.as_api_ptr(), ptr::null_mut(), path.as_ptr()) {
 			0 => {
 				let output = context::Output::wrap(ps);
 				if output.format().flags().contains(Flags::NO_FILE) {
