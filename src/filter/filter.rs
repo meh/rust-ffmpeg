@@ -43,11 +43,17 @@ impl Filter {
 		unsafe {
 			let ptr = (*self.as_ptr()).inputs;
 
+			#[cfg(feature = "ffmpeg_5_0")]
+			let count = (*self.as_ptr()).nb_inputs;
+
+			#[cfg(not(feature = "ffmpeg_5_0"))]
+			let count = avfilter_pad_count((*self.as_ptr()).inputs);
+
 			if ptr.is_null() {
 				None
 			}
 			else {
-				Some(PadIter::new(ptr, (*self.as_ptr()).nb_inputs as usize))
+				Some(PadIter::new(ptr, count as usize))
 			}
 		}
 	}
@@ -56,11 +62,17 @@ impl Filter {
 		unsafe {
 			let ptr = (*self.as_ptr()).outputs;
 
+			#[cfg(feature = "ffmpeg_5_0")]
+			let count = (*self.as_ptr()).nb_outputs;
+
+			#[cfg(not(feature = "ffmpeg_5_0"))]
+			let count = avfilter_pad_count((*self.as_ptr()).outputs);
+
 			if ptr.is_null() {
 				None
 			}
 			else {
-				Some(PadIter::new(ptr, (*self.as_ptr()).nb_outputs as usize))
+				Some(PadIter::new(ptr, count as usize))
 			}
 		}
 	}
