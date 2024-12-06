@@ -1,6 +1,8 @@
 use std::{env, path::Path};
 
-use ffmpeg::{channel_layout::ChannelLayout, codec, filter, format, frame, media, rescale, Rescale};
+use ffmpeg::{codec, filter, format, frame, media, rescale, Rescale};
+#[cfg(feature = "ffmpeg_6_0")]
+use ffmpeg::channel_layout::{self, ChannelLayout};
 
 fn filter(
 	spec: &str,
@@ -9,12 +11,20 @@ fn filter(
 ) -> Result<filter::Graph, ffmpeg::Error> {
 	let mut filter = filter::Graph::new();
 
+    #[cfg(feature = "ffmpeg_6_0")]
+    let channel_layout_arg = format!(":channel_layout={}",
+		decoder.channel_layout().describe().unwrap());
+
+    // Not yet implemented for older versions
+    #[cfg(not(feature = "ffmpeg_6_0"))]
+    let channel_layout_arg = "";
+
 	let args = format!(
-		"time_base={}:sample_rate={}:sample_fmt={}:channel_layout={}",
+		"time_base={}:sample_rate={}:sample_fmt={}{}",
 		decoder.time_base().unwrap(),
 		decoder.sample_rate(),
 		decoder.format().name(),
-		decoder.channel_layout().describe().unwrap()
+		channel_layout_arg
 	);
 
 	filter.add(&filter::find("abuffer").unwrap(), "in", &args)?;
@@ -24,6 +34,7 @@ fn filter(
 		let mut out = filter.get("out").unwrap();
 
 		out.set_sample_format(encoder.format());
+		#[cfg(feature = "ffmpeg_6_0")]
 		out.set_channel_layout(encoder.channel_layout());
 		out.set_sample_rate(encoder.sample_rate());
 	}
@@ -78,21 +89,24 @@ fn transcoder<P: AsRef<Path>>(
 	let mut output = octx.add_stream()?;
 	let mut encoder = codec::Encoder::new(codec)?.audio()?;
 
-	let channel_layout = codec
-		.channel_layouts()
-		.map(|cls| cls.best(decoder.channel_layout().channels()))
-		.unwrap_or(ChannelLayout::STEREO);
-
 	if global {
 		encoder.set_flags(ffmpeg::codec::flag::Flags::GLOBAL_HEADER);
 	}
-
 	encoder.set_sample_rate(decoder.sample_rate());
-	encoder.set_channel_layout(channel_layout);
-	encoder.set_channels(channel_layout.channels());
 	encoder.set_format(codec.formats().expect("unknown supported formats").next().unwrap());
 	encoder.set_bit_rate(decoder.bit_rate());
 	encoder.set_max_bit_rate(decoder.max_bit_rate());
+
+	#[cfg(feature = "ffmpeg_6_0")]
+	{
+		let channel_layout = codec
+			.channel_layouts()
+			.map(|cls| cls.best(decoder.channel_layout().channels()))
+			.unwrap_or(ChannelLayout::STEREO);
+
+		encoder.set_channel_layout(channel_layout);
+		encoder.set_channels(channel_layout.channels());
+	}
 
 	let enc_tb = (1, decoder.sample_rate() as i32);
 	encoder.set_time_base(Some(enc_tb));

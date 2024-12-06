@@ -4,7 +4,7 @@ use std::{
 	slice,
 };
 
-use libc::c_int;
+use libc::{c_int, c_ulonglong};
 
 use super::Frame;
 use crate::{ffi::*, util::format, ChannelLayout};
@@ -65,14 +65,24 @@ impl Audio {
 
 	#[inline]
 	pub fn channel_layout(&self) -> ChannelLayout {
+        #[cfg(feature = "ffmpeg_6_0")]
 		unsafe { ChannelLayout::from((*self.as_ptr()).ch_layout) }
+
+        #[cfg(not(feature = "ffmpeg_6_0"))]
+        unsafe { ChannelLayout::from_bits_truncate(av_frame_get_channel_layout(self.as_ptr()) as c_ulonglong) }
 	}
 
 	#[inline]
 	pub fn set_channel_layout(&mut self, value: ChannelLayout) {
+        #[cfg(feature = "ffmpeg_6_0")]
 		unsafe {
 			(*self.as_mut_ptr()).ch_layout = value.into();
-		}
+        }
+
+        #[cfg(not(feature = "ffmpeg_6_0"))]
+        unsafe {
+            av_frame_set_channel_layout(self.as_mut_ptr(), value.bits() as i64);
+        }
 	}
 
 	#[inline]

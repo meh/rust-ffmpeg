@@ -33,6 +33,7 @@ impl Audio {
 		}
 	}
 
+    #[cfg(feature = "ffmpeg_6_0")]
 	pub fn channel_layouts(&self) -> Option<ChannelLayoutIter> {
 		unsafe {
 			(!(*self.codec.as_ptr()).ch_layouts.is_null()).then(|| ChannelLayoutIter {
@@ -99,11 +100,13 @@ impl Iterator for FormatIter<'_> {
 	}
 }
 
+#[cfg(feature = "ffmpeg_6_0")]
 pub struct ChannelLayoutIter<'a> {
 	inner: &'a Audio,
 	next_idx: isize,
 }
 
+#[cfg(feature = "ffmpeg_6_0")]
 impl ChannelLayoutIter<'_> {
 	pub fn best(self, max: i32) -> ChannelLayout {
 		self.fold(crate::channel_layout::ChannelLayout::MONO, |acc, cur| {
@@ -117,6 +120,7 @@ impl ChannelLayoutIter<'_> {
 	}
 }
 
+#[cfg(feature = "ffmpeg_6_0")]
 impl Iterator for ChannelLayoutIter<'_> {
 	type Item = ChannelLayout;
 

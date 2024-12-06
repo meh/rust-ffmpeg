@@ -85,6 +85,7 @@ fn main() {
 						println!("\taudio.format: {:?}", audio.format());
 						println!("\taudio.frames: {}", audio.frames());
 						println!("\taudio.align: {}", audio.align());
+						#[cfg(feature = "ffmpeg_6_0")]
 						println!("\taudio.channel_layout: {:?}", audio.channel_layout());
 					}
 				}

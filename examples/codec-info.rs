@@ -46,15 +46,18 @@ fn print_codec(codec: Codec) {
 			println!("\t formats: any");
 		}
 
-		if let Some(layouts) = audio.channel_layouts() {
-			println!("\t channel_layouts:");
-			for layout in layouts {
-				println!("\t\t {}", layout.describe().unwrap());
-			}
-		}
-		else {
-			println!("\t channel_layouts: any");
-		}
+        #[cfg(feature = "ffmpeg_6_0")]
+        {
+		    if let Some(layouts) = audio.channel_layouts() {
+			    println!("\t channel_layouts:");
+			    for layout in layouts {
+				    println!("\t\t {}", layout.describe().unwrap());
+			    }
+		    }
+		    else {
+			    println!("\t channel_layouts: any");
+		    }
+        }
 	}
 
 	println!("\t max_lowres: {:?}", codec.max_lowres());

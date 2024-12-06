@@ -1,6 +1,5 @@
 #[macro_use]
 pub mod dictionary;
-pub mod channel_layout;
 pub mod chroma;
 pub mod color;
 pub mod error;
@@ -15,6 +14,9 @@ pub mod picture;
 pub mod range;
 pub mod rational;
 pub mod time;
+
+#[cfg_attr(not(feature = "ffmpeg_6_0"), path="channel_layout_pre6.rs")]
+pub mod channel_layout;
 
 #[cfg(feature = "log")]
 pub mod log;
