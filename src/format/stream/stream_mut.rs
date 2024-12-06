@@ -75,20 +75,28 @@ impl<'a> StreamMut<'a> {
 		const MATRIX_LEN: usize = 9 * size_of::<i32>();
 		let mut matrix = [0u8; MATRIX_LEN];
 
+		#[cfg(feature = "ffmpeg_5_0")]
+		type DataSize = usize;
+		#[cfg(not(feature = "ffmpeg_5_0"))]
+		type DataSize = i32;
+
 		unsafe {
 			av_display_rotation_set(matrix.as_mut_ptr() as *mut i32, angle);
 
-			let mut data_size: usize = 0;
+			let mut data_size: DataSize = 0;
 			let mut side_data = av_stream_get_side_data(
 				self.as_mut_ptr(),
 				AVPacketSideDataType::AV_PKT_DATA_DISPLAYMATRIX,
 				&mut data_size,
 			);
+
+			let data_size = data_size as usize;
+
 			if side_data.is_null() || data_size != MATRIX_LEN {
 				side_data = av_stream_new_side_data(
 					self.as_mut_ptr(),
 					AVPacketSideDataType::AV_PKT_DATA_DISPLAYMATRIX,
-					MATRIX_LEN,
+					MATRIX_LEN as DataSize,
 				);
 			}
 			side_data.copy_from(matrix.as_ptr(), MATRIX_LEN);
