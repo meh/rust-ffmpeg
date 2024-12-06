@@ -647,10 +647,38 @@ fn link_to_libraries(statik: bool, target_os: &str) {
         let feat_is_enabled = lib.feature_name().and_then(|f| env::var(&f).ok()).is_some();
         if !lib.is_feature || feat_is_enabled {
             println!("cargo:rustc-link-lib={}={}", ffmpeg_ty, lib.name);
+            link_extralibs(Some(lib.name));
         }
     }
     if env::var("CARGO_FEATURE_BUILD_ZLIB").is_ok() && target_os == "linux" {
         println!("cargo:rustc-link-lib=z");
+    }
+}
+
+/// Parse EXTRALIBS from the ffmpeg build and add libraries to the linker command line
+fn link_extralibs(library: Option<&str>) {
+    // config.mak has one global EXTRALIBS= key plus sub-keys for each component library
+    let key = match library {
+        None => "EXTRALIBS=".to_string(),
+        Some(library) => format!("EXTRALIBS-{}=", library),
+    };
+
+    let config_mak = source().join("ffbuild/config.mak");
+    let file = File::open(config_mak).unwrap();
+    let reader = BufReader::new(file);
+    let extra_libs = reader
+        .lines()
+        .find(|line| line.as_ref().unwrap().starts_with(&key))
+        .map(|line| line.unwrap())
+        .unwrap();
+
+    let linker_args = extra_libs.split('=').last().unwrap().split(' ');
+    let include_libs = linker_args
+        .filter(|v| v.starts_with("-l"))
+        .map(|flag| &flag[2..]);
+
+    for lib in include_libs {
+        println!("cargo:rustc-link-lib={}", lib);
     }
 }
 
@@ -681,33 +709,16 @@ fn thread_main() {
             "cargo:rustc-link-search=native={}",
             search().join("lib").to_string_lossy()
         );
-        link_to_libraries(statik, target_os);
         if fs::metadata(&search().join("lib").join("libavutil.a")).is_err() {
             fs::create_dir_all(&output()).expect("failed to create build directory");
             fetch().unwrap();
             build(target_os).unwrap();
         }
+        // Add component libraries
+        link_to_libraries(statik, target_os);
 
-        // Check additional required libraries.
-        {
-            let config_mak = source().join("ffbuild/config.mak");
-            let file = File::open(config_mak).unwrap();
-            let reader = BufReader::new(file);
-            let extra_libs = reader
-                .lines()
-                .find(|ref line| line.as_ref().unwrap().starts_with("EXTRALIBS"))
-                .map(|line| line.unwrap())
-                .unwrap();
-
-            let linker_args = extra_libs.split('=').last().unwrap().split(' ');
-            let include_libs = linker_args
-                .filter(|v| v.starts_with("-l"))
-                .map(|flag| &flag[2..]);
-
-            for lib in include_libs {
-                println!("cargo:rustc-link-lib={}", lib);
-            }
-        }
+        // Add any additional top-level libraries.
+        link_extralibs(None);
 
         vec![search().join("include")]
     }
