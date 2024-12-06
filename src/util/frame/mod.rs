@@ -103,11 +103,13 @@ impl Frame {
 	}
 
 	#[inline]
+    #[cfg(feature = "ffmpeg_5_0")]
 	pub fn time_base(&self) -> Option<Rational> {
 		unsafe { Rational::from((*self.as_ptr()).time_base).non_zero() }
 	}
 
-	#[inline]
+    #[inline]
+    #[cfg(feature = "ffmpeg_5_0")]
 	pub fn set_time_base(&mut self, time_base: Option<impl Into<Rational>>) {
 		unsafe {
 			(*self.as_mut_ptr()).time_base = time_base.map(Into::into).unwrap_or(Rational::ZERO).into();
@@ -143,16 +145,26 @@ impl Frame {
 
 	#[inline]
 	pub fn duration(&self) -> Option<i64> {
-		unsafe {
-			match (*self.as_ptr()).duration {
-				0 => None,
-				d => Some(d),
-			}
-		}
+        #[cfg(not(feature = "ffmpeg_6_0"))]
+        let raw = unsafe { (*self.as_ptr()).pkt_duration };
+
+        #[cfg(feature = "ffmpeg_6_0")]
+        let raw = unsafe { (*self.as_ptr()).duration };
+
+         match raw {
+			 0 => None,
+			 d => Some(d),
+		 }
 	}
 
 	#[inline]
 	pub fn set_duration(&mut self, value: Option<i64>) {
+        #[cfg(feature = "ffmpeg_6_0")]
+		unsafe {
+			(*self.as_mut_ptr()).pkt_duration = value.unwrap_or(0);
+		}
+
+        #[cfg(feature = "ffmpeg_6_0")]
 		unsafe {
 			(*self.as_mut_ptr()).duration = value.unwrap_or(0);
 		}

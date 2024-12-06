@@ -9,10 +9,10 @@ impl Iterator for AudioIter {
 
 	fn next(&mut self) -> Option<<Self as Iterator>::Item> {
 		unsafe {
-            #[cfg(feature = "ffmpeg_5_0")]
+			#[cfg(feature = "ffmpeg_5_0")]
 			let ptr = av_input_audio_device_next(self.0);
 
-            #[cfg(not(feature = "ffmpeg_5_0"))]
+			#[cfg(not(feature = "ffmpeg_5_0"))]
 			let ptr = av_input_audio_device_next(self.0.cast_mut());
 
 			if ptr.is_null() && !self.0.is_null() {

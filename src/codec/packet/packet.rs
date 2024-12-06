@@ -107,13 +107,13 @@ impl Packet {
 	}
 
 	#[inline]
-    #[cfg(feature = "ffmpeg_5_0")]
+	#[cfg(feature = "ffmpeg_5_0")]
 	pub fn time_base(&self) -> Option<Rational> {
 		Rational::from(self.0.time_base).non_zero()
 	}
 
 	#[inline]
-    #[cfg(feature = "ffmpeg_5_0")]
+	#[cfg(feature = "ffmpeg_5_0")]
 	pub fn set_time_base(&mut self, time_base: Option<impl Into<Rational>>) {
 		self.0.time_base = time_base.map(Into::into).unwrap_or(Rational::ZERO).into();
 	}
@@ -257,13 +257,13 @@ impl Packet {
 	}
 
 	#[inline]
-    #[cfg(feature = "ffmpeg_5_0")]
+	#[cfg(feature = "ffmpeg_5_0")]
 	pub fn opaque(&self) -> *mut c_void {
 		unsafe { (*self.as_ptr()).opaque }
 	}
 
 	#[inline]
-    #[cfg(feature = "ffmpeg_5_0")]
+	#[cfg(feature = "ffmpeg_5_0")]
 	pub fn set_opaque(&mut self, data: *mut c_void) {
 		unsafe {
 			(*self.as_mut_ptr()).opaque = data;
