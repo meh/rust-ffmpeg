@@ -1,5 +1,11 @@
 use crate::{ffi::*, format::context::common::Context, DictionaryRef, Rational};
 
+#[cfg(feature = "ffmpeg_5_0")]
+pub type ChapterId = i64;
+
+#[cfg(not(feature = "ffmpeg_5_0"))]
+pub type ChapterId = i32;
+
 // WARNING: index refers to the offset in the chapters array (starting from 0)
 // it is not necessarly equal to the id (which may start at 1)
 pub struct Chapter<'a> {
@@ -22,7 +28,7 @@ impl<'a> Chapter<'a> {
 		self.index
 	}
 
-	pub fn id(&self) -> i64 {
+	pub fn id(&self) -> ChapterId {
 		unsafe { (*self.as_ptr()).id }
 	}
 
