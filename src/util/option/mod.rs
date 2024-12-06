@@ -49,6 +49,7 @@ impl From<AVOptionType> for Type {
 			AV_OPT_TYPE_DURATION => Type::Duration,
 			AV_OPT_TYPE_COLOR => Type::Color,
 			AV_OPT_TYPE_CHANNEL_LAYOUT => Type::ChannelLayout,
+            #[cfg(feature = "ffmpeg_6_0")]
 			AV_OPT_TYPE_CHLAYOUT => Type::ChannelLayout,
 		}
 	}
@@ -76,7 +77,10 @@ impl Into<AVOptionType> for Type {
 			Type::VideoRate => AV_OPT_TYPE_VIDEO_RATE,
 			Type::Duration => AV_OPT_TYPE_DURATION,
 			Type::Color => AV_OPT_TYPE_COLOR,
+            #[cfg(feature = "ffmpeg_6_0")]
 			Type::ChannelLayout => AV_OPT_TYPE_CHLAYOUT,
+            #[cfg(not(feature = "ffmpeg_6_0"))]
+			Type::ChannelLayout => AV_OPT_TYPE_CHANNEL_LAYOUT,
 		}
 	}
 }

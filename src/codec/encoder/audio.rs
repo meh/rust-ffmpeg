@@ -92,12 +92,14 @@ impl Audio {
 		unsafe { format::Sample::from((*self.as_ptr()).sample_fmt) }
 	}
 
+	#[cfg(feature = "ffmpeg_6_0")]
 	pub fn set_channel_layout(&mut self, value: ChannelLayout) {
 		unsafe {
 			(*self.as_mut_ptr()).ch_layout = value.into();
 		}
 	}
 
+	#[cfg(feature = "ffmpeg_6_0")]
 	pub fn channel_layout(&self) -> ChannelLayout {
 		unsafe { (*self.as_ptr()).ch_layout.into() }
 	}

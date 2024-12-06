@@ -128,17 +128,30 @@ pub trait Settable: Target {
 		}
 	}
 
+    #[cfg(feature = "ffmpeg_6_0")]
 	fn set_channel_layout(&mut self, name: &str, layout: ChannelLayout) -> Result<(), Error> {
 		unsafe {
 			let name = CString::new(name).unwrap();
-
 			check!(av_opt_set_chlayout(
 				self.as_mut_ptr(),
 				name.as_ptr(),
 				layout.as_ptr(),
 				AV_OPT_SEARCH_CHILDREN
 			))
-		}
+        }
+    }
+
+    #[cfg(not(feature = "ffmpeg_6_0"))]
+	fn set_channel_layout(&mut self, name: &str, layout: ChannelLayout) -> Result<(), Error> {
+		unsafe {
+			let name = CString::new(name).unwrap();
+            check!(av_opt_set_channel_layout(
+                self.as_mut_ptr(),
+				name.as_ptr(),
+				layout.bits() as i64,
+				AV_OPT_SEARCH_CHILDREN
+            ))
+        }
 	}
 }
 
