@@ -1,6 +1,6 @@
 use std::{mem, ops::Deref};
 
-use super::Chapter;
+use super::{ChapterId, Chapter};
 use crate::{ffi::*, format::context::common::Context, Dictionary, DictionaryMut, Rational};
 
 // WARNING: index refers to the offset in the chapters array (starting from 0)
@@ -28,7 +28,7 @@ impl<'a> ChapterMut<'a> {
 }
 
 impl<'a> ChapterMut<'a> {
-	pub fn set_id(&mut self, value: i64) {
+	pub fn set_id(&mut self, value: ChapterId) {
 		unsafe {
 			(*self.as_mut_ptr()).id = value;
 		}

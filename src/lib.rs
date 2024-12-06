@@ -28,7 +28,7 @@ pub type Result<T> = ::std::result::Result<T, Error>;
 #[cfg(feature = "format")]
 pub mod format;
 #[cfg(feature = "format")]
-pub use crate::format::chapter::{Chapter, ChapterMut};
+pub use crate::format::chapter::{Chapter, ChapterId, ChapterMut};
 #[cfg(feature = "format")]
 pub use crate::format::format::Format;
 #[cfg(feature = "format")]

@@ -11,7 +11,7 @@ use super::{common::Context, destructor};
 use crate::{
 	ffi::*,
 	format::{self, io::Io},
-	ChapterMut, Dictionary, Error, Rational, StreamMut,
+	ChapterId, ChapterMut, Dictionary, Error, Rational, StreamMut,
 };
 
 pub struct Output {
@@ -116,7 +116,7 @@ impl Output {
 
 	pub fn add_chapter<R: Into<Rational>, S: AsRef<str>>(
 		&mut self,
-		id: i64,
+		id: ChapterId,
 		time_base: R,
 		start: i64,
 		end: i64,
