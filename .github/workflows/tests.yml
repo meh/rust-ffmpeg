@@ -11,11 +11,17 @@ env:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
-
+    strategy:
+      matrix:
+        include:
+          - os: ubuntu-24.04  # "noble", ffmpeg 6.1
+            ffmpeg_feature: "ffmpeg_6_0"
+          - os: ubuntu-22.04  # "jammy", ffmpeg 4.4
+            ffmpeg_feature: "ffmpeg_4_4"
+    runs-on: ${{ matrix.os }}
     steps:
-    - name: Install ffmpeg
-      run: sudo apt-get -y install ffmpeg pkg-config libavutil-dev libavformat-dev libavfilter-dev libavdevice-dev
-    - uses: actions/checkout@v4
-    - name: Run tests
-      run: cargo test --all --verbose --features=ffmpeg_4_4
+      - name: Install ffmpeg
+        run: sudo apt-get -y install ffmpeg pkg-config libavutil-dev libavformat-dev libavfilter-dev libavdevice-dev
+      - uses: actions/checkout@v4
+      - name: Run tests
+        run: cargo test --all --verbose --features=${{ matrix.ffmpeg_feature }}
