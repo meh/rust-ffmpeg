@@ -26,6 +26,22 @@ impl Output {
 	pub unsafe fn as_ptr(&self) -> *const AVOutputFormat {
 		self.ptr
 	}
+
+    pub unsafe fn as_mut_ptr(&mut self) -> *mut AVOutputFormat {
+		self.ptr.cast_mut()
+    }
+
+    // Some APIs const-ified args in FFMPEG 5.0:
+
+    #[cfg(not(feature = "ffmpeg_5_0"))]
+    pub(crate) unsafe fn as_api_ptr(&self) -> *mut AVOutputFormat {
+		self.as_ptr() as *mut _
+    }
+
+    #[cfg(feature = "ffmpeg_5_0")]
+    pub(crate) unsafe fn as_api_ptr(&self) -> *const AVOutputFormat {
+		self.as_ptr()
+    }
 }
 
 impl Output {
@@ -68,8 +84,14 @@ impl Output {
 		let path = CString::new(path.as_ref().as_os_str().to_str().unwrap()).unwrap();
 
 		unsafe {
+            #[cfg(feature = "ffmpeg_5_0")]
+            let as_ptr = self.as_ptr();
+
+            #[cfg(not(feature = "ffmpeg_5_0"))]
+            let as_ptr = unsafe { self.as_ptr() as *mut _ };
+
 			codec::Id::from(av_guess_codec(
-				self.as_ptr(),
+                as_ptr,
 				ptr::null(),
 				path.as_ptr(),
 				ptr::null(),

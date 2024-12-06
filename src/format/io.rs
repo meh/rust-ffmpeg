@@ -241,7 +241,7 @@ pub fn input_as(io: impl Read + Seek + 'static, format: format::Input) -> Result
 		(*ps).flags |= AVFMT_FLAG_CUSTOM_IO;
 		(*ps).pb = io.as_mut_ptr();
 
-		match avformat_open_input(&mut ps, ptr::null_mut(), format.as_ptr(), ptr::null_mut()) {
+		match avformat_open_input(&mut ps, ptr::null_mut(), format.as_api_ptr(), ptr::null_mut()) {
 			0 => match avformat_find_stream_info(ps, ptr::null_mut()) {
 				r if r >= 0 => Ok(context::Input::wrap_with(ps, io)),
 
@@ -261,7 +261,7 @@ pub fn output(io: impl Write + 'static, format: format::Output) -> Result<contex
 		let mut ps = ptr::null_mut();
 		let mut io = Io::output(io);
 
-		match avformat_alloc_output_context2(&mut ps, format.as_ptr(), ptr::null_mut(), ptr::null_mut()) {
+		match avformat_alloc_output_context2(&mut ps, format.as_api_ptr(), ptr::null_mut(), ptr::null_mut()) {
 			n if n >= 0 => {
 				(*ps).flags |= AVFMT_FLAG_CUSTOM_IO;
 				(*ps).pb = io.as_mut_ptr();

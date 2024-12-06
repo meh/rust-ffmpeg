@@ -172,13 +172,18 @@ impl<'a> Best<'a> {
 		'a: 'b,
 	{
 		unsafe {
+            #[cfg(feature = "ffmpeg_5_0")]
 			let mut decoder = ptr::null::<AVCodec>();
+
+            #[cfg(not(feature = "ffmpeg_5_0"))]
+			let mut decoder = ptr::null_mut::<AVCodec>();
+
 			let index = av_find_best_stream(
 				self.context.ptr,
 				kind.into(),
 				self.wanted as c_int,
 				self.related as c_int,
-				&mut decoder as *mut _,
+                &mut decoder as *mut _,
 				0,
 			);
 
