@@ -1,4 +1,5 @@
 use std::{array, ffi::CString, fmt, mem, ptr, slice};
+use libc::c_char;
 
 use crate::{
 	ffi::{AVChannel, AVChannelOrder, *},
@@ -449,10 +450,10 @@ impl CustomChannel {
 		let len = name.len().min(15);
 		name_with_zero[..len].copy_from_slice(&name[..len]);
 
-		Self::custom(channel as i32, array::from_fn(|i| name_with_zero[i] as i8))
+		Self::custom(channel as i32, array::from_fn(|i| name_with_zero[i] as c_char))
 	}
 
-	pub fn custom(channel: i32, name: [i8; 16]) -> Self {
+	pub fn custom(channel: i32, name: [c_char; 16]) -> Self {
 		assert_eq!(name[15], 0);
 
 		Self(AVChannelCustom {
