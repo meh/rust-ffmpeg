@@ -256,6 +256,9 @@ fn build(target_os: &str) -> io::Result<()> {
     // do not build programs since we don't need them
     configure.arg("--disable-programs");
 
+    // do not build documentation
+    configure.arg("--disable-doc");
+
     macro_rules! enable {
         ($conf:expr, $feat:expr, $name:expr) => {
             if env::var(concat!("CARGO_FEATURE_", $feat)).is_ok() {
